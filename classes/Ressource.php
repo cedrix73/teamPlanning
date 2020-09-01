@@ -70,84 +70,14 @@ class Ressource {
         $results=$this->dbaccess->fetchRow($rs);
         
         foreach ($results as $ligne) {
-            $id = $ligne['ressource_id'];
-            unset($ligne['ressource_id']);
+            $id = $ligne[0];
+            unset($ligne[0]);
             $this->tabRessources[$id]=$ligne;
         }
         return $this->tabRessources;
     }
     
-    /**
-     * GetDepartementsBySite
-     * retourne un tableau de tous les libellés de departements
-     * ou ceux en fonction d'un site donné ($sieId)
-     * 
-     * @param int $siteId 
-     * 
-     * @return array  
-     */
-    public function getDepartementsBySite($siteId = null){
-        $rs = false;
-        $requete = "SELECT DISTINCT departement.libelle "
-                . " FROM departement ";
-                
-        $tabDepartements = array();
-        if($site != ""){
-            $requete.=  " INNER JOIN site on departement.site_id = site.id "
-                      . " WHERE site.id = '" . $siteId ."'" 
-                      . " ORDER BY site.id";
-        }
-
-	    $rs = $this->dbaccess->execQuery($requete);
-        $results=$this->dbaccess->fetchRow($rs);
-        $i=0;
-        foreach ($results as $ligne) {
-            $tabDepartements[$i]=$ligne[1];
-            $i++;
-        }
-        
-        return $tabDepartements;
-    }
     
-    /**
-     * GetServicesByDepartement
-     * retourne un tableau de tous les libellés de departements
-     * ou ceux en fonction d'un site donné ($sieId)
-     * 
-     * @param int    $siteId 
-     * @param string $departementLibelle 
-     * 
-     * @return array  
-     */
-    public function getServicesByDepartement($siteId = null, $departementLibelle = '')
-    {
-        $rs = false;
-        $requete = "SELECT DISTINCT service.libelle "
-                . " FROM service ";
-        $requete .= $this->requeteJointures;
-                
-        $tabServices = array();
-
-        if($site != null && $site!='Tous*'){
-            $this->siteId = $siteId;
-            $requete.= " AND site.id = '" . $this->siteId ."'";
-        }
-
-        if($departementLibelle != ''){
-
-            $requete.=  " WHERE departement.libelle = '" . $departementLibelle ."'";
-        }
-        $requete.= " ORDER BY departement.id";
-
-	    $rs = $this->dbaccess->execQuery($requete);
-        $results=$this->dbaccess->fetchRow($rs);
-        $i=0;
-        foreach ($results as $ligne) {
-            $tabServices[$i]=$ligne[1];
-            $i++;
-        }
-        return $tabServices;
-    }
     
     
     /**

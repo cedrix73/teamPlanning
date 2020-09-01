@@ -3,7 +3,7 @@
 include_once '../config.php';
 require_once ABS_CLASSES_PATH.$dbFile;
 require_once ABS_CLASSES_PATH.'DbAccess.php';
-require_once ABS_CLASSES_PATH.'Ressources.php';
+require_once ABS_CLASSES_PATH.'Ressource.php';
 require_once ABS_GENERAL_PATH.'form_functions.php';
 
 
@@ -24,7 +24,7 @@ if ($handler === false) {
     $tabChamps = array();
     $tabChamps = $ressources->getForm();
     $retour = '';
-    if (count($tabChamps) > 0) {
+    if (is_array($tabChamps) && count($tabChamps) > 0) {
         $i = 0;
         $numGroupe = 0;
         $nbChampsParLigne = 4;

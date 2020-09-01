@@ -65,7 +65,7 @@ if ($isOk) {
                 $tabInsert['site_id'] = $keyLocalisation;
             break;
 
-            case 'site':
+            case 'service':
                 $tabInsert['departement_id'] = $keyLocalisation;
             break;
         }

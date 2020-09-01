@@ -4,7 +4,7 @@ include_once '../config.php';
 require_once ABS_CLASSES_PATH.$dbFile;
 require_once ABS_CLASSES_PATH.'DbAccess.php';
 require_once ABS_CLASSES_PATH.'CvfDate.php';
-require_once ABS_CLASSES_PATH.'Ressource.php';
+require_once ABS_CLASSES_PATH.'Localisation.php';
 
 
 /* 
@@ -20,15 +20,15 @@ if($handler===FALSE){
     $retour = 'Problème de connexion à la base ';
 }else{
     $siteId = null;
-    if(isset($_REQUEST['site_sel']) 
-            && !is_null($_REQUEST['site_sel']) 
-            &&  $_REQUEST['site_sel'] == true
-            && $_REQUEST['site_sel']!='Tous *'){
-        $siteId = $_REQUEST['site_sel'];
+    if(isset($_REQUEST['site']) 
+            && !is_null($_REQUEST['site']) 
+            &&  $_REQUEST['site'] == true
+            && $_REQUEST['site']!='Tous *'){
+        $siteId = $_REQUEST['site'];
     }
     // affichage des jours par ressources
-    $ressource = new Ressource($dbaccess);
-    $tabDepartements = $ressource->getDepartementsBySite($siteId);
+    $localisation = new Localisation($dbaccess);
+    $tabDepartements = $localisation->getDepartementsBySite($siteId);
     
     $retour = json_encode($tabDepartements);
 }

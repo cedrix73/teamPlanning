@@ -20,6 +20,8 @@ $blnSites = false;
 $blnDepartements = false;
 $blnServices = false;
 
+$blnRessources = false;
+
 // Liste des sites
 $listeSites = listeLoad('libelle', 'site', $dbaccess);
 
@@ -31,9 +33,14 @@ if (count($listeSites) > 1) {
     $listeDepartements = listeLoad('libelle', 'departement', $dbaccess, $filtreDepartements);
     if (count($listeDepartements) > 1) {
         $blnDepartements = true;
-    }
+        $listeServices = listeLoad('libelle', 'service', $dbaccess);
+        if (count($listeServices) > 1) {
+            $blnServices = true;
+        }
 
+    }
 }
+
 $siteDefaut = 'Tous *';
 $departementDefaut = 'Tous *';
 $serviceDefaut = 'Tous *';
@@ -74,7 +81,7 @@ $refreshCalendarOption = '';
             <script>	
                     $(document).ready(function(){
                         cacherComposantsInfo();
-                        <?php if ($blnSites && $blnDepartements && $blnServices) {
+                        <?php if ($blnRessources) {
                             $refreshCalendarOption = 'refreshCalendar(null);';
                             echo 'initialiserFormulaire();';
                         } else {
@@ -91,9 +98,14 @@ $refreshCalendarOption = '';
                                 $prefixe = 'ensuite';
                                 $obj = 'service';
                             }
-                            echo '$("#div_saisie_activite").html("<div>Veuillez ' . $prefixe . ' enregistrer un premier ' . $obj 
-                               . ' pour continuer");';
-                            echo '$("#div_saisie_activite").show();';
+
+                            if ($blnSites && $blnDepartements && $blnServices){
+                                echo 'afficherFormRessources()';
+                            }else{
+                                echo '$("#div_saisie_activite").html("<div>Veuillez ' . $prefixe . ' enregistrer un premier ' . $obj 
+                                . ' pour continuer");';
+                                echo '$("#div_saisie_activite").show();';
+                            }
                         }
                         ?> 
                         
@@ -148,7 +160,7 @@ $refreshCalendarOption = '';
                         </fieldset>
                         <fieldset id="fielset_service">
                             <legend>Services</legend>
-                            <?php if ($blnDepartements) { ?>
+                            <?php if ($blnServices) { ?>
                             <select id="cbo_services" name="cbo_services" onchange="<?php echo $refreshCalendarOption;?>">
                             <?php
                                 foreach ($listeServices as $value) {

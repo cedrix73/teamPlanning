@@ -128,7 +128,7 @@ class DbAccess
                 .' FROM INFORMATION_SCHEMA.COLUMNS' 
                 .' WHERE TABLE_SCHEMA = \'' . $this->_conInfos['dbase'] . '\''
                 .' AND TABLE_NAME = \'' . $tableName. '\'';
-        return $this->_dbInterface->getTableDatas($this->link, $query);
+        return $this->_dbInterface->getTableDatas($this->_link, $query);
     }
 
     public function getStatement() {

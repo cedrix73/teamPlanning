@@ -50,21 +50,46 @@ function insererTypeLocalisation(type){
     );
 }
 
+function liste_departements_load(site_sel){
+    $.ajax({
+        type: "get",
+        url: "ajax/listeDepartementsLoad.php",
+        data: "site=" + site_sel,
+        datatype: "json",
+        success: function(data)
+        {
+            var tab_elems = [];
+            tab_elems.push('<option value="Tous *">Tous *</option>');
+            var str_feedback = jQuery.parseJSON(data);
+            $.each(str_feedback, function(cle, valeur) {
+                tab_elems.push('<option value="' + valeur + '">' + valeur + '</option>');
+            });
+            $("#cbo_departements").html(tab_elems.join(''));
 
-function afficherFormRessources(){
-    if($("#div_saisie_activite").css("display") == 'none'){
-        var contenuActivite = $("#div_saisie_activite").html();
-        $.post("ajax/afficherFormRessources.php", 
-             function(data){
-                if(data.length >0) {
-                    $('#div_saisie_activite').html(data);
-                    $("#div_saisie_activite").slideDown();
-                }
-        });
-    }else{
-        $("#div_saisie_activite").toggle();
-    }
+        }
+    });
 }
+
+function liste_services_load(site_sel, departement_sel){
+    $.ajax({
+        type: "get",
+        url: "ajax/listeServicesLoad.php",
+        data: "site_id=" + site_sel + "departement_sel=" + departement_sel,
+        datatype: "json",
+        success: function(data)
+        {
+            var tab_elems = [];
+            tab_elems.push('<option value="Tous *">Tous *</option>');
+            var str_feedback = jQuery.parseJSON(data);
+            $.each(str_feedback, function(cle, valeur) {
+                tab_elems.push('<option value="' + valeur + '">' + valeur + '</option>');
+            });
+             $("#cbo_services").html(tab_elems.join(''));
+
+        }
+    });
+}
+
 
 function afficherTexteStarter(){
     $.post("ajax/afficherTexteStarter.html", 

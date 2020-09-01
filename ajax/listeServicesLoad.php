@@ -4,7 +4,7 @@ include_once '../config.php';
 require_once ABS_CLASSES_PATH.$dbFile;
 require_once ABS_CLASSES_PATH.'DbAccess.php';
 require_once ABS_CLASSES_PATH.'CvfDate.php';
-require_once ABS_CLASSES_PATH.'Ressource.php';
+require_once ABS_CLASSES_PATH.'Localisation.php';
 
 
 /* 
@@ -37,8 +37,8 @@ if($handler===FALSE){
 
     
 // affichage des jours par ressources
-    $ressource = new Ressource($dbaccess);
-    $tabServices = $ressource->getServicesByDepartement($siteId, $departementLibelle);
+    $localisation = new Localisation($dbaccess);
+    $tabServices = $localisation->getServicesByDepartement($siteId, $departementLibelle);
     $retour = json_encode($tabServices);
 }
 echo $retour;

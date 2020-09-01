@@ -17,7 +17,7 @@ $retour = '';
 // Connexion
 $dbaccess = new DbAccess($dbObj);
 $handler = $dbaccess->connect();
-if($handler===FALSE){
+if($handler === false){
     $retour = 'Problème de connexion à la base ';
 }else{
 
