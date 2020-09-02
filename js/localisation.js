@@ -72,9 +72,9 @@ function liste_departements_load(site_sel){
 
 function liste_services_load(site_sel, departement_sel){
     $.ajax({
-        type: "get",
+        type: "POST",
         url: "ajax/listeServicesLoad.php",
-        data: "site_id=" + site_sel + "departement_sel=" + departement_sel,
+        data: {"site_sel": site_sel, "departement_sel":departement_sel },
         datatype: "json",
         success: function(data)
         {

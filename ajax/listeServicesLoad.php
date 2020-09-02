@@ -16,16 +16,17 @@ $retour = '';
 // Connexion
 $dbaccess = new DbAccess($dbObj);
 $handler = $dbaccess->connect();
-if($handler===FALSE){
+if($handler===false){
     $retour = 'Problème de connexion à la base ';
 }else{ 
+    $siteLibelle = null;
     $departementLibelle = null;
-    $siteId = null;
+    
     if(isset($_REQUEST['site_sel']) 
             && !is_null($_REQUEST['site_sel']) 
             &&  $_REQUEST['site_sel'] == true)
     {
-        $siteId = $_REQUEST['site_sel'];
+        $siteLibelle = $_REQUEST['site_sel'];
     }
 
     if(isset($_REQUEST['departement_sel']) 
@@ -34,13 +35,13 @@ if($handler===FALSE){
     {
         $departementLibelle = $_REQUEST['departement_sel'];
     }
-
     
 // affichage des jours par ressources
     $localisation = new Localisation($dbaccess);
-    $tabServices = $localisation->getServicesByDepartement($siteId, $departementLibelle);
+    $tabServices = $localisation->getServicesByDepartement($siteLibelle, $departementLibelle);
     $retour = json_encode($tabServices);
 }
+$dbaccess->close($handler);
 echo $retour;
 
 

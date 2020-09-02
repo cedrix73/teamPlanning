@@ -18,9 +18,8 @@ class Localisation {
         $this->_dbaccess = $dbaccess;
         $this->_sql = '';
         $this->_type = $type;
-        $this->_requeteJointures = " INNER JOIN service on ressource.service_id = service.id " 
-                               . " INNER JOIN departement on service.departement_id = departement.id " 
-                               . " INNER JOIN site on departement.site_id = site.id ";
+        $this->_requeteJointures = " INNER JOIN departement on service.departement_id = departement.id " 
+                                 . " INNER JOIN site on departement.site_id = site.id ";
     }
     
     public function getSql()
@@ -120,11 +119,12 @@ class Localisation {
                 . " FROM departement ";
                 
         $tabDepartements = array();
-        if($site != null){
+        if ($site !== null && $site != 'Tous *'){
             $requete .=  " INNER JOIN site on departement.site_id = site.id "
-                      . " WHERE site.libelle = '" . $site ."'" 
-                      . " ORDER BY departement.libelle";
+                      . " WHERE site.libelle = '" . $site ."'";
+                      
         }
+        $requete .=  " ORDER BY departement.libelle";
         
 	    $rs = $this->_dbaccess->execQuery($requete);
         $results=$this->_dbaccess->fetchRow($rs);
@@ -147,7 +147,7 @@ class Localisation {
      * 
      * @return array  
      */
-    public function getServicesByDepartement($site = null, $departementLibelle = '')
+    public function getServicesByDepartement($site = null, $departementLibelle = null)
     {
         $rs = false;
         $requete = "SELECT DISTINCT service.libelle "
@@ -156,13 +156,13 @@ class Localisation {
                 
         $tabServices = array();
 
-        if($site != null && $site != 'Tous*'){
+        if($site !== null && $site != 'Tous *'){
             $requete.= " AND site.libelle = '" . $site ."'";
         }
 
-        if($departementLibelle != ''){
+        if($departementLibelle != null && $departementLibelle != 'Tous *'){
 
-            $requete.=  " WHERE departement.libelle = '" . $departementLibelle ."'";
+            $requete.=  " AND departement.libelle = '" . $departementLibelle ."'";
         }
         $requete.= " ORDER BY service.libelle";
 

@@ -6,19 +6,19 @@
     "configurations": [
         
         {
-            "name": "Launch index.php",
-            "type": "firefox",
+            "name": "Listen for xdebug",
+            "type": "php",
             "request": "launch",
-            "reAttach": true,
-            "file": "H:/Sources/Php/team_planning_v1_3/index.php"
+            "port": 9000,
         },
         {
-            "name": "Launch localhost",
-            "type": "firefox",
+            "name": "Launch open script",
+            "type": "php",
             "request": "launch",
-            "reAttach": true,
-            "url": "http://localhost:8000/team_planning_v1_3/index.php",
-            "webRoot": "${workspaceFolder}"
+            "stopOnEntry": true,
+            "cwd": "${fileDirName}",
+            "runtimeExecutable": "H:\\Serveurs\\laragon\\bin\\php\\php-7.2.19-Win32-VC15-x64\\php.exe",
+            "port": 9000
         },
         {
             "name": "Attach",

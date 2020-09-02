@@ -100,10 +100,12 @@ $refreshCalendarOption = '';
                             }
 
                             if ($blnSites && $blnDepartements && $blnServices){
+                                echo '$("#div_saisie_activite").html("<div>Veuillez  enregistrer un premier collaborateur ' 
+                                   . ' pour continuer");';
                                 echo 'afficherFormRessources()';
                             }else{
                                 echo '$("#div_saisie_activite").html("<div>Veuillez ' . $prefixe . ' enregistrer un premier ' . $obj 
-                                . ' pour continuer");';
+                                   . ' pour continuer");';
                                 echo '$("#div_saisie_activite").show();';
                             }
                         }
