@@ -9,6 +9,11 @@
     scroll: auto;
 }
 
+div.text_helper {
+    font: 16px Arial, Helvetica, sans-serif;
+    color: #38610B;
+}
+
 p.presentation {
     font: 18px Arial, Helvetica, sans-serif;
     color: #585858;

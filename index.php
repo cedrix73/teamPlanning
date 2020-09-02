@@ -36,6 +36,10 @@ if (count($listeSites) > 1) {
         $listeServices = listeLoad('libelle', 'service', $dbaccess);
         if (count($listeServices) > 1) {
             $blnServices = true;
+            $listeRessources = listeLoad('id', 'ressource', $dbaccess, 'LIMIT 1');
+            if (count($listeRessources) > 1) {
+                $blnRessources = true;
+            }
         }
 
     }
@@ -100,17 +104,18 @@ $refreshCalendarOption = '';
                             }
 
                             if ($blnSites && $blnDepartements && $blnServices){
-                                echo '$("#div_saisie_activite").html("<div>Veuillez  enregistrer un premier collaborateur ' 
+                                echo '$("#div_saisie_activite").html("<div class=\"text_helper\">Veuillez  enregistrer un premier collaborateur ' 
                                    . ' pour continuer");';
                                 echo 'afficherFormRessources()';
+
                             }else{
-                                echo '$("#div_saisie_activite").html("<div>Veuillez ' . $prefixe . ' enregistrer un premier ' . $obj 
+                                echo '$("#div_saisie_activite").html("<div class=\"text_helper\">Veuillez ' . $prefixe . ' enregistrer un premier ' . $obj 
                                    . ' pour continuer");';
-                                echo '$("#div_saisie_activite").show();';
+                                
                             }
                         }
                         ?> 
-                        
+                        $("#div_saisie_activite").show();
                     });
 
             </script>

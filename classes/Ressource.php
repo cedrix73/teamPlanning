@@ -34,7 +34,7 @@ class Ressource {
     
     /**
      * GetRessourcesBySelection
-     * Sort les ressources en Ajax en fonction 
+     * @description  Sort les ressources en Ajax en fonction 
      * des valeur (chaine) sélectionnées à partir ds
      * combobox site, département et service du formulaire
      * 
@@ -44,12 +44,12 @@ class Ressource {
      * 
      * @return array
      */
-    public function getRessourcesBySelection($siteId = null, $departementLibelle = '', $serviceLibelle = ''){
+    public function getRessourcesBySelection($site = null, $departementLibelle = '', $serviceLibelle = ''){
         $requete = $this->requeteSelect . $this->requeteJointures;
         $requete . " WHERE dateSortie IS NULL";
         // Traitement sites
         if($site != null && $site!='Tous*'){
-            $this->siteId = $siteId;
+            $this->siteId = $site;
             $requete.= " AND site.id = '" . $this->siteId ."'";
         }
 
@@ -97,20 +97,5 @@ class Ressource {
         $rs = $this->dbaccess->execQuery($requete);
         $ressource=$this->dbaccess->fetchArray($rs);
         return $ressource;
-    }
-
-    /**
-     * GetForm
-     * Traite tous les champs de la table Ressource
-     * pour retourner un formulaire
-     * 
-     */
-    public function getForm()
-    {
-        $results = $this->dbaccess->getTableDatas('ressource');
-        return $results;
-
-
-
     }
 }

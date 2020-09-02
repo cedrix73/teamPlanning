@@ -215,4 +215,16 @@ function colorieDemiJournee($codeCouleur, $type){
     $retour.= 'background: linear-gradient('.$sens.', #'. $codeCouleur. ' 0%,#FFF 70%);';
     return $retour;
 }
+
+function explodeMaj($texte) { 
+    $tabChaine  = explode(' ',trim(preg_replace('#([A-Z])#',' $1',$texte)));
+    return $tabChaine; 
+} 
+
+
+function underscoreToLibelle($texte) {
+    $texte = ucfirst(str_replace('_', ' ', $texte));
+    return str_replace('Num', 'N°', $texte);
+}
+
 ?>

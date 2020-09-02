@@ -33,7 +33,7 @@ class DbAccess
     
     /**
      * connect
-     * Procède à la connexion et crée le pointeur $_link
+     * @description  Procède à la connexion et crée le pointeur $_link
      */
     public function connect($no_msg = 0)
 	{
@@ -47,7 +47,7 @@ class DbAccess
 
     /**
      * close
-     * Supprime le pointeur de connexion
+     * @description Supprime le pointeur de connexion
      */
     public function close($link) 
     {
@@ -123,12 +123,18 @@ class DbAccess
      * GetTableDatas
      */
 
+     /**
+      * GetTableDatas
+      * @description Retourne un tableau  
+      */
     public function getTableDatas($tableName) {
          $query = ' SELECT COLUMN_NAME AS nomchamp, DATA_TYPE AS typechamp'
                 .' FROM INFORMATION_SCHEMA.COLUMNS' 
                 .' WHERE TABLE_SCHEMA = \'' . $this->_conInfos['dbase'] . '\''
                 .' AND TABLE_NAME = \'' . $tableName. '\'';
-        return $this->_dbInterface->getTableDatas($this->_link, $query);
+        $resultSet =  $this->_dbInterface->getTableDatas($this->_link, $query);
+        $results = $this->fetchArray($resultSet);
+        return $results;
     }
 
     public function getStatement() {

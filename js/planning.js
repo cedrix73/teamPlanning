@@ -232,10 +232,9 @@ function afficherFormRessources(){
                 if(data.length >0) {
                     $('#div_saisie_activite').html(data);
                     $("#div_saisie_activite").slideDown();
+                    
                 }
         });
-    }else{
-        $("#div_saisie_activite").toggle();
     }
 }
 
