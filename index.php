@@ -80,6 +80,7 @@ $refreshCalendarOption = '';
             <script src="js/jquery-ui-1.9.2.custom.min.js"></script>
             <script src="js/planning.js"></script>
             <script src="js/localisation.js"></script>
+            <script src="js/ressource.js"></script>
             <script src="js/evenement.js"></script>
             <script src="js/evol.colorpicker.min.js" type="text/javascript"></script>
             <script>	

@@ -70,34 +70,10 @@ class Localisation {
     
     public function create($tabInsert)
     {
-        $sqlData = 'VALUES (';
-            // fonction "raccourci" qui effectue une simple reconversion d'une chaîne
-        $sqlInsert = 'INSERT INTO ' . $this->_type . ' (';
-        $i = 0;
-        $max = count($tabInsert)-1;
-        foreach ($tabInsert as $key=>$value) {
-            $sqlInsert .= $key;
-            $sqlData .= '\''.$value.'\'';
-            if ($i<$max) {
-                $sqlInsert .= ', ';
-                $sqlData .= ', ';
-            } else {
-                $sqlInsert .= ') ';
-                $sqlData .= ') ';
-            }
-            $i++;
-        }
-        
-        $sql = $sqlInsert . $sqlData;
-        $this->sql = ' ' . $sql;
-
-        
-
         try{
-            $retour = $this->_dbaccess->execQuery($sql);
-            //$retour = TRUE;
+            $retour = $this->_dbaccess->create($this->_type, $tabInsert);
         }catch(Exception $e){
-            $retour = false;
+            $retour .= 'Table: ' . $this->_type;
         }
         return $retour;
         
@@ -105,75 +81,97 @@ class Localisation {
     }
 
     /**
-     * GetDepartementsBySite
+     * @name GetDepartementsBySite
+     * @description
+     * - Dans un contexte de recherche (param $contexteInsertion = false):
      * retourne un tableau de tous les libellés de departements
-     * ou ceux en fonction d'un site donné ($sieId)
+     * - Dans un contexte d'un formulaire d'enregistrement de ressources: 
+     * (param $contexteInsertion = true):  retourne un tableau de tous les id 
+     * ET libellés des departements, ou ceux en fonction d'un site donné ($siteId)
      * 
-     * @param int $siteId 
+     * @param mixed $siteId 
+     * @param bool $contexteInsertion 
      * 
-     * @return array  
+     * @return mixed  
      */
-    public function getDepartementsBySite($site = null){
+    public function getDepartementsBySite($site = null, $contexteInsertion = false){
         $rs = false;
-        $requete = "SELECT DISTINCT departement.libelle "
+        $champId = ($contexteInsertion === false) ? "" : "departement.id,";
+        $requete = "SELECT DISTINCT " . $champId  . " departement.libelle "
                 . " FROM departement ";
                 
         $tabDepartements = array();
+        $champWhere = "";
         if ($site !== null && $site != 'Tous *'){
+            $champWhere = ($contexteInsertion === false) ? "libelle" : "id";
             $requete .=  " INNER JOIN site on departement.site_id = site.id "
-                      . " WHERE site.libelle = '" . $site ."'";
+                      . " WHERE site." . $champWhere . " = '" . $site ."'";
                       
         }
         $requete .=  " ORDER BY departement.libelle";
+        try {
+            $rs = $this->_dbaccess->execQuery($requete);
+            $results=$this->_dbaccess->fetchRow($rs);
+            $i = ($contexteInsertion === false) ? 0 : 1;
+            foreach ($results as $ligne) {
+                $tabDepartements[$ligne[0]]=$ligne[$i];
+            }
+    
+            return $tabDepartements;
         
-	    $rs = $this->_dbaccess->execQuery($requete);
-        $results=$this->_dbaccess->fetchRow($rs);
-        $i=0;
-        foreach ($results as $ligne) {
-            $tabDepartements[$i]=$ligne[0];
-            $i++;
+        } catch(Exception $e){
+            return $e->getMessage();
         }
         
-        return $tabDepartements;
+        
+
+        
     }
     
     /**
-     * GetServicesByDepartement
-     * retourne un tableau de tous les libellés de departements
-     * ou ceux en fonction d'un site donné ($sieId)
+     * @name GetServicesByDepartement
+     * @description
+     * - Dans un contexte de recherche (param $contexteInsertion = false):
+     * retourne un tableau de tous les libellés de services
+     * - Dans un contexte d'un formulaire d'enregistrement de ressources: 
+     * (param $contexteInsertion = true):  retourne un tableau de tous les id 
+     * ET libellés des services, ou ceux en fonction d'un département donné ($siteId)
+     * 
      * 
      * @param int    $siteId 
      * @param string $departementLibelle 
+     * @param bool $contexteInsertion 
      * 
      * @return array  
      */
-    public function getServicesByDepartement($site = null, $departementLibelle = null)
+    public function getServicesByDepartement($site = null, $departement = null, $contexteInsertion = false)
     {
         $rs = false;
-        $requete = "SELECT DISTINCT service.libelle "
+        $champId = ($contexteInsertion === false) ? "" : "service.id,";
+        $requete = "SELECT DISTINCT " . $champId  . " service.libelle "
                 . " FROM service ";
         $requete .= $this->_requeteJointures;
                 
         $tabServices = array();
 
+        $champWhere = ($contexteInsertion === false) ? "libelle" : "id";
         if($site !== null && $site != 'Tous *'){
-            $requete.= " AND site.libelle = '" . $site ."'";
+            $requete.= " AND site." . $champWhere . " = '" . $site ."'";
         }
 
-        if($departementLibelle != null && $departementLibelle != 'Tous *'){
+        if($departement != null && $departement!= 'Tous *'){
 
-            $requete.=  " AND departement.libelle = '" . $departementLibelle ."'";
+            $requete.=  " AND departement." . $champWhere . " = '" . $departement ."'";
         }
         $requete.= " ORDER BY service.libelle";
 
-
+        
 
 	    $rs = $this->_dbaccess->execQuery($requete);
         $results=$this->_dbaccess->fetchRow($rs);
-        $i=0;
+        $i = ($contexteInsertion === false) ? 0 : 1;
         foreach ($results as $ligne) {
-            $tabServices[$i]=$ligne[0];
-            $i++;
+            $tabServices[$ligne[0]]=$ligne[$i];
         }
         return $tabServices;
     }

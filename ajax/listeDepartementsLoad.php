@@ -19,15 +19,24 @@ $handler = $dbaccess->connect();
 if($handler===false){
     $retour = 'Problème de connexion à la base ';
 }else{
-    $siteLibelle = null;
-    if(isset($_REQUEST['site']) 
-            && !is_null($_REQUEST['site']) 
-            &&  $_REQUEST['site'] == true){
-        $siteLibelle = $_REQUEST['site'];
+    $site = null;
+    if(isset($_REQUEST['site_sel']) 
+            && !is_null($_REQUEST['site_sel']) 
+            &&  $_REQUEST['site_sel'] == true){
+        $site = $_REQUEST['site_sel'];
     }
+
+    $contexteInsertion = false;
+    if(isset($_REQUEST['contexte_insertion']) 
+            && !is_null($_REQUEST['contexte_insertion']) 
+            &&  $_REQUEST['contexte_insertion'] == true){
+        $contexteInsertion = $_REQUEST['contexte_insertion'];
+    }
+
+    
     // affichage des jours par ressources
     $localisation = new Localisation($dbaccess);
-    $tabDepartements = $localisation->getDepartementsBySite($siteLibelle);
+    $tabDepartements = $localisation->getDepartementsBySite($site, $contexteInsertion);
     
     $retour = json_encode($tabDepartements);
 }

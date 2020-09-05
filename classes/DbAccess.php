@@ -18,6 +18,7 @@ class DbAccess
 	private $_link;
     private $_conInfos = array();
     private $_dbInterface;
+    private $_log;
 
     public function __construct($dbInterface)
 	{
@@ -27,6 +28,7 @@ class DbAccess
             $this->_conInfos['password'] = M_DBPASSWORD;
             $this->_conInfos['port'] = M_DBPORT;
             $this->_link = false;
+            $this->log = null;
             
             $this->_dbInterface = $dbInterface;  
     }
@@ -163,7 +165,41 @@ class DbAccess
 
         /* L'appel suivant à closeCursor() peut être requis par quelques drivers */
         $stmt->closeCursor();
-        return $result;
+        return $results;
+    }
+
+
+    
+    public function create($tableName, $tabInsert)
+    {
+        $sqlData = 'VALUES (';
+            // fonction "raccourci" qui effectue une simple reconversion d'une chaîne
+        $sqlInsert = 'INSERT INTO ' . $tableName . ' (';
+        $i = 0;
+        $max = count($tabInsert)-1;
+        foreach ($tabInsert as $key=>$value) {
+            $sqlInsert .= $key;
+            $sqlData .= '\''.$value.'\'';
+            if ($i<$max) {
+                $sqlInsert .= ', ';
+                $sqlData .= ', ';
+            } else {
+                $sqlInsert .= ') ';
+                $sqlData .= ') ';
+            }
+            $i++;
+        }
+        
+        $sql = $sqlInsert . $sqlData;
+        try{
+            $retour = $this->execQuery($sql);
+        }catch(Exception $e){
+            $this->_log = $e->getMessage();
+            $retour = 'Problème lors de l\'insertion des données.';
+        }
+        return $retour;
+        
+            
     }
     
 

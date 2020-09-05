@@ -42,15 +42,17 @@ if ($handler === false) {
             
             if ($nomChamp == 'site_id') {
                 $optionsSite = selectLoad('libelle', 'site', $dbaccess);
-                $retour .=  '<td><label for="res_' . $nomChamp . '">Site: </label><select id="res_site" name ="res_site">' . $optionsSite . "</select></td>";
+                $retour .=  '<td><label for="res_site">Site: </label><select id="res_site" name ="res_site" '
+                        .' onchange="form_departements_load(this.options[this.selectedIndex].value)">' . $optionsSite . "</select></td>";
 
             } elseif ($nomChamp == 'departement_id') {
                 $optionsDepartement = selectLoad('libelle', 'departement', $dbaccess);
-                $retour .= '<td><label for="res_' . $nomChamp . '">Departement: </label><select id="res_departement" name ="id="res_departement">' . $optionsDepartement . "</select></td>";
+                $retour .= '<td><label for="res_departement">Departement: </label><select id="res_departement" name ="res_departement"'
+                        .' onchange="form_services_load(res_site.options[res_site.selectedIndex].value, options[this.selectedIndex].value);">' . $optionsDepartement . "</select></td>";
 
             } elseif ($nomChamp == 'service_id') {
                 $optionsService = selectLoad('libelle', 'service', $dbaccess);
-                $retour .= '<td><label for="res_' . $nomChamp . '">Service: </label><select id="res_service" name="res_service">' . $optionsService . "</select></td>";
+                $retour .= '<td><label for="res_service">Service: </label><select id="res_service" name="res_service">' . $optionsService . "</select></td>";
             } else {
                 $libelleChamp = underscoreToLibelle($nomChamp);
                 switch($typeChamp) {

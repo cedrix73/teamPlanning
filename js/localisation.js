@@ -42,9 +42,6 @@ function insererTypeLocalisation(type){
                 afficherTypesEvents();
                 afficherMessage(data);
                 document.location.reload(true);
-                // @todo
-                // appliquer le résultat du patch 1.1.1 de la fonction afficherSaisie
-                // directement dans la chaine initialiserFormulaire.saisieActivite
             }
         }       
     );
@@ -54,7 +51,7 @@ function liste_departements_load(site_sel){
     $.ajax({
         type: "get",
         url: "ajax/listeDepartementsLoad.php",
-        data: "site=" + site_sel,
+        data: "site_sel=" + site_sel,
         datatype: "json",
         success: function(data)
         {
@@ -66,6 +63,10 @@ function liste_departements_load(site_sel){
             });
             $("#cbo_departements").html(tab_elems.join(''));
 
+        },
+        error: function(message)
+        {
+            afficherMessage(message);
         }
     });
 }

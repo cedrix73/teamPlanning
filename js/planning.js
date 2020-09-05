@@ -224,44 +224,7 @@ function replaceBlancs(chaine){
     return chaine;
 }
 
-function afficherFormRessources(){
-    if($("#div_saisie_activite").css("display") == 'none'){
-        var contenuActivite = $("#div_saisie_activite").html();
-        $.post("ajax/afficherFormRessources.php", 
-             function(data){
-                if(data.length >0) {
-                    $('#div_saisie_activite').html(data);
-                    $("#div_saisie_activite").slideDown();
-                    
-                }
-        });
-    }
-}
 
-function infoRessource(nom, prenom){
-    infoRessource.nom = replaceBlancs(nom);
-    infoRessource.prenom = replaceBlancs(prenom);
-    $("#lgd_saisie_activite").text("saisie d'activité de <i>" + infoRessource.prenom + " " + infoRessource.nom + "</i>");
-}
-
-function liste_activites_load(){
-    $.ajax({
-        type: "get",
-        url: "ajax/liste_activites_load.php",
-        datatype: "json",
-        success: function(data)
-        {
-                if(ctle_erreur(data)){
-                   var tab_elems = [];
-                   var str_feedback = jQuery.parseJSON(data);
-                    $.each(str_feedback, function(cle, valeur) {
-                            tab_elems.push('<option value="' + valeur + '">' + valeur + '</option>');
-                    });
-                    $("#cbo_activites").html(tab_elems.join(''));
-                }
-        }
-    });
-}
 
 /**
  * afficherSaisie
@@ -342,6 +305,25 @@ function validerSaisie(){
             }       
         );
     }
+}
+
+function liste_activites_load(){
+    $.ajax({
+        type: "get",
+        url: "ajax/liste_activites_load.php",
+        datatype: "json",
+        success: function(data)
+        {
+                if(ctle_erreur(data)){
+                   var tab_elems = [];
+                   var str_feedback = jQuery.parseJSON(data);
+                    $.each(str_feedback, function(cle, valeur) {
+                            tab_elems.push('<option value="' + valeur + '">' + valeur + '</option>');
+                    });
+                    $("#cbo_activites").html(tab_elems.join(''));
+                }
+        }
+    });
 }
 
 
