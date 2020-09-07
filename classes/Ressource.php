@@ -98,4 +98,18 @@ class Ressource {
         $ressource=$this->dbaccess->fetchArray($rs);
         return $ressource;
     }
+
+    /**
+     * Create
+     * Enregistre une ressource en base de donnée
+     */
+    public function create($tabInsert)
+    {
+        try{
+            $retour = $this->_dbaccess->create($tabInsert);
+        }catch(Exception $e){
+            $retour .= 'Table: ' . $this->_type;
+        }
+        return $retour;   
+    }
 }

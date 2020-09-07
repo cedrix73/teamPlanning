@@ -75,7 +75,18 @@ function infoRessource(nom, prenom){
 function validerSaisieRessource(){
     var json_string = validerSaisieForm("panel_ressource");
     if(json_string !== false && json_string !==undefined){
-        alert(json_string);
+        $("#img_loading").show();
+        $.post("ajax/insererRessource.php", {
+            json_datas: json_string}, 
+            function(data){
+                $("#img_loading").hide();
+                if(data.length >0) {
+                    $("#div_saisie_activite").slideUp(2000).delay( 2000 ).fadeOut( 1000 );
+                    //refreshCalendar(date_debut);
+                    afficherMessage(data);
+                }
+            }       
+        );
     }
 }
 

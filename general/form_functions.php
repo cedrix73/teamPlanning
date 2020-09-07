@@ -203,7 +203,7 @@ function fixEncodage($chaine){
     background-image: -webkit-gradient(linear,right top, left bottom,color-stop(0, #901A1C),color-stop(1, #FF9980));
     background: linear-gradient(right top, #901A1C 0%, #FF9980 100%); 
  */
-function colorieDemiJournee($codeCouleur, $type){
+function colorieDemiJournee($codeCouleur, $type) {
     $retour = '';
     $sens='left';
     $oppose = 'right';
@@ -225,6 +225,88 @@ function explodeMaj($texte) {
 function underscoreToLibelle($texte) {
     $texte = ucfirst(str_replace('_', ' ', $texte));
     return str_replace('Num', 'N°', $texte);
+}
+
+/**
+ * @name          getFormFromTable
+ * @description   Obtient un formulaire à partir de la table $tableName
+ * 
+ * @param         mixed     $dbaccess: ressource de la base de données
+ * @param         string   $tableName: Nom de la table
+ * @param         int      $nbChampsParLigne: Nombre de champs par ligne (par défaut 3)
+ * @return        string   $retour:   Formulaire au format html
+ */
+function getFormFromTable($dbaccess, $tableName, $nbChampsParLigne = 3) {
+    $retour = '';   
+    // Connexion
+    $handler = $dbaccess->connect();
+    if ($handler === false) {
+        $retour = 'Problème de connexion à la base ';
+    } else {
+        $tabChamps = array();
+        $tabChamps = $dbaccess->getTableDatas($tableName);
+        $retour = '';
+        if (is_array($tabChamps) && count($tabChamps) > 0) {
+            $i = 0;
+            $numGroupe = 0;
+            $nbChampsParLigne = 3;
+            $champPrefixe = substr($tableName, 0, 3);
+            $retour .= '<div class="legende_titre"><h1>Enregistrement ' . $tableName .'</h1></div>';
+            $retour .= '<form action="">'; 
+            $retour .= '<div id="panel_' . $tableName . '" name = "panel_' .$tableName .'"><table id="' . $tableName . '" class= "tab_params">';
+            // Liste de tous les types d'événement
+            foreach ($tabChamps as $value) {
+                $typeChamp = $value['typechamp'];
+                $nomChamp = $value['nomchamp'];
+                $isNullable = $value['is_nullable'];
+                $modulo = intval($i % $nbChampsParLigne );
+                if ($modulo == 1) {
+                    $retour .=   '<tr id='.$numGroupe.'>';
+                    //  class="'.$classeParite.'"
+                }
+                $retour .= '<td>';
+                $libelleChamp = underscoreToLibelle($nomChamp);
+                $nomChampFinal = $champPrefixe . '_' . $nomChamp;
+                // label
+                $retour .= '<label for="' .$nomChampFinal . '">' . $libelleChamp . '</label>:&nbsp;';
+                $required = ($isNullable == 'NO' ? 'required="required"' : '');
+                
+
+                // parsing champs
+               if (strstr($nomChamp, 'mail') == true) {
+                    $retour .= '<input type="email" id="' . $nomChampFinal .' " name="' . $nomChampFinal .'"
+                            ' . $required . ' placeholder="' . $nomChamp . '" maxlength="30" />';
+                }else {
+                    switch($typeChamp) {
+                        case 'varchar':
+                            $retour .= '<input type="text" id="' . $nomChampFinal .' " name="' . $nomChampFinal .'"
+                                    ' . $required . ' placeholder="' . $nomChamp . '" maxlength="30" />';
+                        break;
+                        case 'date':
+                            $retour .= '<input type="date" id="' . $nomChampFinal .'" name="' . $nomChampFinal .'" 
+                            ' . $required . ' size="10" maxlength="10" class="champ_date" />';
+                        break;
+                    }
+                }
+                $retour .= '</td>';
+                
+                if ($modulo == $nbChampsParLigne || $i >= count($tabChamps)) {
+                    $retour .="</tr>";
+                    $numGroupe++;
+                }
+                if ($i >= count($tabChamps)-1) {
+                    $retour .= '<tr><td><input type="submit" id="validation_' . $tableName . '" value="Enregistrer" onclick="validerSaisie' . ucfirst($tableName) .'();"/></td></tr>'; 
+                    $retour .= '</table"></div>';
+                }
+                $i++;
+            }
+            
+            
+        }
+        $retour .= '</form>';
+    }
+    $dbaccess->close($handler);
+    echo $retour;
 }
 
 ?>

@@ -75,9 +75,7 @@ class Localisation {
         }catch(Exception $e){
             $retour .= 'Table: ' . $this->_type;
         }
-        return $retour;
-        
-            
+        return $retour;   
     }
 
     /**
