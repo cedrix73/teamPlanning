@@ -130,7 +130,7 @@ class DbAccess
       * @description Retourne un tableau  
       */
     public function getTableDatas($tableName) {
-         $query = ' SELECT COLUMN_NAME AS nomchamp, DATA_TYPE AS typechamp'
+         $query = ' SELECT COLUMN_NAME AS nomchamp, DATA_TYPE AS typechamp, is_nullable'
                 .' FROM INFORMATION_SCHEMA.COLUMNS' 
                 .' WHERE TABLE_SCHEMA = \'' . $this->_conInfos['dbase'] . '\''
                 .' AND TABLE_NAME = \'' . $tableName. '\'';

@@ -28,59 +28,74 @@ if ($handler === false) {
         $i = 0;
         $numGroupe = 0;
         $nbChampsParLigne = 3;
-        $retour .= '<table id="tab_ressources" class= "tab_params">';
+        
+        $retour .= '<div class="legende_titre"><h1>Enregistrement d\'un collaborateur</h1></div>';
+        $retour .= '<form action="">'; 
+        $retour .= '<div id="panel_ressource" name = "panel_ressource"><table id="tab_ressources" class= "tab_params">';
         // Liste de tous les types d'événement
         foreach ($tabChamps as $value) {
             $typeChamp = $value['typechamp'];
             $nomChamp = $value['nomchamp'];
+            $isNullable = $value['is_nullable'];
             $modulo = intval($i % $nbChampsParLigne );
-            //$classeParite = ($numGroupe % 2 == 0 ? 'pair':'impair');
             if ($modulo == 1) {
                 $retour .=   '<tr id='.$numGroupe.'>';
                 //  class="'.$classeParite.'"
             }
+            $retour .= '<td>';
+            $libelleChamp = underscoreToLibelle($nomChamp);
+            // label
+            $retour .= '<label for="res_' . $nomChamp . '">' . $libelleChamp . '</label>:&nbsp;';
+            $required = ($isNullable == 'NO' ? 'required="required"' : '');
             
+
+            // parsing champs
             if ($nomChamp == 'site_id') {
                 $optionsSite = selectLoad('libelle', 'site', $dbaccess);
-                $retour .=  '<td><label for="res_site">Site: </label><select id="res_site" name ="res_site" '
-                        .' onchange="form_departements_load(this.options[this.selectedIndex].value)">' . $optionsSite . "</select></td>";
+                $retour .=  '<select id="res_site" name ="res_site" '.$required
+                        .' onchange="form_departements_load(this.options[this.selectedIndex].value)">' . $optionsSite . "</select>";
 
             } elseif ($nomChamp == 'departement_id') {
-                $optionsDepartement = selectLoad('libelle', 'departement', $dbaccess);
-                $retour .= '<td><label for="res_departement">Departement: </label><select id="res_departement" name ="res_departement"'
-                        .' onchange="form_services_load(res_site.options[res_site.selectedIndex].value, options[this.selectedIndex].value);">' . $optionsDepartement . "</select></td>";
+                //$optionsDepartement = selectLoad('libelle', 'departement', $dbaccess);
+                $optionsDepartement = '';
+                $retour .= '<select id="res_departement" name ="res_departement" '.$required
+                        .' onchange="form_services_load(res_site.options[res_site.selectedIndex].value, options[this.selectedIndex].value);">' . $optionsDepartement . "</select>";
 
             } elseif ($nomChamp == 'service_id') {
-                $optionsService = selectLoad('libelle', 'service', $dbaccess);
-                $retour .= '<td><label for="res_service">Service: </label><select id="res_service" name="res_service">' . $optionsService . "</select></td>";
-            } else {
-                $libelleChamp = underscoreToLibelle($nomChamp);
+                //$optionsService = selectLoad('libelle', 'service', $dbaccess);
+                $optionsService = '';
+                $retour .= '<select id="res_service" name="res_service" '.$required.'>' . $optionsService . "</select>";
+            } elseif (strstr($nomChamp, 'mail') == true) {
+                $retour .= '<input type="email" id="res_' . $nomChamp .' " name="res_' . $nomChamp .'"
+                         ' . $required . ' placeholder="' . $nomChamp . '" maxlength="30" />';
+            }else {
                 switch($typeChamp) {
                     case 'varchar':
-                        $retour .= '<td><label for="res_' . $nomChamp . '">' . $libelleChamp . '</label>:&nbsp;<input input type="text" id="res_' . $nomChamp .' " name="res_' . $nomChamp .'"
-                                . " placeholder="' . $nomChamp . '" maxlength="30" /></td>';
+                        $retour .= '<input type="text" id="res_' . $nomChamp .' " name="res_' . $nomChamp .'"
+                                ' . $required . ' placeholder="' . $nomChamp . '" maxlength="30" />';
                     break;
                     case 'date':
-                        $retour .= '<td><label for="res_' . $nomChamp . '">'. $libelleChamp . '</label>:&nbsp;<input input type="date" id="res_' . $nomChamp .'" name="res_' . $nomChamp .'" 
-                                    size="10" maxlength="10" class="champ_date" /></td>';
+                        $retour .= '<input type="date" id="res_' . $nomChamp .'" name="res_' . $nomChamp .'" 
+                        ' . $required . ' size="10" maxlength="10" class="champ_date" />';
                     break;
                 }
             }
+            $retour .= '</td>';
             
             if ($modulo == $nbChampsParLigne || $i >= count($tabChamps)) {
                 $retour .="</tr>";
                 $numGroupe++;
             }
             if ($i >= count($tabChamps)-1) {
-                $retour .= '<tr><td><input type="button" id="validation_ressource" value="Enregistrer" onclick="insererRessource();"/></td></tr>'; 
-                $retour .= '</table">';
-                
+                $retour .= '<tr><td><input type="submit" id="validation_ressource" value="Enregistrer" onclick="validerSaisieRessource();"/></td></tr>'; 
+                $retour .= '</table"></div>';
             }
             $i++;
         }
         
         
     }
+    $retour .= '</form>';
 }
 $dbaccess->close($handler);
 echo $retour;

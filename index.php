@@ -78,6 +78,7 @@ $refreshCalendarOption = '';
             <link type="text/css" rel="stylesheet" href="styles/evol.colorpicker.css" /> 
             <script src="js/jquery-1.8.3.min.js"></script>
             <script src="js/jquery-ui-1.9.2.custom.min.js"></script>
+            <script src="js/general.js"></script>
             <script src="js/planning.js"></script>
             <script src="js/localisation.js"></script>
             <script src="js/ressource.js"></script>
@@ -105,9 +106,10 @@ $refreshCalendarOption = '';
                             }
 
                             if ($blnSites && $blnDepartements && $blnServices){
-                                echo '$("#div_saisie_activite").html("<div class=\"text_helper\">Veuillez  enregistrer un premier collaborateur ' 
+                                echo 'afficherMessage("Veuillez  enregistrer un premier collaborateur ' 
                                    . ' pour continuer");';
-                                echo 'afficherFormRessources()';
+                                echo 'afficherFormRessources();';
+                                //echo 'form_departements_load($("#res_site").options[$("#res_site").selectedIndex].value);';
 
                             }else{
                                 echo '$("#div_saisie_activite").html("<div class=\"text_helper\">Veuillez ' . $prefixe . ' enregistrer un premier ' . $obj 
@@ -152,13 +154,7 @@ $refreshCalendarOption = '';
                             <?php if ($blnDepartements) { ?>
                             <select id="cbo_departements" name="cbo_departements" onchange="<?php echo $refreshCalendarOption;?>
                             liste_services_load(cbo_sites.options[cbo_sites.selectedIndex].value, options[this.selectedIndex].value);">
-                                <?php
-                                foreach ($listeDepartements as $value) {
-                                    $pref = ($value == $serviceDefaut) ? 'selected = selected' : '';
-                                    ?><option value="<?php echo $value;?>" <?php echo $pref;?>><?php echo $value;?></option>
-                                <?php 
-                                   }
-                                ?>
+                                
                             </select>
                             <?php } 
                             if ($blnSites) {
@@ -170,13 +166,7 @@ $refreshCalendarOption = '';
                             <legend>Services</legend>
                             <?php if ($blnServices) { ?>
                             <select id="cbo_services" name="cbo_services" onchange="<?php echo $refreshCalendarOption;?>">
-                            <?php
-                                foreach ($listeServices as $value) {
-                                    $pref = ($value == $serviceDefaut) ? 'selected = selected' : "";
-                                    ?><option value="<?php echo $value;?>" <?php echo $pref;?>><?php echo $value;?></option>
-                                <?php 
-                                   }
-                                ?>
+                            
                             </select>
                             <?php } 
                             if ($blnDepartements) {
@@ -242,7 +232,7 @@ $refreshCalendarOption = '';
                               onclick='supprimerSaisie()' title = 'supprimer' />
                     </fieldset>
                 </div>
-                <div id="message" style="float:left;">&nbsp;</div>
+                <div id="message"><div id="message_box">&nbsp;</div></div>
                 <img id="img_loading" src="<?php echo IMAGES_PATH . '/loader.gif';?>" alt="Loading" />
             </div>
         </div>

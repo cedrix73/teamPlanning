@@ -10,83 +10,11 @@
    --------------------------------------------------------------------------*/
 
 
-
-
-
-function utf8_decode(chaine){
-    //return decodeURIComponent(escape(chaine));
-}
-
-function utf8_encode(chaine) {
-  return unescape(encodeURIComponent(chaine));
-}
-
 function cacherComposantsInfo() {
     $('#div_saisie_activite').hide();
     $("#message").hide();
     $("#img_loading").hide();
 }
-
-
-/*
- * valid_DatePourComparaison
- * @param {type} strDate
- * @returns {String}
- * DESCRIPTION :
-   Convertit la date <strDate> (qui est au format jj/mm/aaaa) au
-   format international défini par l'ISO 8601:1988, c'est � dire
-   au format "aaaa-mm-jj".
-   L'avantage de ce format est qu'il peut être utilisé pour
-   la comparaison de dates
- */
-function valid_DatePourComparaison(strDate) {
-
-   var datePat = /^(\d{1,2})(\/)(\d{1,2})(\/)(\d{4})$/;
-   var matchArray = strDate.match(datePat); // is the format ok?
-
-   // parse date into variables
-   day = matchArray[1];
-   month = matchArray[3]; 
-   year = matchArray[5];
-   // On ajoute des zéro (éventuellement) devant le jour et le mois
-   if (day.length == 1) {
-      day = "0" + day;
-   }
-   if (month.length == 1) {
-      month = "0" + month;
-   }
-   return(year + "-" + month + "-" + day);
-   
-}
-
-/**
- * Hack de la fonction .text() de jQuery:
- * Elle est réutilisée pour afficher de l'html et
- * decode du texte depuis l'utf-8
- * @param {type} $
- * @param {type} oldHtmlMethod
- * @returns {undefined}
- */
-(function( $, oldHtmlMethod ){
-// Override the core html method in the jQuery object.
-    $.fn.text = function(){
-    // Check to see if we have an argument (that the user
-    // is setting HTML content).
-    //
-    // NOTE: This does not take into account the fact
-    // that we can now pass a function to this method -
-    // this is just a lightweight demo.
-    if (arguments.length){
-    // Prepend our own custom HTML.
-    //arguments[ 0 ] = utf8_decode(arguments[ 0 ]);
-    }
-// Execute the original HTML method using the
-// augmented arguments collection.
-return(oldHtmlMethod.apply( this, arguments ));
-};
-})( jQuery, jQuery.fn.html ); 
-
-
 
 /**
  * initialiserFormulaire
@@ -199,31 +127,13 @@ function refreshCalendar(dateText){
   
 }
 
-function convertPxToInt(chaine){
-    return parseInt(chaine.replace("px", ""));
-}
+
 
 function setDateWidget(dateRetournee){
     $('#div_date').datepicker({dateFormat: "dd/mm/yy"}).
         datepicker("setDate", dateRetournee);
 }
   
-function afficherMessage(txt_message){
-    $("#message").html(txt_message);
-    $("#message").fadeIn(4000);
-    $("#message").fadeOut(2000);
-}
-
-
-
-function replaceBlancs(chaine){
-    var reg=new RegExp("(---)", "g");
-    if(reg.test(chaine)){
-        chaine = chaine.replace(reg, " ");
-    }
-    return chaine;
-}
-
 
 
 /**

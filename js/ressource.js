@@ -12,15 +12,14 @@
 
    function afficherFormRessources(){
     if($("#div_saisie_activite").css("display") == 'none'){
-        var contenuActivite = $("#div_saisie_activite").html();
         $.post("ajax/afficherFormRessources.php", 
              function(data){
                 if(data.length >0) {
                     $('#div_saisie_activite').html(data);
                     $("#div_saisie_activite").slideDown();
-                    
                 }
         });
+        
     }
 }
 
@@ -71,6 +70,13 @@ function infoRessource(nom, prenom){
     infoRessource.nom = replaceBlancs(nom);
     infoRessource.prenom = replaceBlancs(prenom);
     $("#lgd_saisie_activite").text("saisie d'activité de <i>" + infoRessource.prenom + " " + infoRessource.nom + "</i>");
+}
+
+function validerSaisieRessource(){
+    var json_string = validerSaisieForm("panel_ressource");
+    if(json_string !== false && json_string !==undefined){
+        alert(json_string);
+    }
 }
 
 
