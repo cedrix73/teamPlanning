@@ -34,9 +34,9 @@
      }
  // Execute the original HTML method using the
  // augmented arguments collection.
- return(oldHtmlMethod.apply( this, arguments ));
- };
- })( jQuery, jQuery.fn.html ); 
+    return(oldHtmlMethod.apply( this, arguments ));
+    };
+})( jQuery, jQuery.fn.html ); 
 
 function utf8_decode(chaine){
     //return decodeURIComponent(escape(chaine));
@@ -98,17 +98,38 @@ function replaceBlancs(chaine){
     return chaine;
 }
 
+function verifEmail(email_field_name) {
+    var reg_email = new RegExp(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/);
+    var email_verif;
+    var retour = true;
+
+    if(email_field_name !== null) {
+        
+        email_verif = $.trim($("input[name=" + email_field_name + "]").val());
+        $("input[name=" + email_field_name + "]").val(email_verif);
+        if(reg_email.test(email_verif) == false) {
+            retour = false;
+        }
+    }
+    return retour;
+}
+
 function validerSaisieForm(container_name){
     var div = $("#" + container_name);
     var fields_tab = [];
     var unfilled_required_tab = [];
     var bln_ok = true;
     var label ='';
-    var unfilled_required_string ='Les champs suivants sont requis:<ul>';
+    var unfilled_required_string ='Les champs requis suivants n\'ont pas été remplis:<ul>';
+    var uncorrect_fields = '';
+    var message = '';
 
     var ressourceLabel = '';
+    var email_field_name = '';
+    var email_field_label = '';
+    
 
-    $(div).find('input:text, input:password, input:file, select, textarea')
+    $(div).find('input, select, textarea')
         .each(function() {
             
             var ressourceObject = new Object();
@@ -116,6 +137,21 @@ function validerSaisieForm(container_name){
             ressourceObject.valeur = $(this).val();
             ressourceObject.required = $(this).attr('required');
             ressourceLabel = $(this).prev("label").html();
+            ressourceObject.type = $(this).attr('type');
+            if($(this).attr('type')=='email') {
+                email_field_name = $(this).attr('name');
+                email_field_label = ressourceLabel;
+                // if($("input[name=" + email_field_name + "]").val()
+                if($(this).val() !== ''){
+                    alert($(this).val());
+                    if(verifEmail(email_field_name) == false) {
+                        uncorrect_fields += "<li>Le champ <i>" + email_field_label + "</i> est incorrect</li>";
+                        bln_ok = false;
+                    }
+                }
+
+            }
+
             if($(this).attr('required') && ($(this).val()===null || $(this).val()==='')){
                 bln_ok = false;
                 unfilled_required_tab.push(ressourceLabel);
@@ -124,18 +160,27 @@ function validerSaisieForm(container_name){
             }
             
         });
-        
-        if(!bln_ok){
-            $.each(unfilled_required_tab, function(key, value) {
-                unfilled_required_string += '<li>' + value + '</li>';
-            });
-            unfilled_required_string += '</ul>'
-            afficherMessage(unfilled_required_string);
-            return false;
-        }else{
-            var json_string = JSON.stringify(fields_tab);
-            return json_string;
+
+   
+    
+    if(!bln_ok){
+        $.each(unfilled_required_tab, function(key, value) {
+            unfilled_required_string += '<li>' + value + '</li>';
+        });
+        unfilled_required_string += '</ul>';
+
+        if(uncorrect_fields !='') {
+            uncorrect_fields = '<br>Champs incorrects:<br> ' + uncorrect_fields + '</ul>';
         }
+        message = unfilled_required_string + uncorrect_fields;
+        
+
+        afficherMessage(message);
+        return false;
+    }else{
+        var json_string = JSON.stringify(fields_tab);
+        return json_string;
+    }
 }
 
 

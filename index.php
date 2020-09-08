@@ -106,8 +106,7 @@ $refreshCalendarOption = '';
                             }
 
                             if ($blnSites && $blnDepartements && $blnServices){
-                                echo 'afficherMessage("Veuillez  enregistrer un premier collaborateur ' 
-                                   . ' pour continuer");';
+                                echo 'afficherMessage("Veuillez  enregistrer un premier collaborateur pour continuer");';
                                 echo 'afficherFormRessources();';
                                 //echo 'form_departements_load($("#res_site").options[$("#res_site").selectedIndex].value);';
 

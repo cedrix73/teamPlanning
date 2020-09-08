@@ -65,9 +65,10 @@ if ($handler === false) {
                 //$optionsService = selectLoad('libelle', 'service', $dbaccess);
                 $optionsService = '';
                 $retour .= '<select id="res_service" name="res_service" '.$required.'>' . $optionsService . "</select>";
+                
             } elseif (strstr($nomChamp, 'mail') == true) {
                 $retour .= '<input type="email" id="res_' . $nomChamp .' " name="res_' . $nomChamp .'"
-                         ' . $required . ' placeholder="' . $nomChamp . '" maxlength="30" />';
+                         ' . $required . ' placeholder="' . $nomChamp . '" maxlength="30" onchange="verifEmail($(this).attr(\'name\'));"/>';
             }else {
                 switch($typeChamp) {
                     case 'varchar':
@@ -81,6 +82,7 @@ if ($handler === false) {
                 }
             }
             $retour .= '</td>';
+            $retour .= '<td id="res_' . $nomChamp . '_img" name ="res_' . $nomChamp . '_img">&nbsp;</td>';
             
             if ($modulo == $nbChampsParLigne || $i >= count($tabChamps)) {
                 $retour .="</tr>";
