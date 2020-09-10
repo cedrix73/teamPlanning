@@ -133,7 +133,8 @@ class DbAccess
          $query = ' SELECT COLUMN_NAME AS nomchamp, DATA_TYPE AS typechamp, is_nullable'
                 .' FROM INFORMATION_SCHEMA.COLUMNS' 
                 .' WHERE TABLE_SCHEMA = \'' . $this->_conInfos['dbase'] . '\''
-                .' AND TABLE_NAME = \'' . $tableName. '\'';
+                .' AND TABLE_NAME = \'' . $tableName. '\'' 
+                .' AND NOT COLUMN_NAME = \'id\'';
         $resultSet =  $this->_dbInterface->getTableDatas($this->_link, $query);
         $results = $this->fetchArray($resultSet);
         return $results;

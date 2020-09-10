@@ -102,14 +102,21 @@ function verifEmail(email_field_name) {
     var reg_email = new RegExp(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/);
     var email_verif;
     var retour = true;
-
+    var email_field = $("input[name=" + email_field_name + "]");
+    var feedback_field = $(email_field).next($("span[name=" + email_field_name + "_img]"));
     if(email_field_name !== null) {
         
-        email_verif = $.trim($("input[name=" + email_field_name + "]").val());
-        $("input[name=" + email_field_name + "]").val(email_verif);
-        if(reg_email.test(email_verif) == false) {
+        email_verif = $.trim(email_field.val());
+        email_field.val(email_verif);
+        alert(email_field.val());
+        if(reg_email.test(email_field.val()) == false) {
             retour = false;
+           feedback_field.attr("class", "form_icon ui-icon ui-icon-circle-close");
+        }else{
+            feedback_field.attr("class", "form_icon ui-icon ui-icon-check");
+            retour = true;
         }
+        alert(retour);
     }
     return retour;
 }
@@ -143,13 +150,11 @@ function validerSaisieForm(container_name){
                 email_field_label = ressourceLabel;
                 // if($("input[name=" + email_field_name + "]").val()
                 if($(this).val() !== ''){
-                    alert($(this).val());
                     if(verifEmail(email_field_name) == false) {
                         uncorrect_fields += "<li>Le champ <i>" + email_field_label + "</i> est incorrect</li>";
                         bln_ok = false;
                     }
                 }
-
             }
 
             if($(this).attr('required') && ($(this).val()===null || $(this).val()==='')){

@@ -42,6 +42,7 @@ if ($handler === false) {
                 $retour .=   '<tr id='.$numGroupe.'>';
                 //  class="'.$classeParite.'"
             }
+            $classeIcone = ($isNullable == 'YES' ? '' : 'class="form_icon ui-icon ui-icon-alert"');
             $retour .= '<td>';
             $libelleChamp = underscoreToLibelle($nomChamp);
             // label
@@ -81,8 +82,10 @@ if ($handler === false) {
                     break;
                 }
             }
+            $retour .='<span id="res_' . $nomChamp . '_img" name ="res_' . $nomChamp . '_img" ' . $classeIcone . '>&nbsp</span>';
+            //$retour .= '<img id="res_' . $nomChamp . '_img" name ="res_' . $nomChamp . '_img" class="form_icon" />';
             $retour .= '</td>';
-            $retour .= '<td id="res_' . $nomChamp . '_img" name ="res_' . $nomChamp . '_img">&nbsp;</td>';
+           
             
             if ($modulo == $nbChampsParLigne || $i >= count($tabChamps)) {
                 $retour .="</tr>";
