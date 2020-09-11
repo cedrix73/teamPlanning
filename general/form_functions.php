@@ -222,8 +222,24 @@ function explodeMaj($texte) {
 } 
 
 
+/**
+ * underscoreToLibelle
+ * Transforme un libelle en uderscore (ex: BD) en suite de mots
+ * séparés par un espace.
+ * Français seulement: Si le mot commence par date, rajoute 
+ * la préposition de iu d'u suivant si le mot suivant comme par une
+ * voyelle ou une majuscule.
+ */
 function underscoreToLibelle($texte) {
     $texte = ucfirst(str_replace('_', ' ', $texte));
+    if(substr($texte, 0 ,4) == "Date") {
+        $tabVoyelles = ['a', 'e', 'o', 'u', 'i'];
+        $tabChaine  = explode(' ', $texte);
+        $tabChaine[0] .= in_array(substr($tabChaine[0],0,1), $tabVoyelles) ?  ' d\' ' : ' de ';
+        $texte = implode(" ", $tabChaine);
+    }
+    
+
     return str_replace('Num', 'N°', $texte);
 }
 
@@ -264,6 +280,7 @@ function getFormFromTable($dbaccess, $tableName, $nbChampsParLigne = 3) {
                     $retour .=   '<tr id='.$numGroupe.'>';
                     //  class="'.$classeParite.'"
                 }
+                $classeIcone = ($isNullable == 'YES' ? '' : 'class="form_icon ui-icon ui-icon-alert"');
                 $retour .= '<td>';
                 $libelleChamp = underscoreToLibelle($nomChamp);
                 $nomChampFinal = $champPrefixe . '_' . $nomChamp;
@@ -275,7 +292,7 @@ function getFormFromTable($dbaccess, $tableName, $nbChampsParLigne = 3) {
                 // parsing champs
                if (strstr($nomChamp, 'mail') == true) {
                     $retour .= '<input type="email" id="' . $nomChampFinal .' " name="' . $nomChampFinal .'"
-                            ' . $required . ' placeholder="' . $nomChamp . '" maxlength="30" />';
+                            ' . $required . ' placeholder="' . $nomChamp . '" maxlength="30" onchange="verifEmail($(this).attr(\'name\'));/>';
                 }else {
                     switch($typeChamp) {
                         case 'varchar':
@@ -288,6 +305,7 @@ function getFormFromTable($dbaccess, $tableName, $nbChampsParLigne = 3) {
                         break;
                     }
                 }
+                $retour .='<span id="res_' . $nomChamp . '_img" name ="res_' . $nomChamp . '_img" ' . $classeIcone . '>&nbsp</span>';
                 $retour .= '</td>';
                 
                 if ($modulo == $nbChampsParLigne || $i >= count($tabChamps)) {

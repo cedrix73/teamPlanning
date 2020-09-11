@@ -98,6 +98,24 @@ function replaceBlancs(chaine){
     return chaine;
 }
 
+function envoieFeedbackFormulaire(feedback_field, bln) {
+    
+    //alert(feedback_field.attr("name"));
+    if(bln == false) {
+        feedback_field.attr("class", "form_icon ui-icon ui-icon-circle-close");
+    }else{
+        feedback_field.attr("class", "form_icon ui-icon ui-icon-check");
+    }
+}
+
+function verifString(string_field_name) {
+
+}
+
+function verifDate(date_field_name) {
+    var datePat = /^(\d{1,2})(\/)(\d{1,2})(\/)(\d{4})$/;
+}
+
 function verifEmail(email_field_name) {
     var reg_email = new RegExp(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/);
     var email_verif;
@@ -105,23 +123,36 @@ function verifEmail(email_field_name) {
     var email_field = $("input[name=" + email_field_name + "]");
     var feedback_field = $(email_field).next($("span[name=" + email_field_name + "_img]"));
     if(email_field_name !== null) {
-        
-        email_verif = $.trim(email_field.val());
+        email_verif = email_field.val().replace(/ /g,'');
         email_field.val(email_verif);
-        alert(email_field.val());
-        if(reg_email.test(email_field.val()) == false) {
-            retour = false;
-           feedback_field.attr("class", "form_icon ui-icon ui-icon-circle-close");
-        }else{
-            feedback_field.attr("class", "form_icon ui-icon ui-icon-check");
-            retour = true;
-        }
-        alert(retour);
+        retour = reg_email.test(email_field.val());
+        envoieFeedbackFormulaire(feedback_field, retour);
     }
     return retour;
 }
 
+function verifPhone(phone_field_name) {
+    var reg_phone = new RegExp(/^[0-9.-]{9,}$/);
+    var phone_verif;
+    var retour = true;
+    var phone_field = $("input[name=" + phone_field_name + "]");
+    var feedback_field = $(phone_field).next($("span[name=" + phone_field_name + "_img]"));
+    if(phone_field_name !== null) {
+        phone_verif = phone_field.val().replace(/\.|\-/g,'');
+        // remplacement des - et des .
+        phone_field.val(phone_verif);
+        retour = reg_phone.test(phone_field.val());
+        envoieFeedbackFormulaire(feedback_field, retour);
+    }
+    return retour;
+}
+
+
+
+
+
 function validerSaisieForm(container_name){
+    // verification champs formulaire front
     var div = $("#" + container_name);
     var fields_tab = [];
     var unfilled_required_tab = [];
@@ -132,8 +163,6 @@ function validerSaisieForm(container_name){
     var message = '';
 
     var ressourceLabel = '';
-    var email_field_name = '';
-    var email_field_label = '';
     
 
     $(div).find('input, select, textarea')
@@ -145,18 +174,32 @@ function validerSaisieForm(container_name){
             ressourceObject.required = $(this).attr('required');
             ressourceLabel = $(this).prev("label").html();
             ressourceObject.type = $(this).attr('type');
-            if($(this).attr('type')=='email') {
-                email_field_name = $(this).attr('name');
-                email_field_label = ressourceLabel;
-                // if($("input[name=" + email_field_name + "]").val()
-                if($(this).val() !== ''){
+
+            // verification de qq champs spéciaux
+            // mail
+            if($(this).val() !== ''){
+                if($(this).attr('type')=='email') {
+                    var email_field_name = $(this).attr('name');
+                    
                     if(verifEmail(email_field_name) == false) {
-                        uncorrect_fields += "<li>Le champ <i>" + email_field_label + "</i> est incorrect</li>";
+                        uncorrect_fields += "<li>Le champ <i>" + ressourceLabel + "</i> est incorrect:il doit être de la forme xxx@xx.xxx</li>";
+                        bln_ok = false;
+                    }
+                    
+                }
+                // telephone
+                if($(this).attr('type')=='tel') {
+                    var phone_field_name = $(this).attr('name');
+                    
+                    if(verifPhone(phone_field_name) == false) {
+                        uncorrect_fields += "<li>Le champ <i>" + ressourceLabel + "</i> est incorrect. il peut inclure des chiffres, des points ou des trémas.</li>";
                         bln_ok = false;
                     }
                 }
+                
             }
 
+            // verification si champs obligatoires remplis
             if($(this).attr('required') && ($(this).val()===null || $(this).val()==='')){
                 bln_ok = false;
                 unfilled_required_tab.push(ressourceLabel);
@@ -168,7 +211,7 @@ function validerSaisieForm(container_name){
 
    
     
-    if(!bln_ok){
+    if(!bln_ok){ 
         $.each(unfilled_required_tab, function(key, value) {
             unfilled_required_string += '<li>' + value + '</li>';
         });

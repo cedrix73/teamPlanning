@@ -67,9 +67,12 @@ if ($handler === false) {
                 $optionsService = '';
                 $retour .= '<select id="res_service" name="res_service" '.$required.'>' . $optionsService . "</select>";
                 
-            } elseif (strstr($nomChamp, 'mail') == true) {
+            } elseif (strpos ($nomChamp, 'mail') == true) {
                 $retour .= '<input type="email" id="res_' . $nomChamp .' " name="res_' . $nomChamp .'"
                          ' . $required . ' placeholder="' . $nomChamp . '" maxlength="30" onchange="verifEmail($(this).attr(\'name\'));"/>';
+            }elseif (strpos ($nomChamp, 'phone') == true || strpos ($nomChamp, 'mobile') == true ) {
+                $retour .= '<input type="tel" id="res_' . $nomChamp .' " name="res_' . $nomChamp .'"
+                         ' . $required . ' placeholder="' . $nomChamp . '" maxlength="16" onchange="verifPhone($(this).attr(\'name\'));"/>';
             }else {
                 switch($typeChamp) {
                     case 'varchar':

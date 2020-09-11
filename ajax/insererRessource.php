@@ -7,7 +7,29 @@ require_once ABS_CLASSES_PATH.'Ressource.php';
 require_once ABS_GENERAL_PATH.'form_functions.php';
 //require_once ABS_GENERAL_PATH.'form_functions.php';
 
-
+function testString() {
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (empty($_POST["name"])) {
+      $nameErr = "Name is required";
+    } else {
+      $name = $_POST["name"];
+      // check if name only contains letters and whitespace
+      if (!preg_match("/^[a-zA-Z-' ]*$/",$name)) {
+        $nameErr = "Only letters and white space allowed";
+      }
+    }
+}
+function testEmail() {
+    if (empty($_POST["email"])) {
+      $emailErr = "Email is required";
+    } else {
+      $email = $_POST["email"];
+      // check if e-mail address is well-formed
+      if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $emailErr = "Invalid email format";
+      }
+    }
+}
 /* 
  * Modification d'un type d'activité donné
  */
@@ -52,7 +74,8 @@ if (isset($_REQUEST['json_datas']) && !is_null($_REQUEST['json_datas']) &&  $_RE
     $isOk = false;
 }
 
-//var_dump($tabInsert);
+
+  
 
 
 
