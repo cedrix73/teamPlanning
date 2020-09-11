@@ -98,6 +98,15 @@ function replaceBlancs(chaine){
     return chaine;
 }
 
+function onlyNumberKey(evt) { 
+          
+    // call: onkeypress="return onlyNumberKey(event)"
+    var ASCIICode = (evt.which) ? evt.which : evt.keyCode 
+    if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57)) 
+        return false; 
+    return true; 
+} 
+
 function envoieFeedbackFormulaire(feedback_field, bln) {
     
     //alert(feedback_field.attr("name"));
