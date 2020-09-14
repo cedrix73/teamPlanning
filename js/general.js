@@ -182,6 +182,7 @@ function validerSaisieForm(container_name){
             ressourceObject.valeur = $(this).val();
             ressourceObject.required = $(this).attr('required');
             ressourceLabel = $(this).prev("label").html();
+            ressourceObject.label = ressourceLabel;
             ressourceObject.type = $(this).attr('type');
 
             // verification de qq champs spéciaux

@@ -14,29 +14,20 @@ function testString() {
     } else {
       $name = $_POST["name"];
       // check if name only contains letters and whitespace
-      if (!preg_match("/^[a-zA-Z-' ]*$/",$name)) {
+      if (!preg_match("/^[a-zA-Z-\s' ]*$/", $name)) {
         $nameErr = "Only letters and white space allowed";
       }
     }
 }
-function testEmail() {
-    if (empty($_POST["email"])) {
-      $emailErr = "Email is required";
-    } else {
-      $email = $_POST["email"];
-      // check if e-mail address is well-formed
-      if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $emailErr = "Invalid email format";
-      }
-    }
-}
+
+
 /* 
  * Modification d'un type d'activité donné
  */
 
 $retour = '';   
 $isOk = false;
-
+$arrayErr = array();
 
 
 
@@ -55,7 +46,9 @@ if($handler===FALSE){
 $tabJson = '';
 $tabInsert = array();
 
-if (isset($_REQUEST['json_datas']) && !is_null($_REQUEST['json_datas']) &&  $_REQUEST['json_datas'] == true) {
+if (isset($_REQUEST['json_datas']) && !is_null($_REQUEST['json_datas']) &&  $_REQUEST['json_datas'] == false) {
+    $isOk = false;
+} else {
     $jsonString = $_REQUEST['json_datas'];
     $isOk = true;
     $tabJson = json_decode($jsonString, true);
@@ -63,15 +56,77 @@ if (isset($_REQUEST['json_datas']) && !is_null($_REQUEST['json_datas']) &&  $_RE
         $nomChamp = $stdObj['nom'];
         $nomChampFinal = substr($nomChamp, 4);
         $valeurChamp = $stdObj['valeur'];
+        $typeChamp = $stdObj['type'];
+        $labelChamp = $stdObj['label'];
         $requiredChamp = isset($stdObj['required']) ? $stdObj['required'] : false;
-        $tabInsert[$nomChampFinal] = $valeurChamp;
-        switch($nomChampFinal) {
-            
+        
+        switch($typeChamp) {
+            case 'email':
+              $valeurChamp = filter_var($valeurChamp, FILTER_SANITIZE_EMAIL);
+              if(!filter_var($valeurChamp, FILTER_VALIDATE_EMAIL)) {
+                $isOk = false;
+                $arrayErr[$nomChamp] = "Le champ " . $labelChamp . " n'a pas une adresse email valide.";
+              }
+            break;
+
+            case 'text':
+                $valeurChamp = filter_var($valeurChamp, FILTER_SANITIZE_STRING);
+                
+                if($labelChamp == "nom" || $labelChamp == "prenom") {
+                    if (!preg_match("/^[a-zA-Z-\s' ]*$/", $valeurChamp)) {
+                      $arrayErr[$nomChamp] = "Seul les lettres et les espaces sont authorisés pour le champ " . $labelChamp;
+                      $isOk = false;
+                    }
+                }
+                
+
+            break;
+
+            case 'date':
+                if (!preg_match("/^(\d{4})(-)(\d{1,2})(-)(\d{1,2})$/", $valeurChamp)) {
+                  $arrayErr[$nomChamp] = "Seul le format date aaaa-mm-jj est authorisé pour le champ " . $labelChamp;
+                  $isOk = false;
+                }
+            break;
+
+            case 'tel':
+              $valeurChamp = filter_var($valeurChamp, FILTER_SANITIZE_NUMBER_INT);
+              if (!preg_match("/^[0-9]{9,}$/", $valeurChamp)) {
+                $arrayErr[$nomChamp] = "Seul les chifres sont authorisés pour le champ " . $labelChamp;
+                $isOk = false;
+              }
+            break;
+
+            case 'num':
+              $valeurChamp = filter_var($valeurChamp, FILTER_SANITIZE_NUMBER_INT);
+              if(!filter_var($valeurChamp, FILTER_VALIDATE_INT)) {
+                $isOk = false;
+                $arrayErr[$nomChamp] = "Le champ " . $labelChamp . "ne contient pas de valeurs numériques.";
+              }
+            break;
+
+            default:
+              // select, radios
+
+            break;
         }
+        if($isOk) {
+          $tabInsert[$nomChampFinal] = $valeurChamp;
+
+
+        }
+        
+    }
+
+    // On a collecté et verifié toutes les données
+    if($isOk) {
+      // envoyer donnees en BD INSERT
+    } else {
+      return $arrayErr;
     }
     
-}else{
-    $isOk = false;
+
+    
 }
 
 
