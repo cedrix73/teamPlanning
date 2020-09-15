@@ -39,6 +39,7 @@ p.presentation {
     padding:10px;
 }
 
+
 a:hover {
     text-decoration: none;
 }
@@ -196,7 +197,7 @@ a:hover {
     margin-top: 2px;
     border-radius: 5px;
     -moz-border-radius: 5px;
-    -webkit-border-radius:5px;
+    -webkit-border-radius: 5px;
 }
 
 .cell{
@@ -313,11 +314,11 @@ fieldset {
 #div_saisie_activite img{
     width:5%;
 }
-
+/*
 :required {
-    border: 2px dotted orange;
+    border: 2px dotted #3399ff;
  }
-
+*/
 .tab_params {
     border: 1px solid;
     border-radius: 15px;
@@ -329,6 +330,14 @@ fieldset {
 /* Tableau des types d'activités */
 #tab_activites th {
     background: #999;
+}
+
+input, select {
+    border: 1px solid #999;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    transition: border .2s linear 0s;
 }
 
 #tab_activites td {

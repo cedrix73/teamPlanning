@@ -30,19 +30,18 @@ if ($handler === false) {
         $nbChampsParLigne = 3;
         
         $retour .= '<div class="legende_titre"><h1>Enregistrement d\'un collaborateur</h1></div>';
-        $retour .= '<form action="">'; 
         $retour .= '<div id="panel_ressource" name = "panel_ressource"><table id="tab_ressources" class= "tab_params">';
         // Liste de tous les types d'événement
         foreach ($tabChamps as $value) {
             $typeChamp = $value['typechamp'];
             $nomChamp = $value['nomchamp'];
             $isNullable = $value['is_nullable'];
-            $modulo = intval($i % $nbChampsParLigne );
+            $modulo = intval($i % $nbChampsParLigne ) +1;
             if ($modulo == 1) {
                 $retour .=   '<tr id='.$numGroupe.'>';
                 //  class="'.$classeParite.'"
             }
-            $classeIcone = ($isNullable == 'YES' ? '' : 'class="form_icon ui-icon ui-icon-alert"');
+            $classeIcone = ($isNullable == 'YES' ? '' : 'class="form_icon ui-icon ui-icon-alert" title ="champ obligatoire"');
             $retour .= '<td>';
             $libelleChamp = underscoreToLibelle($nomChamp);
             // label
@@ -54,34 +53,34 @@ if ($handler === false) {
             if ($nomChamp == 'site_id') {
                 $optionsSite = selectLoad('libelle', 'site', $dbaccess);
                 $retour .=  '<select id="res_site" name ="res_site" '.$required
-                        .' onchange="form_departements_load(this.options[this.selectedIndex].value)">' . $optionsSite . "</select>";
+                        .' alt = "selectionnez un site" onchange="form_departements_load(this.options[this.selectedIndex].value)">' . $optionsSite . "</select>";
 
             } elseif ($nomChamp == 'departement_id') {
                 //$optionsDepartement = selectLoad('libelle', 'departement', $dbaccess);
                 $optionsDepartement = '';
                 $retour .= '<select id="res_departement" name ="res_departement" '.$required
-                        .' onchange="form_services_load(res_site.options[res_site.selectedIndex].value, options[this.selectedIndex].value);">' . $optionsDepartement . "</select>";
+                        .' alt = "selectionnez un département" onchange="form_services_load(res_site.options[res_site.selectedIndex].value, options[this.selectedIndex].value);">' . $optionsDepartement . "</select>";
 
             } elseif ($nomChamp == 'service_id') {
                 //$optionsService = selectLoad('libelle', 'service', $dbaccess);
                 $optionsService = '';
-                $retour .= '<select id="res_service" name="res_service" '.$required.'>' . $optionsService . "</select>";
+                $retour .= '<select id="res_service" name="res_service" '.$required.' alt = "selectionnez un service">' . $optionsService . "</select>";
                 
             } elseif (strpos ($nomChamp, 'mail') == true) {
                 $retour .= '<input type="email" id="res_' . $nomChamp .' " name="res_' . $nomChamp .'"
-                         ' . $required . ' placeholder="' . $nomChamp . '" maxlength="30" onchange="verifEmail($(this).attr(\'name\'));"/>';
+                         ' . $required . ' placeholder="' . $nomChamp . '" maxlength="30" alt = "' . $libelleChamp . '" onchange="verifEmail($(this).attr(\'name\'));"/>';
             }elseif (strpos ($nomChamp, 'phone') == true || strpos ($nomChamp, 'mobile') == true ) {
                 $retour .= '<input type="tel" id="res_' . $nomChamp .' " name="res_' . $nomChamp .'"
-                         ' . $required . ' placeholder="' . $nomChamp . '" maxlength="16" onchange="verifPhone($(this).attr(\'name\'));"/>';
+                         ' . $required . ' placeholder="' . $nomChamp . '" alt = "' . $libelleChamp . '" maxlength="16" onchange="verifPhone($(this).attr(\'name\'));"/>';
             }else {
                 switch($typeChamp) {
                     case 'varchar':
                         $retour .= '<input type="text" id="res_' . $nomChamp .' " name="res_' . $nomChamp .'"
-                                ' . $required . ' placeholder="' . $nomChamp . '" maxlength="30" />';
+                                ' . $required . ' placeholder="' . $nomChamp . '" alt = "' . $libelleChamp . '" maxlength="30" />';
                     break;
                     case 'date':
                         $retour .= '<input type="date" id="res_' . $nomChamp .'" name="res_' . $nomChamp .'" 
-                        ' . $required . ' size="10" maxlength="10" class="champ_date" />';
+                        ' . $required . ' alt = "' . $libelleChamp . '" size="10" maxlength="10" class="champ_date" />';
                     break;
                 }
             }
@@ -103,7 +102,6 @@ if ($handler === false) {
         
         
     }
-    $retour .= '</form>';
 }
 $dbaccess->close($handler);
 echo $retour;

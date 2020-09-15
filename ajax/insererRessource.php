@@ -5,24 +5,9 @@ require_once ABS_CLASSES_PATH.$dbFile;
 require_once ABS_CLASSES_PATH.'DbAccess.php';
 require_once ABS_CLASSES_PATH.'Ressource.php';
 require_once ABS_GENERAL_PATH.'form_functions.php';
-//require_once ABS_GENERAL_PATH.'form_functions.php';
-
-function testString() {
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (empty($_POST["name"])) {
-      $nameErr = "Name is required";
-    } else {
-      $name = $_POST["name"];
-      // check if name only contains letters and whitespace
-      if (!preg_match("/^[a-zA-Z-\s' ]*$/", $name)) {
-        $nameErr = "Only letters and white space allowed";
-      }
-    }
-}
-
 
 /* 
- * Modification d'un type d'activité donné
+ * Sanitization et vérification back-office du formulaire posté
  */
 
 $retour = '';   
@@ -59,61 +44,73 @@ if (isset($_REQUEST['json_datas']) && !is_null($_REQUEST['json_datas']) &&  $_RE
         $typeChamp = $stdObj['type'];
         $labelChamp = $stdObj['label'];
         $requiredChamp = isset($stdObj['required']) ? $stdObj['required'] : false;
-        
-        switch($typeChamp) {
-            case 'email':
-              $valeurChamp = filter_var($valeurChamp, FILTER_SANITIZE_EMAIL);
-              if(!filter_var($valeurChamp, FILTER_VALIDATE_EMAIL)) {
-                $isOk = false;
-                $arrayErr[$nomChamp] = "Le champ " . $labelChamp . " n'a pas une adresse email valide.";
-              }
-            break;
 
-            case 'text':
-                $valeurChamp = filter_var($valeurChamp, FILTER_SANITIZE_STRING);
-                
-                if($labelChamp == "nom" || $labelChamp == "prenom") {
-                    if (!preg_match("/^[a-zA-Z-\s' ]*$/", $valeurChamp)) {
-                      $arrayErr[$nomChamp] = "Seul les lettres et les espaces sont authorisés pour le champ " . $labelChamp;
+        if(empty($valeurChamp)) {
+            if($requiredChamp) {
+              $isOk = false;
+              $arrayErr[$nomChamp] = "Le champ " . $labelChamp . " est obligatoire.";
+            }
+        } else {
+        
+            switch($typeChamp) {
+                case 'email':
+                  $valeurChamp = filter_var($valeurChamp, FILTER_SANITIZE_EMAIL);
+                  if(!filter_var($valeurChamp, FILTER_VALIDATE_EMAIL)) {
+                    $isOk = false;
+                    $arrayErr[$nomChamp] = "Le champ " . $labelChamp . " n'a pas une adresse email valide.";
+                  }
+                break;
+
+                case 'text':
+                case 'select-one':
+                    $valeurChamp = filter_var($valeurChamp, FILTER_SANITIZE_STRING);
+                    
+                    if($labelChamp == "nom" || $labelChamp == "prenom") {
+                        if (!preg_match("/^[a-zA-Z-\s' ]*$/", $valeurChamp)) {
+                          $arrayErr[$nomChamp] = "Seul les lettres et les espaces sont authorisés pour le champ " . $labelChamp;
+                          $isOk = false;
+                        }
+                    }
+                    
+
+                break;
+
+                case 'date':
+                    if (!preg_match("/^(\d{4})(-)(\d{1,2})(-)(\d{1,2})$/", $valeurChamp)) {
+                      $arrayErr[$nomChamp] = "Seul le format date aaaa-mm-jj est authorisé pour le champ " . $labelChamp;
                       $isOk = false;
                     }
-                }
-                
+                break;
 
-            break;
+                case 'tel':
+                  $valeurChamp = filter_var($valeurChamp, FILTER_SANITIZE_NUMBER_INT);
+                  if (!preg_match("/^[0-9]{9,}$/", $valeurChamp)) {
+                    $arrayErr[$nomChamp] = "Seul les chifres sont authorisés pour le champ " . $labelChamp;
+                    $isOk = false;
+                  }
+                break;
 
-            case 'date':
-                if (!preg_match("/^(\d{4})(-)(\d{1,2})(-)(\d{1,2})$/", $valeurChamp)) {
-                  $arrayErr[$nomChamp] = "Seul le format date aaaa-mm-jj est authorisé pour le champ " . $labelChamp;
-                  $isOk = false;
-                }
-            break;
+                case 'num':
+                  $valeurChamp = filter_var($valeurChamp, FILTER_SANITIZE_NUMBER_INT);
+                  if(!filter_var($valeurChamp, FILTER_VALIDATE_INT)) {
+                    $isOk = false;
+                    $arrayErr[$nomChamp] = "Le champ " . $labelChamp . "ne contient pas de valeurs numériques.";
+                  }
+                break;
 
-            case 'tel':
-              $valeurChamp = filter_var($valeurChamp, FILTER_SANITIZE_NUMBER_INT);
-              if (!preg_match("/^[0-9]{9,}$/", $valeurChamp)) {
-                $arrayErr[$nomChamp] = "Seul les chifres sont authorisés pour le champ " . $labelChamp;
-                $isOk = false;
-              }
-            break;
+                default:
+                  // select, radios
 
-            case 'num':
-              $valeurChamp = filter_var($valeurChamp, FILTER_SANITIZE_NUMBER_INT);
-              if(!filter_var($valeurChamp, FILTER_VALIDATE_INT)) {
-                $isOk = false;
-                $arrayErr[$nomChamp] = "Le champ " . $labelChamp . "ne contient pas de valeurs numériques.";
-              }
-            break;
+                break;
+            }
 
-            default:
-              // select, radios
 
-            break;
         }
+
+
+
         if($isOk) {
           $tabInsert[$nomChampFinal] = $valeurChamp;
-
-
         }
         
     }

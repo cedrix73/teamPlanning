@@ -183,7 +183,7 @@ function validerSaisieForm(container_name){
             ressourceObject.required = $(this).attr('required');
             ressourceLabel = $(this).prev("label").html();
             ressourceObject.label = ressourceLabel;
-            ressourceObject.type = $(this).attr('type');
+            ressourceObject.type = $(this).prop('type');
 
             // verification de qq champs spéciaux
             // mail
@@ -219,7 +219,6 @@ function validerSaisieForm(container_name){
             
         });
 
-   
     
     if(!bln_ok){ 
         $.each(unfilled_required_tab, function(key, value) {
@@ -237,6 +236,7 @@ function validerSaisieForm(container_name){
         return false;
     }else{
         var json_string = JSON.stringify(fields_tab);
+        alert(json_string);
         return json_string;
     }
 }

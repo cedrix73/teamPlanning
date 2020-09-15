@@ -280,7 +280,7 @@ function getFormFromTable($dbaccess, $tableName, $nbChampsParLigne = 3) {
                     $retour .=   '<tr id='.$numGroupe.'>';
                     //  class="'.$classeParite.'"
                 }
-                $classeIcone = ($isNullable == 'YES' ? '' : 'class="form_icon ui-icon ui-icon-alert"');
+                $classeIcone = ($isNullable == 'YES' ? '' : 'class="form_icon ui-icon ui-icon-alert" title ="champ obligatoire"');
                 $retour .= '<td>';
                 $libelleChamp = underscoreToLibelle($nomChamp);
                 $nomChampFinal = $champPrefixe . '_' . $nomChamp;
@@ -292,16 +292,16 @@ function getFormFromTable($dbaccess, $tableName, $nbChampsParLigne = 3) {
                 // parsing champs
                if (strstr($nomChamp, 'mail') == true) {
                     $retour .= '<input type="email" id="' . $nomChampFinal .' " name="' . $nomChampFinal .'"
-                            ' . $required . ' placeholder="' . $nomChamp . '" maxlength="30" onchange="verifEmail($(this).attr(\'name\'));/>';
+                            ' . $required . ' placeholder="' . $nomChamp . '" alt = "' . $libelleChamp . '" onchange="verifEmail($(this).attr(\'name\'));/>';
                 }else {
                     switch($typeChamp) {
                         case 'varchar':
                             $retour .= '<input type="text" id="' . $nomChampFinal .' " name="' . $nomChampFinal .'"
-                                    ' . $required . ' placeholder="' . $nomChamp . '" maxlength="30" />';
+                                    ' . $required . ' placeholder="' . $nomChamp . '" alt = "' . $libelleChamp . '" maxlength="30" />';
                         break;
                         case 'date':
                             $retour .= '<input type="date" id="' . $nomChampFinal .'" name="' . $nomChampFinal .'" 
-                            ' . $required . ' size="10" maxlength="10" class="champ_date" />';
+                            ' . $required . ' alt = "' . $libelleChamp . '" size="10" maxlength="10" class="champ_date" />';
                         break;
                     }
                 }
