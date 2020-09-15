@@ -94,7 +94,7 @@ if ($handler === false) {
                 $numGroupe++;
             }
             if ($i >= count($tabChamps)-1) {
-                $retour .= '<tr><td><input type="submit" id="validation_ressource" value="Enregistrer" onclick="validerSaisieRessource();"/></td></tr>'; 
+                $retour .= '<tr><td><input type="button" id="validation_ressource" value="Enregistrer" onclick="validerSaisieRessource();"/></td></tr>'; 
                 $retour .= '</table"></div>';
             }
             $i++;

@@ -192,7 +192,7 @@ function validerSaisieForm(container_name){
                     var email_field_name = $(this).attr('name');
                     
                     if(verifEmail(email_field_name) == false) {
-                        uncorrect_fields += "<li>Le champ <i>" + ressourceLabel + "</i> est incorrect:il doit être de la forme xxx@xx.xxx</li>";
+                        uncorrect_fields += "<li>Le champ <i>" + ressourceLabel + "</i> est incorrect: il doit être de la forme xxx@xx.xxx</li>";
                         bln_ok = false;
                     }
                     
@@ -202,7 +202,8 @@ function validerSaisieForm(container_name){
                     var phone_field_name = $(this).attr('name');
                     
                     if(verifPhone(phone_field_name) == false) {
-                        uncorrect_fields += "<li>Le champ <i>" + ressourceLabel + "</i> est incorrect. il peut inclure des chiffres, des points ou des trémas.</li>";
+                        uncorrect_fields += "<li>Le champ <i>" + ressourceLabel + "</i> est incorrect. il doit être supérieur à 9 chiffres, " 
+                                            + " peut inclure des chiffres, des points ou des trémas.</li>";
                         bln_ok = false;
                     }
                 }
@@ -213,7 +214,9 @@ function validerSaisieForm(container_name){
             if($(this).attr('required') && ($(this).val()===null || $(this).val()==='')){
                 bln_ok = false;
                 unfilled_required_tab.push(ressourceLabel);
-            }else{
+            }
+            
+            if(bln_ok && $(this).val()!=='' && $(this).prop('type')!='button'){
                 fields_tab.push(ressourceObject);
             }
             
@@ -236,7 +239,10 @@ function validerSaisieForm(container_name){
         return false;
     }else{
         var json_string = JSON.stringify(fields_tab);
+
         alert(json_string);
+
+
         return json_string;
     }
 }

@@ -170,7 +170,12 @@ class DbAccess
     }
 
 
-    
+    /**
+     * @name         create
+     * @description  Insère un tableau nom champ - valeur en base
+     * @param String $tableName : nom de la table concernée par l'insertion
+     * @param array  $tabInsert :tableau associatif avec nom du champ = clé et valeur associée
+     */
     public function create($tableName, $tabInsert)
     {
         $sqlData = 'VALUES (';
@@ -196,7 +201,7 @@ class DbAccess
             $retour = $this->execQuery($sql);
         }catch(Exception $e){
             $this->_log = $e->getMessage();
-            $retour = 'Problème lors de l\'insertion des données.';
+            $retour = false;
         }
         return $retour;
         

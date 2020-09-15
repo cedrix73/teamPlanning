@@ -10,9 +10,9 @@ require_once ABS_GENERAL_PATH.'form_functions.php';
  * Sanitization et vérification back-office du formulaire posté
  */
 
-$retour = '';   
+$retour = "";   
 $isOk = false;
-$arrayErr = array();
+$msgErr = "";
 
 
 
@@ -25,133 +25,124 @@ if ($isOk === false) {
 $dbaccess = new DbAccess($dbObj);
 $handler = $dbaccess->connect();
 if($handler===FALSE){
-    $retour = 'Problème de connexion à la base ';
+    $retour = "Problème de connexion à la base ";
     $isOk = false;
 }
-$tabJson = '';
+$tabJson = "";
 $tabInsert = array();
 
 if (isset($_REQUEST['json_datas']) && !is_null($_REQUEST['json_datas']) &&  $_REQUEST['json_datas'] == false) {
     $isOk = false;
 } else {
-    $jsonString = $_REQUEST['json_datas'];
+    $jsonString = $_POST['json_datas'];
     $isOk = true;
     $tabJson = json_decode($jsonString, true);
-    foreach($tabJson as $stdObj) {
-        $nomChamp = $stdObj['nom'];
-        $nomChampFinal = substr($nomChamp, 4);
-        $valeurChamp = $stdObj['valeur'];
-        $typeChamp = $stdObj['type'];
-        $labelChamp = $stdObj['label'];
-        $requiredChamp = isset($stdObj['required']) ? $stdObj['required'] : false;
+    try {
+        foreach($tabJson as $stdObj) {
+            $nomChamp = $stdObj['nom'];
+            $nomChampFinal = substr($nomChamp, 4);
+            $valeurChamp = $stdObj['valeur'];
+            $typeChamp = $stdObj['type'];
+            $labelChamp = $stdObj['label'];
+            $requiredChamp = isset($stdObj['required']) ? $stdObj['required'] : false;
 
-        if(empty($valeurChamp)) {
-            if($requiredChamp) {
-              $isOk = false;
-              $arrayErr[$nomChamp] = "Le champ " . $labelChamp . " est obligatoire.";
-            }
-        } else {
-        
-            switch($typeChamp) {
-                case 'email':
-                  $valeurChamp = filter_var($valeurChamp, FILTER_SANITIZE_EMAIL);
-                  if(!filter_var($valeurChamp, FILTER_VALIDATE_EMAIL)) {
-                    $isOk = false;
-                    $arrayErr[$nomChamp] = "Le champ " . $labelChamp . " n'a pas une adresse email valide.";
-                  }
-                break;
+            // On ne prend pas en compte les champs vides
+            if(empty($valeurChamp)) {
+              // ... sauf s'ils sont obligatoires
+                if($requiredChamp) {
+                  $isOk = false;
+                  $msgErr .= "Erreur: Le champ " . $labelChamp . " est obligatoire.";
+                }
+            } else {
+            
+                switch($typeChamp) {
+                    case 'email':
+                      $valeurChamp = filter_var($valeurChamp, FILTER_SANITIZE_EMAIL);
+                      if(!filter_var($valeurChamp, FILTER_VALIDATE_EMAIL)) {
+                        $isOk = false;
+                        $msgErr .= "Erreur: Le champ " . $labelChamp . " n'a pas une adresse email valide.";
+                      }
+                    break;
 
-                case 'text':
-                case 'select-one':
-                    $valeurChamp = filter_var($valeurChamp, FILTER_SANITIZE_STRING);
-                    
-                    if($labelChamp == "nom" || $labelChamp == "prenom") {
-                        if (!preg_match("/^[a-zA-Z-\s' ]*$/", $valeurChamp)) {
-                          $arrayErr[$nomChamp] = "Seul les lettres et les espaces sont authorisés pour le champ " . $labelChamp;
+                    case 'text':
+                        $valeurChamp = filter_var($valeurChamp, FILTER_SANITIZE_STRING);
+                        if($nomChampFinal == "nom" || $nomChampFinal == "prenom") {
+                            if (!preg_match("/^[a-zA-Z-\séèàüöñøå' ]*$/", $valeurChamp)) {
+                              $msgErr .= "Erreur: Seul les lettres et les espaces sont authorisés pour le champ " . $labelChamp;
+                              $isOk = false;
+                            }
+                        }
+                    break;
+
+                    case 'select-one':
+                      $valeurChamp = filter_var($valeurChamp, FILTER_SANITIZE_NUMBER_INT);
+                      $nomChampFinal .= '_id';
+                    break;
+
+                    case 'date':
+                        if (!preg_match("/^(\d{4})(-)(\d{1,2})(-)(\d{1,2})$/", $valeurChamp)) {
+                          $msgErr .= "Erreur: Seul le format date aaaa-mm-jj est authorisé pour le champ " . $labelChamp;
                           $isOk = false;
                         }
-                    }
-                    
+                    break;
 
-                break;
+                    case 'tel':
+                      $valeurChamp = filter_var($valeurChamp, FILTER_SANITIZE_NUMBER_INT);
+                      if (!preg_match("/^[0-9]{9,}$/", $valeurChamp)) {
+                        $msgErr .= "Erreur: Seul les chifres sont authorisés pour le champ " . $labelChamp;
+                        $isOk = false;
+                      }
+                    break;
 
-                case 'date':
-                    if (!preg_match("/^(\d{4})(-)(\d{1,2})(-)(\d{1,2})$/", $valeurChamp)) {
-                      $arrayErr[$nomChamp] = "Seul le format date aaaa-mm-jj est authorisé pour le champ " . $labelChamp;
-                      $isOk = false;
-                    }
-                break;
+                    case 'num':
+                      $valeurChamp = filter_var($valeurChamp, FILTER_SANITIZE_NUMBER_INT);
+                      if(!filter_var($valeurChamp, FILTER_VALIDATE_INT)) {
+                        $isOk = false;
+                        $msgErr .= "Erreur: Le champ " . $labelChamp . "ne contient pas de valeurs numériques.";
+                      }
+                    break;
 
-                case 'tel':
-                  $valeurChamp = filter_var($valeurChamp, FILTER_SANITIZE_NUMBER_INT);
-                  if (!preg_match("/^[0-9]{9,}$/", $valeurChamp)) {
-                    $arrayErr[$nomChamp] = "Seul les chifres sont authorisés pour le champ " . $labelChamp;
-                    $isOk = false;
-                  }
-                break;
+                    default:
+                      // select, radios
 
-                case 'num':
-                  $valeurChamp = filter_var($valeurChamp, FILTER_SANITIZE_NUMBER_INT);
-                  if(!filter_var($valeurChamp, FILTER_VALIDATE_INT)) {
-                    $isOk = false;
-                    $arrayErr[$nomChamp] = "Le champ " . $labelChamp . "ne contient pas de valeurs numériques.";
-                  }
-                break;
+                    break;
+                }
 
-                default:
-                  // select, radios
 
-                break;
+            }
+            if($isOk) {
+                $tabInsert[$nomChampFinal] = $valeurChamp;
             }
 
-
         }
-
-
-
-        if($isOk) {
-          $tabInsert[$nomChampFinal] = $valeurChamp;
-        }
-        
+    } catch (Exception $e) {
+      echo "Erreur: Une erreur s'est produite lors de l'enregistrement du champ " . $labelChamp;
+      $dbaccess->close($handler);
+      exit();
     }
 
-    // On a collecté et verifié toutes les données
-    if($isOk) {
-      // envoyer donnees en BD INSERT
-    } else {
-      return $arrayErr;
-    }
-    
 
-    
 }
 
 
+// On a collecté et verifié toutes les données
+if(!$isOk) {
+  $retour = $msgErr;
+} else {
+  // envoyer tableau en BD INSERT
   
+  $ressource = new Ressource($dbaccess);
+  $insertion = $ressource->create($tabInsert);
+  if (!$insertion) {
+      $retour = 'Un problème est survenu lors de la création d\'un collaborateur !';
+      //$retour.= $activite->getSql();
+  } else {
+      $retour = 'Votre nouveau collaborateur a été créé.';
+  }
 
-
-
-
-// validation champs en backoffice
-$insertion = false;
-if ($isOk) {
-    $ressource = new Ressource($dbaccess);
-    $tabInsert = array();
-
-    
-    
-    
-    $insertion = $ressource->create($tabInsert);
-    if (!$insertion) {
-        $retour = 'Un problème est survenu lors de la création d\'un collaborateur !';
-        //$retour.= $activite->getSql();
-    } else {
-        $retour = 'Votre nouveau collaborateur a été créé.';
-    }
 }
-
+    
 $dbaccess->close($handler);
-
 //echo utf8_encode($retour);
 echo $retour;
 

@@ -81,8 +81,11 @@ function validerSaisieRessource(){
             function(data){
                 $("#img_loading").hide();
                 if(data.length >0) {
-                    $("#div_saisie_activite").slideUp(2000).delay( 2000 ).fadeOut( 1000 );
-                    //refreshCalendar(date_debut);
+                    if(data.substr(0, 7) !== 'Erreur:') {
+                        $("#div_saisie_activite").slideUp(2000).delay( 2000 ).fadeOut( 1000 );
+                        refreshCalendar(date_debut);
+                    }
+                   
                     afficherMessage(data);
                 }
             }       

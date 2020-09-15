@@ -14,17 +14,19 @@ class Ressource {
     protected $tabRessources;
     protected $requeteRessources;
     protected $requeteJointures;
+    private $_tableName;
     
     public function __construct($dbaccess) 
     {
         $this->dbaccess = $dbaccess;
+        $this->_tableName = "ressource";
         $this->siteId = false;
         $this->departementLibelle = false;
         $this->serviceLibelle = false;
         $this->tabRessources =  array();
         $this->requeteSelect = "SELECT ressource.id as ressource_id, ressource.nom, ressource.prenom, "
         . " site.libelle, departement.libelle, service.libelle, fonction "
-        . " FROM ressource ";
+        . " FROM " . $this->_tableName;
         $this->requeteJointures = " INNER JOIN service on ressource.service_id = service.id " 
                                . " INNER JOIN departement on service.departement_id = departement.id " 
                                . " INNER JOIN site on departement.site_id = site.id ";
@@ -106,7 +108,7 @@ class Ressource {
     public function create($tabInsert)
     {
         try{
-            $retour = $this->_dbaccess->create($tabInsert);
+            $retour = $this->dbaccess->create($this->_tableName, $tabInsert);
         }catch(Exception $e){
             $retour .= 'Table: ' . $this->_type;
         }
