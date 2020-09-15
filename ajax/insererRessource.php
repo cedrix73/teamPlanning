@@ -132,14 +132,7 @@ if(!$isOk) {
   // envoyer tableau en BD INSERT
   
   $ressource = new Ressource($dbaccess);
-  $insertion = $ressource->create($tabInsert);
-  if (!$insertion) {
-      $retour = 'Un problème est survenu lors de la création d\'un collaborateur !';
-      //$retour.= $activite->getSql();
-  } else {
-      $retour = 'Votre nouveau collaborateur a été créé.';
-  }
-
+  $retour = $ressource->create($tabInsert);
 }
     
 $dbaccess->close($handler);

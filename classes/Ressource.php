@@ -25,7 +25,7 @@ class Ressource {
         $this->serviceLibelle = false;
         $this->tabRessources =  array();
         $this->requeteSelect = "SELECT ressource.id as ressource_id, ressource.nom, ressource.prenom, "
-        . " site.libelle, departement.libelle, service.libelle, fonction "
+        . " site.libelle, departement.libelle, service.libelle, ressource.statut "
         . " FROM " . $this->_tableName;
         $this->requeteJointures = " INNER JOIN service on ressource.service_id = service.id " 
                                . " INNER JOIN departement on service.departement_id = departement.id " 
@@ -52,7 +52,7 @@ class Ressource {
         // Traitement sites
         if($site != null && $site!='Tous*'){
             $this->siteId = $site;
-            $requete.= " AND site.id = '" . $this->siteId ."'";
+            $requete.= " AND site.libelle = '" . $this->siteId ."'";
         }
 
         // Traitement departements
@@ -69,11 +69,11 @@ class Ressource {
         
         $requete.= " ORDER BY ressource.nom ";
 	    $rs = $this->dbaccess->execQuery($requete);
-        $results=$this->dbaccess->fetchRow($rs);
+        $results=$this->dbaccess->fetchArray($rs);
         
         foreach ($results as $ligne) {
-            $id = $ligne[0];
-            unset($ligne[0]);
+            $id = $ligne['ressource_id'];
+            unset($ligne['ressource_id']);
             $this->tabRessources[$id]=$ligne;
         }
         return $this->tabRessources;
@@ -107,10 +107,12 @@ class Ressource {
      */
     public function create($tabInsert)
     {
-        try{
-            $retour = $this->dbaccess->create($this->_tableName, $tabInsert);
-        }catch(Exception $e){
-            $retour .= 'Table: ' . $this->_type;
+
+        $retour = $this->dbaccess->create($this->_tableName, $tabInsert);
+        if($retour !== false){
+            $retour = "La ressource a été correctement enregistrée !";
+        }else{
+            $retour = "Erreur: Un problème est survenu lors de la création d\'un collaborateur.";
         }
         return $retour;   
     }

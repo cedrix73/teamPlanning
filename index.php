@@ -49,9 +49,6 @@ $siteDefaut = 'Tous *';
 $departementDefaut = 'Tous *';
 $serviceDefaut = 'Tous *';
 
-// Liste des types d'événements
-$optionsActivites = selectLoad('libelle', 'evenement', $dbaccess);
-
 
 // Charger la service de l'utilisateur connecté
 $ressource = new Ressource($dbaccess);
@@ -117,7 +114,8 @@ $refreshCalendarOption = '';
                             }
                         }
                         ?> 
-                        $("#div_saisie_activite").show();
+                        $("#div_saisie_activite").hide();
+                        initialiserFormulaire.saisieActivite = $("#div_saisie_activite").html();
                     });
 
             </script>
@@ -194,7 +192,7 @@ $refreshCalendarOption = '';
             <div id ="div_info">
                 <div id ="div_saisie_activite" style="float:left;">
                     <fieldset id="fielset_saisie_activite">
-                        <legend id = "lgd_saisie_activite">Saisie d\'une activité</legend>
+                        <legend id = "lgd_saisie_activite">Saisie d'une activité</legend>
                         <span>Du&nbsp;</span>  
                         <input type="text"
                            name="txt_str_date_debut"
@@ -209,12 +207,8 @@ $refreshCalendarOption = '';
                            value=""
                            size="10" maxlength="10"
                            class="champ_date" readonly>
-                         <span>&nbsp;Type d\'absence:&nbsp;</span> 
-                         <select id="lst_activites">
-                             <?php 
-                               echo $optionsActivites;
-                             ?>
-                         </select>
+                         <span>&nbsp;Type d'absence:&nbsp;</span> 
+                         <select id="lst_activites"></select>
                          <span>&nbsp;
                          <?php 
                          echo "Période";

@@ -32,8 +32,8 @@ class Planning {
         $this->eventType = $eventType;
         $this->dateDebutTxt = $dateDebut;
         $this->dateFinTxt = $dateFin;
-        $this->dateDebut = new HrDate($dateDebut);
-        $this->dateFin = new HrDate($dateFin);
+        $this->dateDebut = new CvfDate($dateDebut);
+        $this->dateFin = new CvfDate($dateFin);
         $this->periode = $periode;
         $this->dateDebutSql = $this->dateDebut->tspToSql();
         $this->dateFinSql = $this->dateFin->tspToSql();
@@ -120,8 +120,8 @@ class Planning {
                    . $this->periode
                    . ')';
             }else{
-                $pointeurJour = new HrDate($this->dateDebutTxt);
-                $tabFeries = HrDate::getFeries($pointeurJour->annee());
+                $pointeurJour = new CvfDate($this->dateDebutTxt);
+                $tabFeries = CvfDate::getFeries($pointeurJour->annee());
                 $diffJours = $this->dateDebut->nbJourEcart($this->dateFin);
                 $tabDatas = array();
                 for($j=0; $j<$diffJours+1; $j++){
@@ -223,7 +223,7 @@ class Planning {
         foreach ($results as $ligne) {
             $ressource = ($ligne['ressource']);
             $ligne['date'] = $ligne['jour'];
-            $ligne['journee'] = HrDate::sqlToTspStatic($ligne['jour']);
+            $ligne['journee'] = CvfDate::sqlToTspStatic($ligne['jour']);
             $tabActivites[$ressource][$ligne['journee']]['type'] = $ligne['event'];
             $tabActivites[$ressource][$ligne['journee']]['periode'] = $ligne['periode'];
         }

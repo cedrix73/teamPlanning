@@ -2,6 +2,7 @@
 
 include_once '../config.php';
 require_once ABS_CLASSES_PATH.$dbFile;
+require_once ABS_CLASSES_PATH.'DbAccess.php';
 require_once ABS_GENERAL_PATH.'form_functions.php';
 
 
@@ -23,9 +24,8 @@ if($handler===FALSE){
 }
 
 if($isOk){
-    $tabActivites = tabLoad('event_libelle', 'event', $dbaccess);
-    $strActivites = selectLoad($tabActivites);
-    $retour = $strActivites;
+    $strActivites = selectLoad('libelle', 'evenement', $dbaccess);
+    $retour = utf8_encode($strActivites);
 }
 $dbaccess->close($handler);
 echo $retour;

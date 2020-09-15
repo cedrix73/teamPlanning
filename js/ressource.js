@@ -20,6 +20,8 @@
                 }
         });
         
+    }else{
+        $("#div_saisie_activite").toggle();
     }
 }
 
@@ -83,9 +85,8 @@ function validerSaisieRessource(){
                 if(data.length >0) {
                     if(data.substr(0, 7) !== 'Erreur:') {
                         $("#div_saisie_activite").slideUp(2000).delay( 2000 ).fadeOut( 1000 );
-                        refreshCalendar(date_debut);
+                        initialiserFormulaire();
                     }
-                   
                     afficherMessage(data);
                 }
             }       

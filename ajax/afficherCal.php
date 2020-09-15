@@ -2,6 +2,7 @@
 
 include_once '../config.php';
 require_once ABS_CLASSES_PATH.$dbFile;
+require_once ABS_CLASSES_PATH.'DbAccess.php';
 require_once ABS_CLASSES_PATH.'CvfDate.php';
 require_once ABS_CLASSES_PATH.'Ressource.php';
 require_once ABS_CLASSES_PATH.'Event.php';
@@ -54,7 +55,7 @@ if($handler===FALSE){
     // Cherchons de l'info en BD:
     // - Chargement des ressources par services
     $ressource = new Ressource($dbaccess);
-    $tabRessources = $ressource->getRessourcesBySelection($siteIdId, $departementLibelle, $serviceLibelle);
+    $tabRessources = $ressource->getRessourcesBySelection($siteId, $departementLibelle, $serviceLibelle);
     $maxRessource = count($tabRessources);
     // - Chargement de la nomenclature des événements
     $typesEvent = new Event($dbaccess);
@@ -254,7 +255,7 @@ if($handler===FALSE){
             $fonctionHoover .= '" ';
             $retour.= utf8_encode($fonctionHoover);
             
-            // fonction click
+            // click: selection d'une activité
             if($isAdmin || $isMe){      
                 if(!($isWeekend || $isFerie)){
                     $fonctionClick = 'afficherSaisie("'.$jourCal->tspToDate().'",'.$numRes.','.$indexEvent.');';

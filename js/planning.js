@@ -60,11 +60,11 @@ function initialiserFormulaire(){
     // service
     //liste_services_load(str_site, str_departement); 
     refreshCalendar(initialiserFormulaire.datecal);
-    initialiserFormulaire.saisieActivite = $("#div_saisie_activite").html();
+    
 }
 
 
-function refreshCalendar(dateText){
+function refreshCalendar(dateText=null){
     if(dateText === null){
         dateText = initialiserFormulaire.datecal;
     }
