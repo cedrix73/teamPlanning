@@ -48,7 +48,7 @@ class DbPdo implements DbInterface
 			$rs = $link->prepare($query);
 			$rs->execute();
 		} catch (PDOException $e) {
-			echo 'Problème lors de l\'execution de la reqête: ' . $e->getMessage();
+			echo 'Problème lors de l\'execution de la requête: ' . $e->getMessage();
 		}
 		return $rs;
 	}

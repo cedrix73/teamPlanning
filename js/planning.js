@@ -147,11 +147,15 @@ function afficherSaisie(date, ressource_id, numActivite){
     $("#div_saisie_activite").html(initialiserFormulaire.saisieActivite);
     // patch 1.1.1 met à jour la liste des activités
     $.post("ajax/getActivites.php", 
-         function(data){
-            if(data.length >0) {
-                $('#lst_activites').html(data);
+        {
+            id_activite:  numActivite
+        },  
+        function(data){
+                if(data.length >0) {
+                    $('#lst_activites').html(data);
+                }
             }
-    });
+        );
     
     $( "#supprimer" ).hide();
     $("#message").hide();
@@ -173,7 +177,12 @@ function afficherSaisie(date, ressource_id, numActivite){
    jour = matchArray[1];
    mois = parseInt(matchArray[3]-1);
    annee = parseInt(matchArray[5]);
-   $(".champ_date").datepicker({minDate: new Date(annee, mois, jour)});
+   $(".champ_date").datepicker({
+       minDate: new Date(annee, mois, jour),
+       dateFormat: 'dd/mm/yy',
+       firstDay: 1,
+       monthNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+       dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],});
 }
 
 function supprimerSaisie(){
@@ -207,7 +216,7 @@ function validerSaisie(){
                 $( "#supprimer" ).html("&nbsp;");
                 if(data.length >0) {
                     $("#div_saisie_activite").slideUp(2000).delay( 2000 ).fadeOut( 1000 );
-                    refreshCalendar(date_debut);
+                    refreshCalendar(initialiserFormulaire.datecal);
                     afficherMessage(data);
                     //message = data;
                     
@@ -219,7 +228,7 @@ function validerSaisie(){
 
 function liste_activites_load(){
     $.ajax({
-        type: "get",
+        type: "POST",
         url: "ajax/liste_activites_load.php",
         datatype: "json",
         success: function(data)

@@ -16,38 +16,38 @@ $retour = '';
 $isOk = false;
 
 $ressourceId = '';
-if(isset($_REQUEST['ressource_id']) && !is_null($_REQUEST['ressource_id']) &&  $_REQUEST['ressource_id'] == true){
-    $ressourceId = $_REQUEST['ressource_id'];
+if(isset($_POST['ressource_id']) && !is_null($_POST['ressource_id']) &&  $_POST['ressource_id'] == true){
+    $ressourceId = $_POST['ressource_id'];
     $isOk = true;
 }
 
 $activiteSel = '';
-if(isset($_REQUEST['activite_sel']) && !is_null($_REQUEST['activite_sel']) &&  $_REQUEST['activite_sel'] == true){
-    $activiteSel = $_REQUEST['activite_sel'];
+if(isset($_POST['activite_sel']) && !is_null($_POST['activite_sel']) &&  $_POST['activite_sel'] == true){
+    $activiteSel = $_POST['activite_sel'];
     $isOk = true;
 }
 
 $dateDebut = '';
-if(isset($_REQUEST['date_debut']) && !is_null($_REQUEST['date_debut']) &&  $_REQUEST['date_debut'] == true){
-    $dateDebut = $_REQUEST['date_debut'];
+if(isset($_POST['date_debut']) && !is_null($_POST['date_debut']) &&  $_POST['date_debut'] == true){
+    $dateDebut = $_POST['date_debut'];
     $isOk = true;
 }
 
 $dateFin = '';
-if(isset($_REQUEST['date_fin']) && !is_null($_REQUEST['date_fin']) &&  $_REQUEST['date_fin'] == true){
-    $dateFin = $_REQUEST['date_fin'];
+if(isset($_POST['date_fin']) && !is_null($_POST['date_fin']) &&  $_POST['date_fin'] == true){
+    $dateFin = $_POST['date_fin'];
     $isOk = true;
 }
 
 $actionUser = '';
-if(isset($_REQUEST['action_user']) && !is_null($_REQUEST['action_user']) &&  $_REQUEST['action_user'] == true){
-    $actionUser = $_REQUEST['action_user'];
+if(isset($_POST['action_user']) && !is_null($_POST['action_user']) &&  $_POST['action_user'] == true){
+    $actionUser = $_POST['action_user'];
     $isOk = true;
 }
 
 $periode = 1;
-if(isset($_REQUEST['periode_sel']) && !is_null($_REQUEST['periode_sel']) &&  $_REQUEST['periode_sel'] == true){
-    $periode = $_REQUEST['periode_sel'];
+if(isset($_POST['periode_sel']) && !is_null($_POST['periode_sel']) &&  $_POST['periode_sel'] == true){
+    $periode = $_POST['periode_sel'];
     $isOk = true;
 }
 
@@ -65,7 +65,7 @@ if($handler===FALSE){
 
 if($isOk){
     $insertion = true;
-    $planning = new Planning($dbaccess, $ressourceId, $activiteSel, $dateDebut, $dateFin, $periode);
+    $planning = new Planning($dbaccess, $ressourceId, $activiteSel, $dateDebut, $dateFin, $periode, true);
     // Est ce qu'on a un evenement pour la même ressource et pour le(s) même(s) jour(s) ?
     $tabActivites = $planning->read();
     // Si tel est le cas, on le(s) supprime

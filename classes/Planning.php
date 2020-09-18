@@ -7,7 +7,7 @@ require_once ABS_CLASSES_PATH.'CvfDate.php';
  * avec les données suivantes:
  * date, num ressource, type d'événement
  * CRUD
- * @author CV170C7N
+ * @author Cédric Von Felten
  */
 class Planning {
     private $ressourceId;
@@ -216,9 +216,9 @@ class Planning {
                 .' WHERE jour BETWEEN \''.$this->dateDebutSql .'\''
                 .' AND \''.$this->dateFinSql.'\'';
         $this->sql = $sql.'<br>';
-        $reponse = $this->dbaccess->execQuery($sql);
         
-        $results=$this->dbaccess->fetchRow($reponse);
+        $reponse = $this->dbaccess->execQuery($sql);
+        $results=$this->dbaccess->fetchArray($reponse);
         
         foreach ($results as $ligne) {
             $ressource = ($ligne['ressource']);

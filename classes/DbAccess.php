@@ -28,7 +28,7 @@ class DbAccess
             $this->_conInfos['password'] = M_DBPASSWORD;
             $this->_conInfos['port'] = M_DBPORT;
             $this->_link = false;
-            $this->log = null;
+            $this->log = array();
             
             $this->_dbInterface = $dbInterface;  
     }

@@ -16,26 +16,26 @@ $retour = '';
 $isOk = false;
 
 $ressourceId = '';
-if(isset($_REQUEST['ressource_id']) && !is_null($_REQUEST['ressource_id']) &&  $_REQUEST['ressource_id'] == true){
-    $ressourceId = $_REQUEST['ressource_id'];
+if(isset($_POST['ressource_id']) && !is_null($_POST['ressource_id']) &&  $_POST['ressource_id'] == true){
+    $ressourceId = $_POST['ressource_id'];
     $isOk = true;
 }
 
 $activiteSel = '';
-if(isset($_REQUEST['activite_sel']) && !is_null($_REQUEST['activite_sel']) &&  $_REQUEST['activite_sel'] == true){
-    $activiteSel = $_REQUEST['activite_sel'];
+if(isset($_POST['activite_sel']) && !is_null($_POST['activite_sel']) &&  $_POST['activite_sel'] == true){
+    $activiteSel = $_POST['activite_sel'];
     $isOk = true;
 }
 
 $dateDebut = '';
-if(isset($_REQUEST['date_debut']) && !is_null($_REQUEST['date_debut']) &&  $_REQUEST['date_debut'] == true){
-    $dateDebut = $_REQUEST['date_debut'];
+if(isset($_POST['date_debut']) && !is_null($_POST['date_debut']) &&  $_POST['date_debut'] == true){
+    $dateDebut = $_POST['date_debut'];
     $isOk = true;
 }
 
 $dateFin = '';
-if(isset($_REQUEST['date_fin']) && !is_null($_REQUEST['date_fin']) &&  $_REQUEST['date_fin'] == true){
-    $dateFin = $_REQUEST['date_fin'];
+if(isset($_POST['date_fin']) && !is_null($_POST['date_fin']) &&  $_POST['date_fin'] == true){
+    $dateFin = $_POST['date_fin'];
     $isOk = true;
 }
 

@@ -22,25 +22,25 @@ if($handler===false){
     $site = null;
     
     
-    if(isset($_REQUEST['site_sel']) 
-            && !is_null($_REQUEST['site_sel']) 
-            &&  $_REQUEST['site_sel'] == true)
+    if(isset($_POST['site_sel']) 
+            && !is_null($_POST['site_sel']) 
+            &&  $_POST['site_sel'] == true)
     {
-        $site = $_REQUEST['site_sel'];
+        $site = $_POST['site_sel'];
     }
 
     $departement = null;
-    if(isset($_REQUEST['departement_sel']) 
-        && !is_null($_REQUEST['departement_sel']) 
-        &&  $_REQUEST['departement_sel'] == true)
+    if(isset($_POST['departement_sel']) 
+        && !is_null($_POST['departement_sel']) 
+        &&  $_POST['departement_sel'] == true)
     {
-        $departement = $_REQUEST['departement_sel'];
+        $departement = $_POST['departement_sel'];
     }
 
     $contexteInsertion = false;
-    if(isset($_REQUEST['contexte_insertion']) 
-            && !is_null($_REQUEST['contexte_insertion']) 
-            &&  $_REQUEST['contexte_insertion'] == true){
+    if(isset($_POST['contexte_insertion']) 
+            && !is_null($_POST['contexte_insertion']) 
+            &&  $_POST['contexte_insertion'] == true){
         $contexteInsertion = true;
     }
     

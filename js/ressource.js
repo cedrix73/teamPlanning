@@ -27,7 +27,7 @@
 
 function form_departements_load(site_sel){
     $.ajax({
-        type: "get",
+        type: "post",
         url: "ajax/listeDepartementsLoad.php",
         data: "site=" + site_sel,
         data: {"site_sel": site_sel, "contexte_insertion": true},

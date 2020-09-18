@@ -77,6 +77,15 @@ function valid_DatePourComparaison(strDate) {
     
  }
 
+ function convertSqltoDate(date_sql) {
+    var datePat = /^(\d{4})(-)(\d{1,2})(-)(\d{1,2})$/;
+    var matchArray = date_sql.match(datePat);
+    jour = matchArray[5];
+    mois = (matchArray[3]);
+    annee = (matchArray[1]);
+    return jour + "/" + mois + "/" + annee;
+ }
+
  function convertPxToInt(chaine){
     return parseInt(chaine.replace("px", ""));
 }

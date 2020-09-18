@@ -16,20 +16,20 @@ $retour = '';
 $isOk = false;
 
 $activiteCouleur = '';
-if(isset($_REQUEST['activite_couleur']) && !is_null($_REQUEST['activite_couleur']) &&  $_REQUEST['activite_couleur'] == true){
-    $activiteCouleur = $_REQUEST['activite_couleur'];
+if(isset($_POST['activite_couleur']) && !is_null($_POST['activite_couleur']) &&  $_POST['activite_couleur'] == true){
+    $activiteCouleur = $_POST['activite_couleur'];
     $isOk = true;
 }
 
 $activiteAbbrev = '';
-if(isset($_REQUEST['activite_abbrev']) && !is_null($_REQUEST['activite_abbrev']) &&  $_REQUEST['activite_abbrev'] == true){
-    $activiteAbbrev = $_REQUEST['activite_abbrev'];
+if(isset($_POST['activite_abbrev']) && !is_null($_POST['activite_abbrev']) &&  $_POST['activite_abbrev'] == true){
+    $activiteAbbrev = $_POST['activite_abbrev'];
     $isOk = true;
 }
 
 $activiteLibelle= '';
-if(isset($_REQUEST['activite_libelle']) && !is_null($_REQUEST['activite_libelle']) &&  $_REQUEST['activite_libelle'] == true){
-    $activiteLibelle = $_REQUEST['activite_libelle'];
+if(isset($_POST['activite_libelle']) && !is_null($_POST['activite_libelle']) &&  $_POST['activite_libelle'] == true){
+    $activiteLibelle = $_POST['activite_libelle'];
     $isOk = true;
 }
 

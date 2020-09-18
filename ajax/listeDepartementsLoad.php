@@ -22,14 +22,18 @@ if($handler===false){
     $site = null;
     if(isset($_REQUEST['site_sel']) 
             && !is_null($_REQUEST['site_sel']) 
-            &&  $_REQUEST['site_sel'] == true){
+            &&  $_REQUEST['site_sel'] == true
+            && ctype_alnum($_REQUEST['site_sel']))
+    {
         $site = $_REQUEST['site_sel'];
     }
 
     $contexteInsertion = false;
     if(isset($_REQUEST['contexte_insertion']) 
             && !is_null($_REQUEST['contexte_insertion']) 
-            &&  $_REQUEST['contexte_insertion'] == true){
+            &&  $_REQUEST['contexte_insertion'] == true
+            && ctype_alnum($_REQUEST['contexte_insertion']))
+    {
         $contexteInsertion = $_REQUEST['contexte_insertion'];
     }
 

@@ -16,25 +16,29 @@ $retour = '';
 $isOk = false;
 
 $typeLocalisation = '';
-if (isset($_REQUEST['type_localisation']) && !is_null($_REQUEST['type_localisation']) &&  $_REQUEST['type_localisation'] == true) {
-    $typeLocalisation = $_REQUEST['type_localisation'];
+if (isset($_POST['type_localisation']) && !is_null($_POST['type_localisation']) &&  $_POST['type_localisation'] == true 
+    && ctype_alnum($_POST['type_localisation'])) {
+    $typeLocalisation = $_POST['type_localisation'];
     $isOk = true;
 }
 
 $libelleLocalisation = '';
-if (isset($_REQUEST['libelle_localisation']) && !is_null($_REQUEST['libelle_localisation']) &&  $_REQUEST['libelle_localisation'] == true) {
-    $libelleLocalisation = $_REQUEST['libelle_localisation'];
+if (isset($_POST['libelle_localisation']) && !is_null($_POST['libelle_localisation']) &&  $_POST['libelle_localisation'] == true 
+    && ctype_alnum($_POST['libelle_localisation'])) {
+    $libelleLocalisation = $_POST['libelle_localisation'];
     $isOk = true;
 }
 
 $descriptionLocalisation= '';
-if (isset($_REQUEST['description_localisation']) && !is_null($_REQUEST['description_localisation']) &&  $_REQUEST['description_localisation'] == true) {
-    $descriptionLocalisation = $_REQUEST['description_localisation'];
+if (isset($_POST['description_localisation']) && !is_null($_POST['description_localisation']) &&  $_POST['description_localisation'] == true 
+    && ctype_alnum($_POST['description_localisation'])) {
+    $descriptionLocalisation = $_POST['description_localisation'];
     $isOk = true;
 }
 if ($typeLocalisation != 'site') {
-    if(isset($_REQUEST['key_localisation']) && !is_null($_REQUEST['key_localisation']) &&  $_REQUEST['key_localisation'] == true) {
-        $keyLocalisation = $_REQUEST['key_localisation'];
+    if(isset($_POST['key_localisation']) && !is_null($_POST['key_localisation']) &&  $_POST['key_localisation'] == true 
+       && is_numeric($_POST['description_localisation'])) {
+        $keyLocalisation = $_POST['key_localisation'];
         $isOk = true;
     }
 }

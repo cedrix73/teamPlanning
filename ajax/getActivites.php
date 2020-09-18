@@ -13,7 +13,15 @@ require_once ABS_GENERAL_PATH.'form_functions.php';
 
 $retour = '';   
 $isOk = true;
-
+$periode = 1;
+if(isset($_POST['id_activite']) && 
+    !is_null($_POST['id_activite']) 
+    &&  $_POST['id_activite'] == true  
+    && is_numeric($_POST['id_activite']))
+{
+    $id_activite = $_POST['id_activite'];
+    $isOk = true;
+}
 
 // Connexion
 $dbaccess = new DbAccess($dbObj);
@@ -24,7 +32,7 @@ if($handler===FALSE){
 }
 
 if($isOk){
-    $strActivites = selectLoad('libelle', 'evenement', $dbaccess);
+    $strActivites = selectLoad('libelle', 'evenement', $dbaccess, $id_activite);
     $retour = utf8_encode($strActivites);
 }
 $dbaccess->close($handler);

@@ -127,11 +127,12 @@ function selectLoad($nomChampSql, $nomTableBd, $db, $filtre = null)
         $trouve = false;
         foreach ($results as $value) {
             $options .= '<option id = ' . $value['id'] 
-                      . ' value="'. $value['id'].'">' . $value['libelle'];
+                      . ' value="'. $value['id'] .'"';
             if ($filtre != null || !$trouve) {
                 $pref = ($value['id'] == $filtre) ? ' selected = selected ' : '';
                 $options .= ' ' . $pref;
             }
+            $options .= '>' . $value['libelle'];
             $options .= '</option>';
         }
     }

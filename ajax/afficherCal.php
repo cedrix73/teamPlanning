@@ -307,6 +307,7 @@ unset($tabNbRessources);
 unset($tabNbRessources);
 $dbaccess->close($handler);
 //echo utf8_encode($retour);
+
 echo $retour;
 
 

@@ -31,7 +31,7 @@ if($handler===FALSE){
 $tabJson = "";
 $tabInsert = array();
 
-if (isset($_REQUEST['json_datas']) && !is_null($_REQUEST['json_datas']) &&  $_REQUEST['json_datas'] == false) {
+if (isset($_POST['json_datas']) && !is_null($_POST['json_datas']) &&  $_POST['json_datas'] == false) {
     $isOk = false;
 } else {
     $jsonString = $_POST['json_datas'];
