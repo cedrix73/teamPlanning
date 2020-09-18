@@ -33,6 +33,7 @@ if($handler === false){
     }
     if( !$isOk) 
     {
+        $retour = "paramètres incorrects";
         
     } else {
         $localisation = new Localisation($dbaccess, $typeLocalisation);
@@ -58,18 +59,18 @@ if($handler === false){
                 $id = $value['id'];
                 $classeParite = ($i%2 == 0 ? 'pair':'impair');
                 $retour .=   '<tr id='.$id.' class="'.$classeParite.'">';
-                $retour .= '<td id="libelle_' . $id . '"><input type="text" class="legende_activite" value="' . $value['libelle'] . '" /></td>';
-                $retour .= '<td><input type="text" id="description_' . $id . '" value="'.$value['description'].'" maxlength="250" /></td>';
+                $retour .= '<td id="libelle_' . $id . '"><input type="text" class="legende_activite" disabled value="' . $value['libelle'] . '" /></td>';
+                $retour .= '<td><input type="text" id="description_' . $id . '" disabled value="'.$value['description'].'" maxlength="250" /></td>';
 
                 
                 if ($typeLocalisation != 'site') {
                     // combobox des options liés à la clé secondaire  avec la bonne valeur sélectionnée
                     $options = getOptionsFromTab($tabOptions, $value[$typeSuperieurId]);
-                    $retour .= '<td><select id ="key_' . $id . '">' . $options . '</select></td>';
+                    $retour .= '<td><select id ="key_' . $id . '"  disabled >' . $options . '</select></td>';
                 }
 
 
-                $retour .= '<td><input type="button" id="' . $id . '_validation_ligne" value="valider" onclick="modifierTypeLocalisation('. $id .');"/></td>';
+                $retour .= '<td><input type="button" id="' . $id . '_validation_ligne" disabled value="valider" onclick="modifierTypeLocalisation('. $id .');"/></td>';
                 $retour .="</tr>";
                 $i++;
             } 
@@ -90,11 +91,14 @@ if($handler === false){
         $retour .= '</table>';
         //$retour = utf8_encode($retour);
     
-    }
+    
 
-?><script>$(".choix_couleur").colorpicker({
-    strings: "Couleurs variées,Couleurs de base,+ de couleurs,- de couleurs,Palette,Historique,Pas encore d'historique."
-});</script><?php
+        ?><script>$(".choix_couleur").colorpicker({
+            strings: "Couleurs variées,Couleurs de base,+ de couleurs,- de couleurs,Palette,Historique,Pas encore d'historique."
+        });</script><?php
+    }
+}
+
 $dbaccess->close($handler);
 //echo utf8_encode($retour);
 echo $retour;

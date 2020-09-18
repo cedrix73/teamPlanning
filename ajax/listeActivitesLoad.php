@@ -32,8 +32,6 @@ if($handler===FALSE){
           $classeParite = ($i%2 == 0 ? 'pair':'impair');
           $retour .=   '<tr id='.$key.' class="'.$classeParite.'">';
           $retour .= '<td id="' . $key . '_libelle" >'.$value['libelle'].':</td>';
-         // $retour .= '<td id="' . $key . '_td_color">' . $color . '<input id="' . $key . '_div_color" class ="choix_couleur" value="#'.$color.'" /></td>';
-          //$retour .="</tr>";
           $retour .= '<td><input id="' . $key . '_div_color" class ="choix_couleur" value="#'.$color.'" style="display: none;"/></td>';
           $retour .= '<td><input id="' . $key . '_validation" type="button" value="valider" onclick="modifierTypeEvent('. $key .');"/></td>';
           $retour .="</tr>";

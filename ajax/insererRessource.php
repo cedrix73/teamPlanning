@@ -28,6 +28,8 @@ if($handler===FALSE){
     $retour = "Problème de connexion à la base ";
     $isOk = false;
 }
+
+
 $tabJson = "";
 $tabInsert = array();
 

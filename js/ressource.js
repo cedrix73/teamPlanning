@@ -11,7 +11,10 @@
 
 
    function afficherFormRessources(){
-    if($("#div_saisie_activite").css("display") == 'none'){
+    if( $("#affichage_activite").val() == 'form_ressources'){
+        $("#div_saisie_activite").toggle();
+        $("#affichage_activite").val("");
+    } else {
         $.post("ajax/afficherFormRessources.php", 
              function(data){
                 if(data.length >0) {
@@ -19,9 +22,7 @@
                     $("#div_saisie_activite").slideDown();
                 }
         });
-        
-    }else{
-        $("#div_saisie_activite").toggle();
+        $("#affichage_activite").val("form_ressources");
     }
 }
 
@@ -40,6 +41,8 @@ function form_departements_load(site_sel){
                 tab_elems.push('<option value="' + cle + '">' + valeur + '</option>');
             });
             $("#res_departement").html(tab_elems.join(''));
+            form_services_load(site_sel, $("#res_departement").val());
+
 
         },
         error: function(message)

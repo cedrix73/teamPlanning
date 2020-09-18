@@ -13,7 +13,10 @@
 
 
 function afficherTypesEvents(){
-    if($("#div_saisie_activite").css("display") == 'none'){
+    if( $("#affichage_activite").val() == 'type_events'){
+        $("#div_saisie_activite").toggle();
+        $("#affichage_activite").val("");
+    } else {
         var contenuActivite = $("#div_saisie_activite").html();
         $.post("ajax/listeTypesEventLoad.php", 
              function(data){
@@ -22,8 +25,7 @@ function afficherTypesEvents(){
                     $("#div_saisie_activite").slideDown();
                 }
         });
-    }else{
-        $("#div_saisie_activite").toggle();
+        $("#affichage_activite").val("type_events");
     }
 }
 

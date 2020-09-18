@@ -174,8 +174,8 @@ $refreshCalendarOption = '';
                         <?php if(isset($isAdmin) && $isAdmin){?>
                         <fieldset id="menu_prefs">
                             <legend>Administration</legend>
-                            <span id="prefs_activite" onclick="afficherTypesEvents();"><a><?php echo '- Modifier types d\'activités';?></a></span>
-                            <span id="prefs_ressources" onclick="afficherFormRessources();"><a><?php echo '- Ajouter des ressources';?></a></span>
+                            <span id="prefs_activite" class ="liens_admin" onclick="afficherTypesEvents();"><a><?php echo '- Modifier types d\'activités';?></a></span>
+                            <span id="prefs_ressources" class ="liens_admin" onclick="afficherFormRessources();"><a><?php echo '- Ajouter des ressources';?></a></span>
                         </fieldset>
                         <?php } ?>
                     </div>
@@ -190,8 +190,9 @@ $refreshCalendarOption = '';
            </div> 
             
             <div id ="div_info">
+                <div id="div_cadre_saisie_activite">
                 <div id ="div_saisie_activite" style="float:left;">
-                    <fieldset id="fielset_saisie_activite">
+                    <fieldset id="fielset_saisie_activite" class="tab_params">
                         <legend id = "lgd_saisie_activite">Saisie d'une activité</legend>
                         <span>Du&nbsp;</span>  
                         <input type="text"
@@ -229,5 +230,6 @@ $refreshCalendarOption = '';
                 <img id="img_loading" src="<?php echo IMAGES_PATH . '/loader.gif';?>" alt="Loading" />
             </div>
         </div>
+        <input type = "hidden" id = "affichage_activite" name ="affichage_activite" />
     </body>
 </html>

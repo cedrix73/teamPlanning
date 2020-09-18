@@ -77,7 +77,10 @@ a:hover {
     padding-left: 15px;
     color: #FFF;
     font-style: italic;
-    font-size: 13px;
+    font-size: 14px;
+}
+#menu_prefs span:hover {
+    color:#6600CC;
 }
 
 #planning {
@@ -346,10 +349,12 @@ input, select {
 
 tr.pair{
     background: #fff;
+    line-height: 30px;
 }
 
 tr.impair{
     background: #66CCCC;
+    line-height: 30px;
 }
 
 .choix_couleur{

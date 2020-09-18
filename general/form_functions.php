@@ -328,4 +328,5 @@ function getFormFromTable($dbaccess, $tableName, $nbChampsParLigne = 3) {
     echo $retour;
 }
 
+
 ?>

@@ -6,8 +6,8 @@
  * 
    ----------------------------------------------------------------------------
  * @author : Cédric Von Felten
- * @since  : 28/10/2014
- * @version : 1.3
+ * @since  : 21/07/2015
+ * @version : 1.0
    --------------------------------------------------------------------------*/
 
 
@@ -49,7 +49,7 @@ function insererTypeLocalisation(type){
 
 function liste_departements_load(site_sel){
     $.ajax({
-        type: "get",
+        type: "post",
         url: "ajax/listeDepartementsLoad.php",
         data: "site_sel=" + site_sel,
         datatype: "json",
@@ -62,7 +62,7 @@ function liste_departements_load(site_sel){
                 tab_elems.push('<option value="' + valeur + '">' + valeur + '</option>');
             });
             $("#cbo_departements").html(tab_elems.join(''));
-
+            liste_services_load(site_sel, $("#cbo_departements").val());
         },
         error: function(message)
         {
