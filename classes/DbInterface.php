@@ -5,17 +5,21 @@ declare(strict_types=1);
 
 interface DbInterface
 {
-    public function connect($conInfos, $no_msg = 0);
+    public function setLog($bln);
 
-    public function selectDb($link, $db);
+    public function getLog();
+    
+    public function connect($conInfos, $no_msg = 0);
 
     public function execQuery($link, $query);
 
-    public function fetchRow($result);
+    public function execPreparedQuery($link, $query, array  $args=null);
 
-    public function numRows($result);
+    public function fetchRow($resultSet);
 
-    public function fetchArray($result);
+    public function numRows($resultSet);
+
+    public function fetchArray($resultSet);
 
     public function escapeString($link, $arg);
 

@@ -1,49 +1,57 @@
 <?php
 
 /**
- * @name DbAccess
+ * @name MySqli
  * @author cvonfelten
- * Classe créant une couche d'abstraction mysql et  gérant les accès à la BD
+ * Classe gérant le driver mysqli et interface les méthodes de DBInterface
  */
-require_once realpath(dirname(__FILE__)).'/../config.php';
-require_once realpath(dirname(__FILE__)).'/DbPdo.php';
+require_once ABS_CLASSES_PATH.'DbInterface.php';
 
 
-//namespace base;
-// fichier appelant: use base as DbAccess;
-// \DbAccess\Mysqli->methode
-class DbMySqli {
+class DbMySqli implements DbInterface {
+
+    private $_noMsg;
+
+
+    public function setLog($bln) {
+        $this->_noMsg = $bln;
+    }
+
+    public function getLog() {
+        return $this->_noMsg;
+    }
 
 	/* Etablit une connexion à un serveur de base de données et retourne un identifiant de connexion
 	   L'identifiant est positif en cas de succès, FALSE sinon.
 	   On pourrait se connecter avec un utilisateur lambda
 	   */
-	public function connect($no_msg = 0)
+	public function connect($conInfos, $no_msg = 0)
 	{
-		$link = @mysqli_connect($this->host, $this->username, $this->password, $this->dbase, $this->port);
-		if (mysqli_connect_errno())
+        $this->_noMsg = $no_msg;
+        $link =  false;
+        $host = $conInfos['host'];
+		$dbname = $conInfos['dbase'];
+        $dbh = new mysqli($host = $host, $conInfos['username'], $conInfos['password'], $dbname);
+		if ($dbh->connect_error)
 		{
-                    if ($no_msg == 0){
-                        echo "Erreur de connexion sur ".$this->host." par ".$this->username;
-                    }
-                    $this->database_error();
-                    return FALSE;
-		}else{
-                    $this->link = $link;
-                }
+            if ($no_msg == false){
+                mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+                echo "Erreur de connexion N° ". mysqli_connect_errno();
+            }
+            $this->close($dbh);
+		} else {
+            $link = $dbh;
+        }
 		
 		return $link;
 	}
 	
-	public function database_error(){
-			echo mysqli_connect_error();
-			exit;
-	}
+	
 
 	/* Ferme la connexion au serveur MySQL associée à l'identifiant $hcon
 	   Retourne TRUE en cas de succès, FALSE sinon */
-	public function close() {
-		return @mysqli_close($this->link);
+	public function close($link) {
+		return mysqli_close($link);
 	}
 
 	/**
@@ -51,115 +59,144 @@ class DbMySqli {
          * --> Sans objet pour mysqli. 
          */
         
-	public function select_db($db) {
-            return mysqli_select_db($this->link, $bd);
+	public function select_db($link, $dbName) {
+            return $link->select_db($this->link, $dbName);
+    }
+    
+    /**
+	 * @name: execQuery
+	 * @description: Execute la requete SQL $query et renvoie  le resultSet
+	 * pour être interprétée ultérieurement par fetchRow ou fetchArray.
+	 * 
+	 * @param ressource $link: instance renvoiée lors de la connexion PDO.
+	 * @param string $query: chaine SQL
+	 * @return array $resultSet : resultat de l'execution
+	 */
+	public function execQuery($link, $query) {
+        $resultSet = $link->real_query($query);
+        $resultSet = $link->store_result();
+        if (!$resultSet) {
+            if($this->_noMsg !== false) {
+                printf("Erreur : %s\n", mysqli_error($link));
+            }
+            
+        }
+		return $resultSet;
 	}
 
 	/**
-         *  Envoie la requête SQL $req pour son execution
-         * parametrer $many à true pour bcp de resultats attendus:
-         * si $many est true, ne pas oublier de libérer la requete par
-         * $db->free_result($result)
-         */
-	public function execQuery($req, $many=false) {
-            $param = MYSQLI_STORE_RESULT;
-            if($many){
-                $param = MYSQLI_USE_RESULT;
-            }
-            return mysqli_query($this->link, $req, $param);
-	}
+	 * @name: execPreparedQuery
+	 * @description: il s'agit d'un prpared Statement: Prépare et execute 
+	 * la requete SQL $query et renvoie  le resultSet pour être interprétée 
+	 * ultérieurement par fetchRow ou fetchArray. Si on passe des arguments 
+	 * dans la fonction, ils doivent être passés dans le tableau clé-valeur 
+	 * $args avec comme format de clé (combinaisons possibles:):
+     * i - Integer 
+     * d - Double
+     * s - String
+     * b - Blob
+     * correspondant aux '?' de la requête SQL.
+     * ":nomDeLaVariable" => valeurDeLaVariable.
+     * Utilisée pour traiter bcp de resultats, la MYSQLI_USE_RESULT
+     * est utilisée: ne pas oublier de libérer la requete par
+     * $link->free_result($result) après le fetchRow ou fetchArray.
+     */
+	public function execPreparedQuery($link, $query, array  $args=null) {
 
-    /* Retourne un tableau énulméré qui correspond à la ligne demandée, ou FALSE si il ne reste plus de ligne
-	   Chaque appel suivant retourne la ligne suivante dans le résultat, ou FALSE si il n'y a plus de ligne disponible */
-	public function fetch_row($result) {
-            return mysqli_fetch_row($result);
-	}
-	
-	public function num_rows($result) {
-            return mysqli_num_rows($result);
-	}
-        
-        public function fetch_field($result){
-            return mysqli_fetch_fields($result);
-        }
-        
-        public function fetch_assoc($result){
-            return mysqli_fetch_assoc($result);
-        }
-        
-        /**
-         * fetch_array()
-         * @param type $result
-         * @return type
-         * Retourne un tableau associatif par clé qui correspond à la ligne demandée, 
-         * Chaque appel suivant retourne la ligne suivante dans le résultat, 
-         * ou FALSE si il n'y a plus de ligne disponible
-         */
-	public function fetch_array($result) {
-		return mysqli_fetch_assoc($result);
-	}
-	
-	public function escape_string($donnee){
-		return mysqli_real_escape_string($donnee);
-	}
-        
-        public function multiple_queries($req){
-            $tabResults = array();
-            if (mysqli_multi_query($this->link, $query)) {
-                do {
-                    /* Stockage du premier jeu de résultats */
-                    if ($result = mysqli_use_result($link)) {
-                        while ($row = mysqli_fetch_row($result)) {
-                            $tabResults[] = $row;
-                        }
-                        mysqli_free_result($result);
+        try {   
+            if($stmt = $link->prepare($query, MYSQLI_STORE_RESULT)){
+                if($args !== null) {
+                    foreach ($args as $varName => $varValue) {
+                        $stmt->bindParam($varName, $varValue);
                     }
-                    /* Affichage d'une démarcation */
-                    if (mysqli_more_results($this->link)) {
-                        //printf("-----------------\n");
-                    }
-                } while (mysqli_next_result($this->link));
-            }
-            return $tabResults;
-        }
-        
-        
-        public function free_result($result){
-            mysqli_free_result($result);
-        }
-        
-        /**
-         * prepareExecute
-         * Prepare puis execute des requêtes simples
-         * On appelle une 1ère fois la fonction avec les champs $query rempli
-         * --> Prepare
-         * et une seconde fois avec les champs $stmt et $var completés et 
-         * $query à null --> Execute
-         * @param string $query genre "SELECT District FROM City WHERE Name=?"
-         * @param type $var
-         * @param type $stmt
-         * @return type
-         */
-        public function prepareExecute($query=null,$var=null, $stmt=null){
-            if(isset($query) && !is_null($query)){
-                // mode preparation
-                $stmt = mysqli_prepare($this->link, $query);
-                return $stmt;
-            }else{
-                $myrow = array();
-                mysqli_stmt_bind_param($stmt, "s", $var);
-                mysqli_stmt_execute($stmt);
-                $result = mysqli_stmt_get_result();
-                
-                while ($myrow = $this->fetchArray($result)) {
-
-                    // use your $myrow array as you would with any other fetch
-                    printf("%s is in district %s\n", $city, $myrow['district']);
-
                 }
-                return $myrow;
+                $stmt->execute();
+            } 
+
+        } catch (mysqli_sql_exception $e) {
+            if($this->_noMsg !== false) {
+                printf("Erreur : %s\n", mysqli_error($link));
             }
+            $link->free_result();
         }
+        return $stmt;
+	}
+
+    /**
+	 * @name:          numRows
+	 * @description:   Retourne le nombre de lignes qui sera retournées ultérieurement par
+	 *                 fetchRow ou fetchArray.
+	 * @param          array $resultSet: resultat de l'execution de la requête soit par execQuery(), 
+	 *                 soit par execPreparedQuery.
+	 */
+	public function numRows($resultSet) {
+		return $resultSet->affected_rows();
+	}
+
+	/**
+	 * @name:          fetchRow
+	 * @description:   Retourne un tableau énuméré clé-valeur  dont les indexes de clé sont numériques 
+	 *                 et correspondent dans l'ordre des colonnes spécifiées en clause SELECT.
+	 *                 Retourne FALSE s'il n'existe pas de résultat.
+	 * @param          array $resultSet: resultat de l'execution de la requête soit par execQuery(), 
+	 *                 soit par execPreparedQuery.
+	 */
+	public function fetchRow($resultSet) 
+	{
+        $results = false;
+        $tabResults = array();
+        $tabResults = $resultSet->fetch_all(MYSQLI_NUM);
+        $resultSet->free_result();
+        //$resultSet->close();
+		return $tabResults;
+	}
+	
+	/**
+	 * @name:          fetchArray
+	 * @description:   Retourne un tableau associatif dont la clé correspond aux nom colonnes 
+	 *                 spécifiées en clause SELECT. Retourne FALSE s'il n'existe pas de résultat. 
+	 * @param          array $resultSet: resultat de l'execution de la requête soit par execQuery(), 
+	 *                 soit par execPreparedQuery.
+	 */
+	public function fetchArray($resultSet) 
+	{
+		$results = false;
+        $tabResults = array();
+        $tabResults = $resultSet->fetch_all(MYSQLI_ASSOC);
+        $resultSet->free_result();
+        //$resultSet->close();
+		return $tabResults;
+	}
+	
+	public function escapeString($link, $arg){
+		return $link->real_escape_string($arg);
+	}
+        
+    public function multipleQueries($link, $queries){
+        $tabResults = array();
+        if ($this->link->multi_query($link, $queries)) {
+            do {
+                /* Stockage du premier jeu de résultats */
+                if ($result = mysqli_store_result($link)) {
+                    while ($row = mysqli_fetch_row($result)) {
+                        $tabResults[] = $row;
+                    }
+                    $this->link->free_result();
+                }
+                /* Affichage d'une démarcation */
+                if ($this->link->more_results($this->link)) {
+                    //printf("-----------------\n");
+                }
+            } while ($this->link->next_result($this->link));
+        }
+        return $tabResults;
+    }
+
+    public function getTableDatas($link, $query)
+	{
+		return $this->execQuery($link, $query);
+	}
+        
 }
 
 ?>

@@ -3,14 +3,25 @@
 require_once ABS_CLASSES_PATH.'DbInterface.php';
 
 /**
- * @name DbAccess
+ * @name DbPdp
  * @author cvonfelten
- * Classe créant une couche d'abstraction mysql et  gérant les accès à la BD
+ * Classe gérant le driver Pdo et interface les méthodes de DBInterface
  */
 
 class DbPdo implements DbInterface 
 {
 
+	private $_noMsg;
+
+
+    public function setLog($bln) {
+        $this->_noMsg = $bln;
+    }
+
+    public function getLog() {
+        return $this->_noMsg;
+	}
+	
     /**
      * Etablit une connexion à un serveur de base de données et retourne un identifiant de connexion
      * L'identifiant est positif en cas de succès, FALSE sinon.
@@ -33,56 +44,112 @@ class DbPdo implements DbInterface
 	}
 	
 
-	/* Sélectionne la base de données $db
-	   Retourne TRUE en cas de succès, FALSE sinon */
-	public function selectDb($link, $db) {
-		$retour = mysqli_select_db($link, $db);
-		return $retour;
-	}
 
-	/* Envoie la requête SQL $req pour son execution
-	   Retourne TRUE ou FALSE, pour indiquer le succès ou l'échec de la requête */
+
+	/**
+	 * @name: execQuery
+	 * @description: Execute la requete SQL $query et renvoie  le resultSet
+	 * pour être interprétée ultérieurement par fetchRow ou fetchArray.
+	 * 
+	 * @param ressource $link: instance renvoiée lors de la connexion PDO.
+	 * @param string $query: chaine SQL
+	 * @return array $resultSet : resultat de l'execution
+	 */
 	public function execQuery($link, $query) {
-		$rs = false;
-		try {
-			$rs = $link->prepare($query);
-			$rs->execute();
-		} catch (PDOException $e) {
-			echo 'Problème lors de l\'execution de la requête: ' . $e->getMessage();
-		}
-		return $rs;
+		$resultSet = $link->query($query);
+		return $resultSet;
 	}
 
-    /* Retourne un tableau énulméré qui correspond à la ligne demandée, ou FALSE si il ne reste plus de ligne
-	   Chaque appel suivant retourne la ligne suivante dans le résultat, ou FALSE si il n'y a plus de ligne disponible */
+	/**
+	 * @name: execPreparedQuery
+	 * @description: il s'agit d'un prpared Statement: Prépare et execute 
+	 * la requete SQL $query et renvoie  le resultSet pour être interprétée 
+	 * ultérieurement par fetchRow ou fetchArray. Si on passe des arguments 
+	 * dans la fonction, ils doivent être passés dans le tableau clé-valeur 
+	 * $args avec comme format ":nomDeLaVariable" => valeurDeLaVariable.
+	 * 
+	 * @param ressource $link: instance renvoiée lors de la connexion PDO.
+	 * @param string $query: chaine SQL
+	 * @return array $resultSet : resultat de l'execution
+	 */
+	public function execPreparedQuery($link, $query, array  $args=null) {
+		$stmt = false;
+		
+		try {
+			if($stmt = $link->prepare($query)){
+				if($args !== null) {
+					foreach ($args as $varName => $varValue) {
+						$stmt->bindParam($varName, $varValue);
+					}
+				}
+				$stmt->execute();
+			}
+		} catch (PDOException $e) {
+			if($this->_noMsg !== false) {
+				echo 'Problème lors de l\'execution de la requête: ' . $e->getMessage();
+			}
+			
+		}
+		return $stmt;
+	}
+
+	/**
+	 * @name:          numRows
+	 * @description:   Retourne le nombre de lignes qui sera retournées ultérieurement par
+	 *                 fetchRow ou fetchArray.
+	 * @param          array $resultSet: resultat de l'execution de la requête soit par execQuery(), 
+	 *                 soit par execPreparedQuery.
+	 */
+	public function numRows($resultSet) {
+		return $resultSet->rowCount();
+	}
+
+	/**
+	 * @name:          fetchRow
+	 * @description:   Retourne un tableau énuméré clé-valeur  dont les indexes de clé sont numériques 
+	 *                 et correspondent dans l'ordre des colonnes spécifiées en clause SELECT.
+	 *                 Retourne FALSE s'il n'existe pas de résultat.
+	 * @param          array $resultSet: resultat de l'execution de la requête soit par execQuery(), 
+	 *                 soit par execPreparedQuery.
+	 */
 	public function fetchRow($resultSet) 
 	{
 		$results = false;
 		try {
 			$results = $resultSet->fetchAll(PDO::FETCH_NUM);
 		} catch (PDOException $e) {
-			echo 'Problème lors du traitement du résultat de la requête ' 
+			if($this->_noMsg !== false) {
+				echo 'Problème lors du traitement du résultat de la requête ' 
 			   . ' en tableau numérique: ' . $e->getMessage();
+			}
+			
 		}
 		return $results;
 	}
 	
-	public function numRows($result) {
-		return mysqli_num_rows($result);
-	}
-    /* Retourne un tableau associatif par clé qui correspond à la ligne demandée, ou FALSE si il ne reste plus de ligne
-	   Chaque appel suivant retourne la ligne suivante dans le résultat, ou FALSE si il n'y a plus de ligne disponible */
+	/**
+	 * @name:          fetchArray
+	 * @description:   Retourne un tableau associatif dont la clé correspond aux nom colonnes 
+	 *                 spécifiées en clause SELECT. Retourne FALSE s'il n'existe pas de résultat. 
+	 * @param          array $resultSet: resultat de l'execution de la requête soit par execQuery(), 
+	 *                 soit par execPreparedQuery.
+	 */
 	public function fetchArray($resultSet) 
 	{
 		$results = false;
 		try {
 			$results = $resultSet->fetchAll(PDO::FETCH_ASSOC);
 		} catch (PDOException $e) {
-			echo 'Problème lors du traitement du résultat de la requête ' 
+			if($this->_noMsg !== false) {
+				echo 'Problème lors du traitement du résultat de la requête ' 
 			   . ' en tableau associatif: ' . $e->getMessage();
+			}
+			
 		}
 		return $results;
 	}
+
+	
 	
 	public function escapeString($link, $arg)
 	{

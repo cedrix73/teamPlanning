@@ -32,12 +32,18 @@ class DbAccess
             
             $this->_dbInterface = $dbInterface;  
     }
+
+    public function displayError($no_msg ) {
+        if(is_bool($no_msg)) {
+            $this->_link = $this->_dbInterface->setLog($no_msg);
+        }   
+    }
     
     /**
      * connect
      * @description  Procède à la connexion et crée le pointeur $_link
      */
-    public function connect($no_msg = 0)
+    public function connect($no_msg = false)
 	{
         try {
             $this->_link = $this->_dbInterface->connect($this->_conInfos, $no_msg);
@@ -46,6 +52,7 @@ class DbAccess
         }
         return $this->_link;
     }
+    
 
     /**
      * close
@@ -77,10 +84,17 @@ class DbAccess
 
     /* Envoie la requête SQL $req pour son execution
 	   Retourne un resultSet */
-    public function execQuery($query) 
+    public function execPreparedQuery($query, $args=null) 
     {
-		return $this->_dbInterface->execQuery($this->_link, $query);
+		return $this->_dbInterface->execPreparedQuery($this->_link, $query, $args);
     }
+
+    /* Envoie la requête SQL $req pour son execution
+	   Retourne un resultSet */
+       public function execQuery($query) 
+       {
+           return $this->_dbInterface->execQuery($this->_link, $query);
+       }
 
     /**
      * fetchRow
@@ -140,7 +154,7 @@ class DbAccess
         return $results;
     }
 
-    public function getStatement() {
+    public function queryPlaceholders() {
         $author1 = "";
         if (ctype_alpha($_GET['author1'])) {
             $author1 = $_GET['author1'];
