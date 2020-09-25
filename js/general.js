@@ -126,43 +126,43 @@ function envoieFeedbackFormulaire(feedback_field, bln) {
     }
 }
 
-function verifString(string_field_name) {
-    
+function regTest(regvar, field_name) {
+    var field_verif;
+    var fieldObj = $("input[name=" + field_name + "]");
+    var feedback_field = $(fieldObj).next($("span[name=" + field_name + "_img]"));
+    var retour = true;
+    if(field_name !== null) {
+        field_verif = fieldObj.val().replace(/ /g,'');
+        fieldObj.val(field_verif);
+        retour = regvar.test(fieldObj.val());
+        envoieFeedbackFormulaire(feedback_field, retour);
+    }
+    return retour;
+}
+
+function verifStringAlpha(string_field_name) {
+    var reg_string = new RegExp(/^[a-zA-Z-\s\-éèàüöñøå' ]*$/);
+    return regTest(reg_string, string_field_name);
+}
+
+function verifStringAlphaNum(string_field_name) {
+    var reg_string = new RegExp(/^[a-zA-Z0-9-\séèàüöñøå' ]*$/);
+    return regTest(reg_string, string_field_name);
 }
 
 function verifDate(date_field_name) {
-    var datePat = /^(\d{1,2})(\/)(\d{1,2})(\/)(\d{4})$/;
+    var reg_date = new RegExp(/^(\d{4})(\-)(\d{1,2})(\-)(\d{1,2})$/);
+    return regTest(reg_date, date_field_name);
 }
 
 function verifEmail(email_field_name) {
     var reg_email = new RegExp(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/);
-    var email_verif;
-    var retour = true;
-    var email_field = $("input[name=" + email_field_name + "]");
-    var feedback_field = $(email_field).next($("span[name=" + email_field_name + "_img]"));
-    if(email_field_name !== null) {
-        email_verif = email_field.val().replace(/ /g,'');
-        email_field.val(email_verif);
-        retour = reg_email.test(email_field.val());
-        envoieFeedbackFormulaire(feedback_field, retour);
-    }
-    return retour;
+    return regTest(reg_email, email_field_name);
 }
 
 function verifPhone(phone_field_name) {
     var reg_phone = new RegExp(/^[0-9.-]{9,}$/);
-    var phone_verif;
-    var retour = true;
-    var phone_field = $("input[name=" + phone_field_name + "]");
-    var feedback_field = $(phone_field).next($("span[name=" + phone_field_name + "_img]"));
-    if(phone_field_name !== null) {
-        phone_verif = phone_field.val().replace(/\.|\-/g,'');
-        // remplacement des - et des .
-        phone_field.val(phone_verif);
-        retour = reg_phone.test(phone_field.val());
-        envoieFeedbackFormulaire(feedback_field, retour);
-    }
-    return retour;
+    return regTest(reg_phone, phone_field_name);
 }
 
 
@@ -198,9 +198,8 @@ function validerSaisieForm(container_name){
             // mail
             if($(this).val() !== ''){
                 if($(this).attr('type')=='email') {
-                    var email_field_name = $(this).attr('name');
                     
-                    if(verifEmail(email_field_name) == false) {
+                    if(verifEmail($(this).attr('name')) == false) {
                         uncorrect_fields += "<li>Le champ <i>" + ressourceLabel + "</i> est incorrect: il doit être de la forme xxx@xx.xxx</li>";
                         bln_ok = false;
                     }
@@ -208,14 +207,33 @@ function validerSaisieForm(container_name){
                 }
                 // telephone
                 if($(this).attr('type')=='tel') {
-                    var phone_field_name = $(this).attr('name');
                     
-                    if(verifPhone(phone_field_name) == false) {
+                    if(verifPhone($(this).attr('name')) == false) {
                         uncorrect_fields += "<li>Le champ <i>" + ressourceLabel + "</i> est incorrect. il doit être supérieur à 9 chiffres, " 
                                             + " peut inclure des chiffres, des points ou des trémas.</li>";
                         bln_ok = false;
                     }
                 }
+
+                // alphanumerique
+                if($(this).attr('type')=='text') {
+                    
+                    if(verifStringAlphaNum($(this).attr('name')) == false) {
+                        uncorrect_fields += "<li>Le champ <i>" + ressourceLabel + "</i> est incorrect. il doit contenir uniquement " 
+                                            + "des chiffres, des lettres ou des trémas.</li>";
+                        bln_ok = false;
+                    }
+                }
+
+                if($(this).attr('type')=='date') {
+                    
+                    if(verifDate($(this).attr('name')) == false) {
+                        uncorrect_fields += "<li>Le champ <i>" + ressourceLabel + "</i> est incorrect. il doit contenir uniquement " 
+                                            + "des chiffres, des lettres ou des trémas.</li>";
+                        bln_ok = false;
+                    }
+                }
+                
                 
             }
 
