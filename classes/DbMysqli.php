@@ -11,6 +11,7 @@ require_once ABS_CLASSES_PATH.'DbInterface.php';
 class DbMySqli implements DbInterface {
 
     private $_noMsg;
+    private $_stmt;
 
 
     public function setLog($bln) {
@@ -28,6 +29,7 @@ class DbMySqli implements DbInterface {
 	public function connect($conInfos, $no_msg = 0)
 	{
         $this->_noMsg = $no_msg;
+        $this->_stmt = false;
         $link =  false;
         $host = $conInfos['host'];
 		$dbname = $conInfos['dbase'];
@@ -100,17 +102,25 @@ class DbMySqli implements DbInterface {
      * Utilisée pour traiter bcp de resultats, la MYSQLI_USE_RESULT
      * est utilisée: ne pas oublier de libérer la requete par
      * $link->free_result($result) après le fetchRow ou fetchArray.
+     * 
+     * @param ressource $link: instance renvoiée lors de la connexion PDO.
+	 * @param string $query: chaine SQL
+	 * @param boolean $again: Si true, le même statement est réexecuté avec de
+	 *                de nouveaux arguments; $query peut être vide.
+	 * @return mixed $stmt : retourne le statement de la requête.
      */
-	public function execPreparedQuery($link, $query, array  $args=null) {
-
+	public function execPreparedQuery($link, $query, array  $args=null, $again=false) {
+        if(!$again) {
+			$this->_stmt = false;
+		}
         try {   
-            if($stmt = $link->prepare($query, MYSQLI_STORE_RESULT)){
+            if($again || $this->_stmt = $link->prepare($query, MYSQLI_STORE_RESULT)){
                 if($args !== null) {
                     foreach ($args as $varName => $varValue) {
-                        $stmt->bindParam($varName, $varValue);
+                        $this->_stmt->bindParam($varName, $varValue);
                     }
                 }
-                $stmt->execute();
+                $this->_stmt->execute();
             } 
 
         } catch (mysqli_sql_exception $e) {

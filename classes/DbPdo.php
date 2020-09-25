@@ -12,6 +12,7 @@ class DbPdo implements DbInterface
 {
 
 	private $_noMsg;
+	private $_stmt;
 
 
     public function setLog($bln) {
@@ -21,6 +22,7 @@ class DbPdo implements DbInterface
     public function getLog() {
         return $this->_noMsg;
 	}
+	
 	
     /**
      * Etablit une connexion à un serveur de base de données et retourne un identifiant de connexion
@@ -32,6 +34,8 @@ class DbPdo implements DbInterface
 		$host = $conInfos['host'];
 		$dbname = $conInfos['dbase'];
 		$dbh=$dsn='';
+		$this->_noMsg = $no_msg;
+		$this->_stmt = false;
 		try {
 			$dsn = "mysql:host=$host;dbname=$dbname";
 			$dbh = new PDO($dsn, $conInfos['username'], $conInfos['password']);
@@ -65,24 +69,29 @@ class DbPdo implements DbInterface
 	 * @description: il s'agit d'un prpared Statement: Prépare et execute 
 	 * la requete SQL $query et renvoie  le resultSet pour être interprétée 
 	 * ultérieurement par fetchRow ou fetchArray. Si on passe des arguments 
-	 * dans la fonction, ils doivent être passés dans le tableau clé-valeur 
+	 * dans la requête, ils doivent être passés dans le tableau clé-valeur 
 	 * $args avec comme format ":nomDeLaVariable" => valeurDeLaVariable.
+	 * Important ! La requête doit être de la forme :
+	 * '.. WHERE author.last_name = :prenom AND author.name = :nom'
 	 * 
 	 * @param ressource $link: instance renvoiée lors de la connexion PDO.
 	 * @param string $query: chaine SQL
-	 * @return array $resultSet : resultat de l'execution
+	 * @param boolean $again: Si true, le même statement est réexecuté avec de
+	 *                de nouveaux arguments; $query peut être vide.
+	 * @return mixed $stmt : retourne le statement de la requête.
 	 */
-	public function execPreparedQuery($link, $query, array  $args=null) {
-		$stmt = false;
-		
+	public function execPreparedQuery($link, $query, array  $args=null, $again=false) {
+		if(!$again) {
+			$this->_stmt = false;
+		}
 		try {
-			if($stmt = $link->prepare($query)){
+			if($again || $this->_stmt = $link->prepare($query)){
 				if($args !== null) {
 					foreach ($args as $varName => $varValue) {
-						$stmt->bindParam($varName, $varValue);
+						$this->_stmt->bindParam($varName, $varValue);
 					}
 				}
-				$stmt->execute();
+				$this->_stmt->execute();
 			}
 		} catch (PDOException $e) {
 			if($this->_noMsg !== false) {
@@ -90,8 +99,11 @@ class DbPdo implements DbInterface
 			}
 			
 		}
-		return $stmt;
+		return $this->_stmt;
 	}
+
+
+
 
 	/**
 	 * @name:          numRows
