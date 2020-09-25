@@ -84,9 +84,9 @@ class DbAccess
 
     /* Envoie la requête SQL $req pour son execution
 	   Retourne un resultSet */
-    public function execPreparedQuery($query, $args=null) 
+    public function execPreparedQuery($query, $args=null, $again = false) 
     {
-		return $this->_dbInterface->execPreparedQuery($this->_link, $query, $args);
+		return $this->_dbInterface->execPreparedQuery($this->_link, $query, $args, $again);
     }
 
     /* Envoie la requête SQL $req pour son execution

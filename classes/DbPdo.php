@@ -80,7 +80,7 @@ class DbPdo implements DbInterface
 	 *                de nouveaux arguments; $query peut être vide.
 	 * @return mixed $stmt : retourne le statement de la requête.
 	 */
-	public function execPreparedQuery($link, $query, array  $args=null, $again=false) {
+	public function execPreparedQuery($link, $query, array  $args, $again) {
 		if(!$again) {
 			$this->_stmt = false;
 		}

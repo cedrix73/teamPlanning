@@ -13,7 +13,7 @@ interface DbInterface
 
     public function execQuery($link, $query);
 
-    public function execPreparedQuery($link, $query, array  $args = null, $again = false);
+    public function execPreparedQuery($link, $query, array  $args, $again);
 
     public function fetchRow($resultSet);
 

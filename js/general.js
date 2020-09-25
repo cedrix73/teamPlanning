@@ -127,7 +127,7 @@ function envoieFeedbackFormulaire(feedback_field, bln) {
 }
 
 function verifString(string_field_name) {
-
+    
 }
 
 function verifDate(date_field_name) {
