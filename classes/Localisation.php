@@ -86,10 +86,12 @@ class Localisation {
      * - Dans un contexte d'un formulaire d'enregistrement de ressources: 
      * (param $contexteInsertion = true):  retourne un tableau de tous les id 
      * ET libellés des departements, ou ceux en fonction d'un site donné ($siteId)
+     * Le paramètre whereLibelle a été rajouté pour forcer la correspondance avec un 
+     * libellé de site avec un contexte autre que la recherche  ($contexteInsertion = true)
      * 
      * @param mixed $siteId 
      * @param bool $contexteInsertion 
-     * 
+     * @param bool $whereLibelle 
      * @return mixed  
      */
     public function getDepartementsBySite($site = null, $contexteInsertion = false, $whereLibelle = false){
