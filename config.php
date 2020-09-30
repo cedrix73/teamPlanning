@@ -7,7 +7,7 @@ define('TEAM_DATABASE_USER' , 'root');
 define('TEAM_DATABASE_PASSWORD', 'cedrix');
 define('TEAM_DATABASE_NAME', 'team_planning');
 $bdObj = null;
-$usedDb = 'mysqli';
+$usedDb = 'mysql';
 $isAdmin = true;
 
 

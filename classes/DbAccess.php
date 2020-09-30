@@ -199,7 +199,7 @@ class DbAccess
         $max = count($tabInsert)-1;
         foreach ($tabInsert as $key=>$value) {
             $sqlInsert .= $key;
-            $sqlData .= '\''.$value.'\'';
+            $sqlData .= '\'' . utf8_decode($value) . '\'';
             if ($i<$max) {
                 $sqlInsert .= ', ';
                 $sqlData .= ', ';
@@ -212,7 +212,7 @@ class DbAccess
         
         $sql = $sqlInsert . $sqlData;
         try{
-            $retour = $this->execQuery($sql);
+            $retour = $this->execPreparedQuery($sql);
         }catch(Exception $e){
             $this->_log = $e->getMessage();
             $retour = false;

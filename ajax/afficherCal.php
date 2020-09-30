@@ -7,7 +7,7 @@ require_once ABS_CLASSES_PATH.'CvfDate.php';
 require_once ABS_CLASSES_PATH.'Ressource.php';
 require_once ABS_CLASSES_PATH.'Event.php';
 require_once ABS_CLASSES_PATH.'Planning.php';
-require_once ABS_GENERAL_PATH.'form_functions.php';
+require_once ABS_GENERAL_PATH.'formFunctions.php';
 
 
 
@@ -233,8 +233,8 @@ if($handler===FALSE){
             }
             
             // ------ Représentation des jours -------
-            $ressource =  utf8_encode($tabRessources[$numRes]['nom']). ' ' . 
-                    utf8_encode($tabRessources[$numRes]['prenom']);
+            $ressource =  $tabRessources[$numRes]['nom']. ' ' . 
+                    $tabRessources[$numRes]['prenom'];
             // fonction hoover
             $infoBulle = ' title = "'.$jourCal->jourDetails().' ' . $ressource.' statut: ';
             

@@ -3,10 +3,10 @@
 //include_once 'config.php';
 require_once realpath(dirname(__FILE__)).'/config.php';
 require_once ABS_CLASSES_PATH.'DbAccess.php';
-require_once ABS_GENERAL_PATH.'form_functions.php';
+require_once ABS_GENERAL_PATH.'formFunctions.php';
 require_once ABS_CLASSES_PATH.'Ressource.php';
 require_once ABS_CLASSES_PATH.'CvfDate.php';
-  
+
   // Connection
 $dbaccess = new DbAccess($dbObj);
 $handler = $dbaccess->connect();
@@ -144,7 +144,7 @@ $refreshCalendarOption = '';
                                 ?>
                             </select>
                             <?php } ?>
-                            <input id="new_site" type="button" name ="site" value="+" onclick="afficherTypesLocalisation('site');"/>
+                            <input id="new_site" type="button" name ="site" value="+" onclick="afficherTypesLocalisation();"/>
                         </fieldset>
                         <fieldset id="fielset_departements">
                             <legend>Departements</legend>
@@ -156,7 +156,7 @@ $refreshCalendarOption = '';
                             <?php } 
                             if ($blnSites) {
                             ?>
-                            <input id="new_departement" type="button" value="+" onclick="afficherTypesLocalisation('departement');"/>
+                            <input id="new_departement" type="button" value="+" onclick="afficherTypesLocalisation(cbo_sites.options[cbo_sites.selectedIndex].value, '');"/>
                             <?php } ?>
                         </fieldset>
                         <fieldset id="fielset_service">
@@ -168,7 +168,7 @@ $refreshCalendarOption = '';
                             <?php } 
                             if ($blnDepartements) {
                             ?>
-                            <input id="new_service" type="button" value="+" onclick="afficherTypesLocalisation('service');"/>
+                            <input id="new_service" type="button" value="+" onclick="afficherTypesLocalisation(cbo_sites.options[cbo_sites.selectedIndex].value, cbo_departements.options[cbo_departements.selectedIndex].value);"/>
                             <?php } ?>
                         </fieldset>
                         <?php if(isset($isAdmin) && $isAdmin){?>

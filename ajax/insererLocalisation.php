@@ -4,8 +4,8 @@ require_once '../config.php';
 require_once ABS_CLASSES_PATH.$dbFile;
 require_once ABS_CLASSES_PATH.'DbAccess.php';
 require_once ABS_CLASSES_PATH.'Localisation.php';
-require_once ABS_GENERAL_PATH.'form_functions.php';
-//require_once ABS_GENERAL_PATH.'form_functions.php';
+require_once ABS_GENERAL_PATH.'formFunctions.php';
+//require_once ABS_GENERAL_PATH.'formFunctions.php';
 
 
 /* 
@@ -23,8 +23,7 @@ if (isset($_POST['type_localisation']) && !is_null($_POST['type_localisation']) 
 }
 
 $libelleLocalisation = '';
-if (isset($_POST['libelle_localisation']) && !is_null($_POST['libelle_localisation']) &&  $_POST['libelle_localisation'] == true 
-    && ctype_alnum($_POST['libelle_localisation'])) {
+if (isset($_POST['libelle_localisation']) && !is_null($_POST['libelle_localisation']) &&  $_POST['libelle_localisation'] == true) {
     $libelleLocalisation = $_POST['libelle_localisation'];
     $isOk = true;
 }
@@ -37,7 +36,7 @@ if (isset($_POST['description_localisation']) && !is_null($_POST['description_lo
 }
 if ($typeLocalisation != 'site') {
     if(isset($_POST['key_localisation']) && !is_null($_POST['key_localisation']) &&  $_POST['key_localisation'] == true 
-       && is_numeric($_POST['description_localisation'])) {
+       && is_numeric($_POST['key_localisation'])) {
         $keyLocalisation = $_POST['key_localisation'];
         $isOk = true;
     }
@@ -46,9 +45,7 @@ if ($typeLocalisation != 'site') {
 
 if ($isOk === false) {
     $retour = 'Paramètres incorrects';
-}
-
-
+} else {
 // Connexion
 $dbaccess = new DbAccess($dbObj);
 $handler = $dbaccess->connect();
@@ -85,6 +82,11 @@ if ($isOk) {
 }
 
 $dbaccess->close($handler);
+
+}
+
+
+
 
 //echo utf8_encode($retour);
 echo $retour;

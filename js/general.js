@@ -266,10 +266,6 @@ function validerSaisieForm(container_name){
         return false;
     }else{
         var json_string = JSON.stringify(fields_tab);
-
-        alert(json_string);
-
-
         return json_string;
     }
 }

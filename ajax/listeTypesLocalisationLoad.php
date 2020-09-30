@@ -4,8 +4,8 @@ include_once '../config.php';
 require_once ABS_CLASSES_PATH.$dbFile;
 require_once ABS_CLASSES_PATH.'DbAccess.php';
 require_once ABS_CLASSES_PATH.'Localisation.php';
-require_once ABS_GENERAL_PATH.'form_functions.php';
-//require_once ABS_GENERAL_PATH.'form_functions.php';
+require_once ABS_GENERAL_PATH.'formFunctions.php';
+//require_once ABS_GENERAL_PATH.'formFunctions.php';
 
 
 /* 
@@ -17,37 +17,64 @@ $retour = '';
 // Connexion
 $dbaccess = new DbAccess($dbObj);
 $handler = $dbaccess->connect();
-if($handler === false){
+if ($handler === false){
     $retour = 'Problème de connexion à la base ';
     $isOk = false;
-}else{
-
-    $typeLocalisation = '';
-    if(isset($_POST['type_localisation']) 
-        && !is_null($_POST['type_localisation']) 
-        &&  $_POST['type_localisation'] == true
-        && ctype_alnum($_POST['type_localisation']))
+} else {
+    $siteLibelle = '';
+    if (isset($_POST['site_lib']) 
+        && !is_null($_POST['site_lib']) 
+        )
     {
-        $typeLocalisation = $_POST['type_localisation'];
+        $siteLibelle = $_POST['site_lib'];
         $isOk = true;
+    } else {
+        $isOk = false;
     }
+    $departementLibelle = '';
+    if (isset($_POST['departement_lib']) 
+        && !is_null($_POST['departement_lib']) 
+        )
+    {
+        $departementLibelle = $_POST['departement_lib'];
+        $isOk = true;
+    }else{
+        $isOk = false;
+    }
+    
+
     if( !$isOk) 
     {
         $retour = "paramètres incorrects";
         
     } else {
+        if(empty($siteLibelle)) {
+            $typeLocalisation = "site";
+            $typeSuperieur = "site";
+        } else {
+            if(empty($departementLibelle)) {
+                $typeLocalisation = "departement";
+                $typeSuperieur = "site";
+                
+            }else{
+                $typeLocalisation = "service";
+                $typeSuperieur = "departement";
+            }
+        }
+
         $localisation = new Localisation($dbaccess, $typeLocalisation);
         $tabLocalisation = array();
         $tabLocalisation = $localisation->getAll();
         $retour = '';
         
         $retour .= '<table id="tab_localisations" class= "tab_params">';
-        $retour .= '<th>libellé</th><th>description</th><th>modification</th>';
+        $retour .= '<th>libellé</th><th>description</th>';
         if ($typeLocalisation != 'site') {
-            $retour .= '<th>catégorie</th>';
+            $retour .= '<th>' . $typeSuperieur . '</th>';
+            $typeSuperieurId = $typeSuperieur . '_id';
         }
-        $typeSuperieur = ($typeLocalisation == 'departement' ? 'site' : 'departement');
-        $typeSuperieurId = $typeSuperieur . '_id';
+        $retour .= '<th>action</th>';
+        
         $tabOptions = tabLoad('libelle', $typeSuperieur, $dbaccess);
 
         $classeParite = 'pair';
@@ -71,18 +98,28 @@ if($handler === false){
 
 
                 $retour .= '<td><input type="button" id="' . $id . '_validation_ligne" disabled value="valider" onclick="modifierTypeLocalisation('. $id .');"/></td>';
+                /**
+                 * TO DO:
+                 * 
+                 */
                 $retour .="</tr>";
                 $i++;
             } 
         }
+
+        
+
         // Ajout d'un nouveau type d'événement
         $retour .=   '<tr id="newLine" class="'.$classeParite.'">';
         $retour .= '<td><input type="text" id="libelle_localisation" value="" /> </td>';
         $retour .= '<td><input type="text" id="description_localisation" value="" maxlength="250" /></td>';
         $typeSuperieur = null;
+
+        if ($typeLocalisation == 'service') {
+            $tabOptions = $localisation->getDepartementsBySite($siteLibelle, true);
+        }
+
         if ($typeLocalisation != 'site') {
-            $typeSuperieur = ($typeLocalisation == 'departement' ? 'site' : 'departement');
-            $options = selectLoad('libelle', $typeSuperieur, $dbaccess);
             $options = getOptionsFromTab($tabOptions);
             $retour .= '<td><select id = "key_localisation">' . $options . '</select></td>';
         }
@@ -90,12 +127,6 @@ if($handler === false){
         $retour .="</tr>";
         $retour .= '</table>';
         //$retour = utf8_encode($retour);
-    
-    
-
-        ?><script>$(".choix_couleur").colorpicker({
-            strings: "Couleurs variées,Couleurs de base,+ de couleurs,- de couleurs,Palette,Historique,Pas encore d'historique."
-        });</script><?php
     }
 }
 

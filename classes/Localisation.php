@@ -101,9 +101,8 @@ class Localisation {
         $tabDepartements = array();
         $champWhere = "";
         if ($site !== null && $site != 'Tous *'){
-            $champWhere = ($contexteInsertion === false) ? "libelle" : "id";
             $requete .=  " INNER JOIN site on departement.site_id = site.id "
-                      . " WHERE site." . $champWhere . " = '" . $site ."'";
+                      . " WHERE site.libelle = '" . $site ."'";
                       
         }
         $requete .=  " ORDER BY departement.libelle";

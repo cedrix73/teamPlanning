@@ -12,10 +12,11 @@
 
 
 
-
-function afficherTypesLocalisation(type){
+// A faire: Ajouter l'id de la catégorie sup(département et service)
+function afficherTypesLocalisation(site='', departement=''){
     $.post("ajax/listeTypesLocalisationLoad.php", {
-        type_localisation: ""+type+""}, 
+        site_lib: ""+site+"",
+        departement_lib: ""+departement+"",}, 
             function(data){
             if(data.length >0) {
                 $('#div_saisie_activite').html(data);

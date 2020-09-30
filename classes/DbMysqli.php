@@ -109,12 +109,12 @@ class DbMySqli implements DbInterface {
 	 *                de nouveaux arguments; $query peut être vide.
 	 * @return mixed $stmt : retourne le statement de la requête.
      */
-	public function execPreparedQuery($link, $query, array  $args, $again) {
+	public function execPreparedQuery($link, $query, $args=null, $again) {
         if(!$again) {
 			$this->_stmt = false;
 		}
         try {   
-            if($again || $this->_stmt = $link->prepare($query, MYSQLI_STORE_RESULT)){
+            if($again || $this->_stmt = $link->prepare($query)){
                 if($args !== null) {
                     foreach ($args as $varName => $varValue) {
                         $this->_stmt->bindParam($varName, $varValue);
@@ -129,7 +129,7 @@ class DbMySqli implements DbInterface {
             }
             $link->free_result();
         }
-        return $stmt;
+        return $this->_stmt;
 	}
 
     /**
