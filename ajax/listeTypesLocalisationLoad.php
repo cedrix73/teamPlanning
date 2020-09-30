@@ -116,7 +116,8 @@ if ($handler === false){
         $typeSuperieur = null;
 
         if ($typeLocalisation == 'service') {
-            $tabOptions = $localisation->getDepartementsBySite($siteLibelle, true);
+
+            $tabOptions = $localisation->getDepartementsBySite($siteLibelle, true, true);
         }
 
         if ($typeLocalisation != 'site') {

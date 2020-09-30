@@ -92,7 +92,7 @@ class Localisation {
      * 
      * @return mixed  
      */
-    public function getDepartementsBySite($site = null, $contexteInsertion = false){
+    public function getDepartementsBySite($site = null, $contexteInsertion = false, $whereLibelle = false){
         $rs = false;
         $champId = ($contexteInsertion === false) ? "" : "departement.id,";
         $requete = "SELECT DISTINCT " . $champId  . " departement.libelle "
@@ -101,8 +101,14 @@ class Localisation {
         $tabDepartements = array();
         $champWhere = "";
         if ($site !== null && $site != 'Tous *'){
+            if (isset($whereLibelle) && $whereLibelle == true){
+                $champWhere = "libelle";
+            } else {
+                $champWhere = ($contexteInsertion === false) ? "libelle" : "id";
+            }
+            
             $requete .=  " INNER JOIN site on departement.site_id = site.id "
-                      . " WHERE site.libelle = '" . $site ."'";
+                      . " WHERE site." . $champWhere . " = '" . $site ."'";
                       
         }
         $requete .=  " ORDER BY departement.libelle";
