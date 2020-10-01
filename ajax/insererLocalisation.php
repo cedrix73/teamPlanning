@@ -36,7 +36,7 @@ if (isset($_POST['description_localisation']) && !is_null($_POST['description_lo
 }
 if ($typeLocalisation != 'site') {
     if(isset($_POST['key_localisation']) && !is_null($_POST['key_localisation']) &&  $_POST['key_localisation'] == true 
-       && is_numeric($_POST['key_localisation'])) {
+       && ctype_alnum($_POST['key_localisation'])) {
         $keyLocalisation = $_POST['key_localisation'];
         $isOk = true;
     }

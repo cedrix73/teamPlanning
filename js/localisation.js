@@ -15,7 +15,7 @@
 // A faire: Ajouter l'id de la catégorie sup(département et service)
 function afficherTypesLocalisation(site='', departement=''){
     $.post("ajax/listeTypesLocalisationLoad.php", {
-        site_lib: ""+site+"",
+        site_id: ""+site+"",
         departement_lib: ""+departement+"",}, 
             function(data){
             if(data.length >0) {
@@ -48,11 +48,11 @@ function insererTypeLocalisation(type){
     );
 }
 
-function liste_departements_load(site_sel){
+function liste_departements_load(site){
     $.ajax({
         type: "post",
         url: "ajax/listeDepartementsLoad.php",
-        data: "site_sel=" + site_sel,
+        data: "site_id=" + site,
         datatype: "json",
         success: function(data)
         {
@@ -63,7 +63,7 @@ function liste_departements_load(site_sel){
                 tab_elems.push('<option value="' + valeur + '">' + valeur + '</option>');
             });
             $("#cbo_departements").html(tab_elems.join(''));
-            liste_services_load(site_sel, $("#cbo_departements").val());
+            liste_services_load(site, $("#cbo_departements").val());
         },
         error: function(message)
         {
@@ -76,7 +76,7 @@ function liste_services_load(site_sel, departement_sel){
     $.ajax({
         type: "POST",
         url: "ajax/listeServicesLoad.php",
-        data: {"site_sel": site_sel, "departement_sel":departement_sel },
+        data: {"site_id": site_sel, "departement_sel":departement_sel },
         datatype: "json",
         success: function(data)
         {

@@ -94,7 +94,7 @@ class Localisation {
      * @param bool $whereLibelle 
      * @return mixed  
      */
-    public function getDepartementsBySite($site = null, $contexteInsertion = false, $whereLibelle = false){
+    public function getDepartementsBySite($siteId = null, $contexteInsertion = false){
         $rs = false;
         $champId = ($contexteInsertion === false) ? "" : "departement.id,";
         $requete = "SELECT DISTINCT " . $champId  . " departement.libelle "
@@ -102,15 +102,10 @@ class Localisation {
                 
         $tabDepartements = array();
         $champWhere = "";
-        if ($site !== null && $site != 'Tous *'){
-            if (isset($whereLibelle) && $whereLibelle == true){
-                $champWhere = "libelle";
-            } else {
-                $champWhere = ($contexteInsertion === false) ? "libelle" : "id";
-            }
+        if($siteId !== null && $siteId <> 0){
             
             $requete .=  " INNER JOIN site on departement.site_id = site.id "
-                      . " WHERE site." . $champWhere . " = '" . $site ."'";
+                      . " WHERE site.id = " . $siteId;
                       
         }
         $requete .=  " ORDER BY departement.libelle";
@@ -149,7 +144,7 @@ class Localisation {
      * 
      * @return array  
      */
-    public function getServicesByDepartement($site = null, $departement = null, $contexteInsertion = false)
+    public function getServicesByDepartement($siteId = null, $departement = null, $contexteInsertion = false)
     {
         $rs = false;
         $champId = ($contexteInsertion === false) ? "" : "service.id,";
@@ -160,8 +155,8 @@ class Localisation {
         $tabServices = array();
 
         $champWhere = ($contexteInsertion === false) ? "libelle" : "id";
-        if($site !== null && $site != 'Tous *'){
-            $requete.= " AND site." . $champWhere . " = '" . $site ."'";
+        if($siteId !== null && $siteId <> 0){
+            $requete.= " AND site.id = " . $siteId;
         }
 
         if($departement != null && $departement!= 'Tous *'){

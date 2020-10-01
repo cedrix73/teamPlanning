@@ -1,5 +1,5 @@
 FROM php:7.2-fpm-alpine
-LABEL Name=teamplanning Version=0.0.1 Author=Cedrix73
+LABEL Name=teamplanning Version=0.0.1 Author=cedric73
 ENV TEAM_DATABASE_SERVER localhost
 ENV TEAM_DATABASE_USER root
 ENV TEAM_DATABASE_PASSWORD cedrix

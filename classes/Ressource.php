@@ -52,7 +52,7 @@ class Ressource {
         // Traitement sites
         if($site != null && $site!='Tous*'){
             $this->siteId = $site;
-            $requete.= " AND site.libelle = '" . $this->siteId ."'";
+            $requete.= " AND site.id = '" . $this->siteId ."'";
         }
 
         // Traitement departements

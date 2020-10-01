@@ -21,12 +21,13 @@ if ($handler === false){
     $retour = 'Problème de connexion à la base ';
     $isOk = false;
 } else {
-    $siteLibelle = '';
-    if (isset($_POST['site_lib']) 
-        && !is_null($_POST['site_lib']) 
-        )
+    $siteId = '';
+    if (isset($_POST['site_id']) 
+    && !is_null($_POST['site_id']) 
+    &&  $_POST['site_id'] == true
+    && ctype_digit($_POST['site_id']))
     {
-        $siteLibelle = $_POST['site_lib'];
+        $siteId = $_POST['site_id'];
         $isOk = true;
     } else {
         $isOk = false;
@@ -48,7 +49,7 @@ if ($handler === false){
         $retour = "paramètres incorrects";
         
     } else {
-        if(empty($siteLibelle)) {
+        if(empty($siteId)) {
             $typeLocalisation = "site";
             $typeSuperieur = "site";
         } else {
@@ -117,7 +118,7 @@ if ($handler === false){
 
         if ($typeLocalisation == 'service') {
 
-            $tabOptions = $localisation->getDepartementsBySite($siteLibelle, true, true);
+            $tabOptions = $localisation->getDepartementsBySite($siteId, true);
         }
 
         if ($typeLocalisation != 'site') {

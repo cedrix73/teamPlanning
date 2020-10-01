@@ -23,7 +23,9 @@ $blnServices = false;
 $blnRessources = false;
 
 // Liste des sites
-$listeSites = listeLoad('libelle', 'site', $dbaccess);
+$listeSites = tabLoad('libelle', 'site', $dbaccess);
+$listeSites[0] = "Tous *";
+ksort($listeSites);
 
 if (count($listeSites) > 1) {
     $blnSites = true;
@@ -136,9 +138,9 @@ $refreshCalendarOption = '';
                             <?php if ($blnSites) { ?>
                                 <select id="cbo_sites" name="cbo_sites" onchange="<?php echo $refreshCalendarOption;?>liste_departements_load(this.options[this.selectedIndex].value)">
                                 <?php
-                                foreach ($listeSites as $value) {
+                                foreach ($listeSites as $key => $value) {
                                     $pref = ($value == $siteDefaut) ? 'selected = selected' : "";
-                                    ?><option value="<?php echo $value;?>" <?php echo $pref;?>><?php echo $value;?></option>
+                                    ?><option value="<?php echo $key;?>" <?php echo $pref;?>><?php echo $value;?></option>
                                     <?php 
                                 }
                                 ?>
