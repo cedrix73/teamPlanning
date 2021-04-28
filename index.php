@@ -193,9 +193,9 @@ $refreshCalendarOption = '';
             
             <div id ="div_info">
                 <div id="div_cadre_saisie_activite">
-                <div id ="div_saisie_activite" style="float:left;">
-                    <fieldset id="fielset_saisie_activite" class="tab_params">
-                        <legend id = "lgd_saisie_activite">Saisie d'une activité</legend>
+                <div id ="div_saisie_activite" style="float:left;" >
+                    <fieldset id="div_saisie_activite" class="tab_params">
+                        <legend id = "lgd_saisie_activite" onclick="cacherComposantsInfo();">Saisie d'une absence</legend>
                         <span>Du&nbsp;</span>  
                         <input type="text"
                            name="txt_str_date_debut"

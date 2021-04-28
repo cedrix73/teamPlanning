@@ -47,7 +47,7 @@ function utf8_encode(chaine) {
 }
 
 /*
- * valid_DatePourComparaison
+ * validDatePourComparaison
  * @param {type} strDate
  * @returns {String}
  * DESCRIPTION :
@@ -57,7 +57,7 @@ function utf8_encode(chaine) {
    L'avantage de ce format est qu'il peut être utilisé pour
    la comparaison de dates
  */
-function valid_DatePourComparaison(strDate) {
+function validDatePourComparaison(strDate) {
 
     var datePat = /^(\d{1,2})(\/)(\d{1,2})(\/)(\d{4})$/;
     var matchArray = strDate.match(datePat); // is the format ok?
@@ -218,7 +218,7 @@ function validerSaisieForm(container_name){
                 // alphanumerique
                 if($(this).attr('type')=='text') {
                     
-                    if(verifStringAlphaNum($(this).attr('name')) == false) {
+                    if(verifStringAlpha($(this).attr('name')) == false) {
                         uncorrect_fields += "<li>Le champ <i>" + ressourceLabel + "</i> est incorrect. il doit contenir uniquement " 
                                             + "des chiffres, des lettres ou des trémas.</li>";
                         bln_ok = false;

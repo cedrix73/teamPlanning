@@ -171,9 +171,8 @@ if($handler===FALSE){
             $classeLegende = 'legende_ressources';
         }
         $retour.='<div id = ressource_' . $numRes . ' class="'.$classeLegende.'">'.
-        ' ' . $tabRessources[$numRes]['nom'] . ' ' .
-        $tabRessources[$numRes]['prenom'].
-        '</div>';
+        ' ' . ucfirst($tabRessources[$numRes]['nom']) . ' ' .
+        ucfirst($tabRessources[$numRes]['prenom']) . '</div>';
         
         
         /*  Affichage des jours par ressources */
@@ -224,7 +223,6 @@ if($handler===FALSE){
                 
                 // 28/04/2021 Ajout du télétravail
                 if($tabTypeEvent[$indexEvent]['libelle'] !== "Télétravail") {
-                    // essayer avec !isnull($tabActivites[$numRes][$jourCal])
                     $isEvent = true;
                 } else {
                     $teletravail = true;
@@ -277,7 +275,7 @@ if($handler===FALSE){
             // click: selection d'une activité
             if($isAdmin || $isMe){      
                 if(!($isWeekend || $isFerie)){
-                    $fonctionClick = 'afficherSaisie("'.$jourCal->tspToDate().'",'.$numRes.','.$indexEvent.');';
+                    $fonctionClick = 'afficherSaisie("'.$jourCal->tspToDate(). '",' . $numRes . ',' . $indexEvent . ',' . $periode . ');';
                     $fonctionClick .= 'infoRessource("'
                         . str_replace(' ', '---', $tabRessources[$numRes]['nom']) 
                         .'","'.str_replace(' ', '---', $tabRessources[$numRes]['prenom']).'");';
@@ -287,12 +285,12 @@ if($handler===FALSE){
             // Affichage dans cellule
             $retour.= '>';
             if($isEvent || $teletravail){
-                $retour.= $tabTypeEvent[$indexEvent]['affichage'];
+                $retour .= $tabTypeEvent[$indexEvent]['affichage'];
             }elseif($isFerie){
                 $retour.= 'férié';
-                //$retour.= utf8_encode('férié');
             }
             $retour.= '</div>';
+            // Iterer au jour suivant
             $jourCal->incJours();
         }
     }

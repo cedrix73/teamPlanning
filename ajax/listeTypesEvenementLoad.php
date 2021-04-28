@@ -24,7 +24,7 @@ if($handler===FALSE){
     $tabActivites = array();
     $tabActivites = $activite->getAll();
     $retour = '';
-    $retour .= '<div class="legende_titre"><h1>Types de congés</h1></div>';
+    $retour .= '<div class="legende_titre" onclick="cacherComposantsInfo();"><h1>Types de congés</h1></div>';
     
     $retour .= '<table id="tab_activites" class= "tab_params">';
     $retour .= '<th>libellé</th><th>couleur</th><th>abbréviation</th>';

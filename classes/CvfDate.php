@@ -510,18 +510,18 @@ setlocale(LC_TIME, 'fr','fr_FR','fr_FR@euro','fr_FR.utf8','fr-FR','fra');
                     $anneePaques = date('Y', $datePaques);
                     // Jours feries fixes
                     $holidays[mktime(9, 0, 0, 1, 1, $year)] = 'Jour de l\'an';
-                    $holidays[mktime(9, 0, 0, 5, 1, $year)] = utf8_decode('Fête du travail');
+                    $holidays[mktime(9, 0, 0, 5, 1, $year)] = 'Fête du travail';
                     $holidays[mktime(9, 0, 0, 5, 8, $year)] = 'Victoire des allies';
-                    $holidays[mktime(9, 0, 0, 7, 14, $year)] = utf8_decode('Fête nationale');
+                    $holidays[mktime(9, 0, 0, 7, 14, $year)] = 'Fête nationale';
                     $holidays[mktime(9, 0, 0, 8, 15, $year)] = 'Assomption';
                     $holidays[mktime(9, 0, 0, 11, 1, $year)] = 'Toussaint';
                     $holidays[mktime(9, 0, 0, 11, 11, $year)] = 'Armistice';
-                    $holidays[mktime(9, 0, 0, 12, 25, $year)] = utf8_decode('Noël');
+                    $holidays[mktime(9, 0, 0, 12, 25, $year)] = 'Noël';
 
                     // Jour feries qui dependent de paques
-                    $holidays[mktime(9, 0, 0, $moisPaques, $jourPaques + 1, $anneePaques)] = utf8_decode('Lundi de pâques');
+                    $holidays[mktime(9, 0, 0, $moisPaques, $jourPaques + 1, $anneePaques)] = 'Lundi de pâques';
                     $holidays[mktime(9, 0, 0, $moisPaques, $jourPaques + 39, $anneePaques)] = 'Ascension';
-                    $holidays[mktime(9, 0, 0, $moisPaques, $jourPaques + 50, $anneePaques)] = utf8_decode('Pentecôte');
+                    $holidays[mktime(9, 0, 0, $moisPaques, $jourPaques + 50, $anneePaques)] = 'Pentecôte';
                 }
                 //sort($holidays);
                 return $holidays;

@@ -18,7 +18,7 @@ function afficherTypesEvents(){
         $("#affichage_activite").val("");
     } else {
         var contenuActivite = $("#div_saisie_activite").html();
-        $.post("ajax/listeTypesEventLoad.php", 
+        $.post("ajax/listeTypesEvenementLoad.php", 
              function(data){
                 if(data.length >0) {
                     $('#div_saisie_activite').html(data);

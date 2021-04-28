@@ -140,10 +140,11 @@ function setDateWidget(dateRetournee){
  * afficherSaisie
  * @param {type} date
  * @param {type} ressource_id
- * @param {type} numActivite (=0 pour tout jour travaillé)
+ * @param {type} numActivite (=0 pour tout jour travaillé) 
+ * @param {type} numPeriode (=0 pour tout jour travaillé)
  * @returns {undefined}
  */
-function afficherSaisie(date, ressource_id, numActivite){
+function afficherSaisie(date, ressource_id, numActivite, numPeriode){
     $("#div_saisie_activite").html(initialiserFormulaire.saisieActivite);
     // patch 1.1.1 met à jour la liste des activités
     $.post("ajax/getActivites.php", 
@@ -162,6 +163,7 @@ function afficherSaisie(date, ressource_id, numActivite){
     $("#div_saisie_activite").slideDown();
     $("#txt_str_date_debut").val(date);
     $("#txt_str_date_fin").val(date);
+    $("#lst_periodes").val(numPeriode);
     infoRessource.id = ressource_id;
     infoRessource.action = "insertion";
     $("#btn_valider_saisie").val("Valider");

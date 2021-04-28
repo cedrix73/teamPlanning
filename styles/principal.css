@@ -195,6 +195,7 @@ a:hover {
     border: 1px solid #FFFFCC;
 }
 
+
 .cell, .today, .legende_ressources, .legende_me, legende_totaux{
     background:#00;
     margin-top: 2px;
@@ -309,8 +310,8 @@ fieldset {
 
 #div_saisie_activite{
     float:left;
-    padding: 10px;
     margin: 4px 3px;
+    display: inline;
     border-radius: 10px;
 }
 
@@ -326,8 +327,8 @@ fieldset {
     border: 1px solid;
     border-radius: 15px;
     -moz-border-radius: 15px;
-    -webkit-border-radius:15px;
-    padding: 5px;
+    -webkit-border-radius: 15px;
+    padding-bottom: 15px;
     background: #CFF;
 }
 /* Tableau des types d'activités */
@@ -345,6 +346,11 @@ input, select {
 
 #tab_activites td {
     width:100px;
+}
+
+legend {
+    font-size: 20px;
+    margin-left: 50px;
 }
 
 tr.pair{

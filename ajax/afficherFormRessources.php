@@ -29,7 +29,7 @@ if ($handler === false) {
         $numGroupe = 0;
         $nbChampsParLigne = 3;
         
-        $retour .= '<div class="legende_titre"><h1>Enregistrement d\'un collaborateur</h1></div>';
+        $retour .= '<div class="legende_titre" onclick="cacherComposantsInfo();"><h1>Enregistrement d\'un collaborateur</h1></div>';
         $retour .= '<div id="panel_ressource" name = "panel_ressource"><table id="tab_ressources" class= "tab_params">';
         // Liste de tous les types d'événement
         foreach ($tabChamps as $value) {

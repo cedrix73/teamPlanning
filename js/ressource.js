@@ -74,7 +74,7 @@ function form_services_load(site_sel, departement_sel){
 function infoRessource(nom, prenom){
     infoRessource.nom = replaceBlancs(nom);
     infoRessource.prenom = replaceBlancs(prenom);
-    $("#lgd_saisie_activite").text("saisie d'activité de <i>" + infoRessource.prenom + " " + infoRessource.nom + "</i>");
+    $("#lgd_saisie_activite").text("Saisie d'absence de <i>" + infoRessource.prenom + " " + infoRessource.nom + "</i>");
 }
 
 function validerSaisieRessource(){
