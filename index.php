@@ -68,7 +68,7 @@ $refreshCalendarOption = '';
 <html>
     <head>
             <title>Planning</title>
-            <meta http-equiv="Content-Type" content="text/HTML; charset=UTF-8" />
+            <meta http-equiv="Content-Type" content="text/HTML" charset="utf-8" />
             <meta http-equiv="Content-Language" content="fr" />
             <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
             <META NAME="Author" CONTENT="Cédric Von Felten">

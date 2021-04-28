@@ -130,7 +130,8 @@ CREATE TABLE IF NOT EXISTS evenement (
 -- Contenu de la table `event`
 --
 
-INSERT INTO evenement (libelle, affichage, couleur) VALUES
+INSERT INTO evenement (libelle, affichage, couleur) VALUES 
+('Télétravail', 'Tel', 'FFFFCC'),
 ('CP', 'CP', '6600CC'),
 ('RTT', 'RTT', 'CC0033'),
 ('Formation', 'Crs', '999966'),

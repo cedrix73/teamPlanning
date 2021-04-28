@@ -30,8 +30,7 @@ class Event {
         
         foreach ($results as $ligne) {
             $id = intval($ligne['id']);
-            $ligne['libelle'] = utf8_encode($ligne['libelle']);
-            $tabTypeEvent[$id] = $ligne;
+            $tabTypeEvent[$id]=array_map('utf8_encode', $ligne);
         }
         return $tabTypeEvent;
     }

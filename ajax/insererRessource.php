@@ -57,7 +57,6 @@ if(!$isOk) {
 }
     
 $dbaccess->close($handler);
-//echo utf8_encode($retour);
 echo $retour;
 
 

@@ -45,7 +45,7 @@ setlocale(LC_TIME, 'fr','fr_FR','fr_FR@euro','fr_FR.utf8','fr-FR','fra');
                         $this->minute() + $min,
                         0,
                         $this->numMois() + $mois,
-                        $this->numJour()+ $jours,
+                        $this->numJour() + $jours,
                         $this->annee() + $annees);
             }
             
@@ -352,13 +352,13 @@ setlocale(LC_TIME, 'fr','fr_FR','fr_FR@euro','fr_FR.utf8','fr-FR','fra');
             public function dernierDimancheMois($an,$mois)
             {
                 //on isole le mois et l'année du changement d'heure
-                $dt = new ArchDate(mktime(2,0,0, $mois+1, 0,$an));
+                $dt = new CvfDate(mktime(2,0,0, $mois+1, 0,$an));
                 $e=time2date($dt->tampon_unix);
 
                 //on récupère le dernier jours du mois
                 $djm=$dt->jour_semaine();
                 //pour chaque cas, on donne la date du dernier dimanche du mois
-                $nbJours = $this->arch_nbJoursdsMois($mois);
+                $nbJours = $this->nbJoursdsMois($mois);
                 return  date("d/m/Y H:i:s", mktime(2, 0, 0, $mois,31-$djm, $an));
             }
             

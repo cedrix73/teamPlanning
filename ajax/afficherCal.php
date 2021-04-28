@@ -171,8 +171,8 @@ if($handler===FALSE){
             $classeLegende = 'legende_ressources';
         }
         $retour.='<div id = ressource_' . $numRes . ' class="'.$classeLegende.'">'.
-        ' ' . utf8_encode($tabRessources[$numRes]['nom']) . ' ' .
-        utf8_encode($tabRessources[$numRes]['prenom']).
+        ' ' . $tabRessources[$numRes]['nom'] . ' ' .
+        $tabRessources[$numRes]['prenom'].
         '</div>';
         
         
@@ -213,23 +213,39 @@ if($handler===FALSE){
             $periode = '';
             $demiJournee = false;
             $intJourCal = $jourCal->getTsp();
+            $libellePeriode='';
+            $teletravail = false;
+
+
             if(isset($tabActivites[$numRes]) && isset($tabActivites[$numRes][$intJourCal])){
-                // essayer avec !isnull($tabActivites[$numRes][$jourCal])
-                $isEvent = true;
                 $indexEvent = intval($tabActivites[$numRes][$intJourCal]['type']);
                 $periode = intval($tabActivites[$numRes][$intJourCal]['periode']);
-                $libellePeriode='';
                 $couleur = $tabTypeEvent[$indexEvent]['couleur'];
-                $retour.= ' style="background: #'.$couleur.';';
+                
+                // 28/04/2021 Ajout du télétravail
+                if($tabTypeEvent[$indexEvent]['libelle'] !== "Télétravail") {
+                    // essayer avec !isnull($tabActivites[$numRes][$jourCal])
+                    $isEvent = true;
+                } else {
+                    $teletravail = true;
+                }
+
+                $retour.= ' style="background: #'.$couleur.';';   
                 
                 
                 
+                // On procéde déjà on comptage des dispos sur une 1/2 journée (= absence sur une 1/2 journée)
                 if($periode > 1){
                     $demiJournee = true;
                     $retour.= colorieDemiJournee($couleur, $periode);
-                    $tabNbRessources[$jourCal->getTsp()][$periode]++;
+                    if($isEvent) {
+                        $tabNbRessources[$jourCal->getTsp()][$periode]++;
+                    }
                 }
+                
+                
                 $retour.='" ';
+                
             }
             
             // ------ Représentation des jours -------
@@ -240,20 +256,23 @@ if($handler===FALSE){
             
             $fonctionHoover = '';
             if($isEvent){
-                $libellePeriode = ' (' . utf8_decode($tabPeriode[$periode]) . ')';
-                
-                $fonctionHoover.= $infoBulle . $tabTypeEvent[$indexEvent]['libelle'] . $libellePeriode . '" ';
+                $libellePeriode = ' (' . $tabPeriode[$periode] . ')';
+                $fonctionHoover .= $infoBulle . $tabTypeEvent[$indexEvent]['libelle'] . $libellePeriode . '" ';
             }elseif($isFerie){
-                $fonctionHoover.= $infoBulle . $tabFeries[$jourCal->getTsp()];
+                $fonctionHoover .= $infoBulle . $tabFeries[$jourCal->getTsp()];
             }elseif($isWeekend){
-                $fonctionHoover.= $infoBulle . 'en week-end';
+                $fonctionHoover .= $infoBulle . 'en week-end';
             }else{
-                $fonctionHoover.= $infoBulle . 'disponible';
-                // Si ressource dispo, on incrémente le tableau de comptage pour ce jour.
+                $fonctionHoover .= $infoBulle . 'disponible';
+                if($teletravail) {
+                    $fonctionHoover .= ' en télétravail';
+                }
+                
+                // Si ressource dispo pour un jour entier, on incrémente le tableau de comptage pour ce jour.
                 isset($tabNbRessources[$jourCal->getTsp()][1]) ? $tabNbRessources[$jourCal->getTsp()][1]++ : $tabNbRessources[$jourCal->getTsp()][1] = 1;
             }
             $fonctionHoover .= '" ';
-            $retour.= utf8_encode($fonctionHoover);
+            $retour.= $fonctionHoover;
             
             // click: selection d'une activité
             if($isAdmin || $isMe){      
@@ -267,7 +286,7 @@ if($handler===FALSE){
             }
             // Affichage dans cellule
             $retour.= '>';
-            if($isEvent){
+            if($isEvent || $teletravail){
                 $retour.= $tabTypeEvent[$indexEvent]['affichage'];
             }elseif($isFerie){
                 $retour.= 'férié';
@@ -285,14 +304,14 @@ if($handler===FALSE){
      */
     unset($jourCal);
     $jourCal = new CvfDate($premierJour);
-    $retour .= '<div class = "legende_ressources" style="background: none;"><b>Nombre de ressources disponibles</b></div>';
+    $retour .= '<div class = "legende_ressources" style="background: none;"><b>Disponibilités (Tot) ou (AM | PM)</b></div>';
     for($i=0;$i<7*$nbSemaines;$i++){
         $indexEvent = 0; // index = 0 pour tout jour travaillé
         
         if($tabNbRessources[$jourCal->getTsp()][2] > 0 || $tabNbRessources[$jourCal->getTsp()][3] > 0){
             $tabNbRessources[$jourCal->getTsp()][2]+=$tabNbRessources[$jourCal->getTsp()][1];
             $tabNbRessources[$jourCal->getTsp()][3]+=$tabNbRessources[$jourCal->getTsp()][1];
-            $retour.= '<div class="today"><b>' . $tabNbRessources[$jourCal->getTsp()][3] . ' / ' . $tabNbRessources[$jourCal->getTsp()][2] . '</b></div>';
+            $retour.= '<div class="today"><b>' . $tabNbRessources[$jourCal->getTsp()][3] . ' | ' . $tabNbRessources[$jourCal->getTsp()][2] . '</b></div>';
         }else{
             $retour.= '<div class="today"><b>' . $tabNbRessources[$jourCal->getTsp()][1] . '</b></div>';
         }

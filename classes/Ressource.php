@@ -74,7 +74,7 @@ class Ressource {
         foreach ($results as $ligne) {
             $id = $ligne['ressource_id'];
             unset($ligne['ressource_id']);
-            $this->tabRessources[$id]=$ligne;
+            $this->tabRessources[$id]=array_map('utf8_encode', $ligne);
         }
         return $this->tabRessources;
     }
