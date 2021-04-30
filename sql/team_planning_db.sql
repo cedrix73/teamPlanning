@@ -69,25 +69,26 @@ CREATE TABLE IF NOT EXISTS service (
 CREATE TABLE IF NOT EXISTS ressource (
   id integer NOT NULL AUTO_INCREMENT,
   NNI varchar(45) DEFAULT NULL,
-  nom varchar(255) DEFAULT NOT NULL,
-  prenom varchar(255) DEFAULT NOT NULL,
-  telephone varchar(255) DEFAULT NULL,
-  adresse_mail varchar(255) DEFAULT NOT NULL,
+  nom varchar(255) NOT NULL,
+  prenom varchar(255) NOT NULL,
+  telephone varchar(20) DEFAULT NULL,
+  adresse_mail varchar(255) NOT NULL,
   date_naissance date DEFAULT NULL,
   site_id integer(255) not NULL,
   departement_id integer(255) not NULL,
   service_id integer not NULL,
   bureau varchar(45) DEFAULT NULL,
-  statut varchar(45) DEFAULT NOT NULL,
+  statut varchar(45) DEFAULT NULL,
   num_badge varchar(255) DEFAULT NULL,
   date_signature_charte date DEFAULT NULL,
   date_sensibilitation_doc date DEFAULT NULL,
-  date_entree date DEFAULT NOT NULL,
+  date_entree date NOT NULL,
   date_sortie date DEFAULT NULL,
   date_restitution_materiel varchar(45) DEFAULT NULL,
   date_restitution_badge date DEFAULT NULL,
   commentaire text DEFAULT NULL,
   num_secur_id varchar(10) DEFAULT NULL,
+  is_admin char(1) DEFAULT NULL,
   KEY departement_idx (departement_id),
   CONSTRAINT ressource_site_fk FOREIGN KEY (site_id)
         REFERENCES site(id)
@@ -169,7 +170,7 @@ CREATE TABLE IF NOT EXISTS feries (
 -- Contenu de la table `feries`
 --
 
-INSERT INTO feries (id, libelle, actif) VALUES
+INSERT INTO feries (libelle, actif) VALUES
 ('Fête du travail', 1),
 ('Toussaint', 1),
 ('Mardi Gras', 1),
