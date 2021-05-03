@@ -1,11 +1,11 @@
 /* ----------------------------------------------------------------------------
    ----------------------------------------------------------------------------
    DESCRIPTION :                                                         
- * Bibliothèque javascript pour le formulaire principal de team planning  
+ * Bibliothèque javascript de gestion des ressources de team planning  
  * 
    ----------------------------------------------------------------------------
  * @author : Cédric Von Felten
- * @since  : 28/10/2014
+ * @since  : 28/10/2016
  * @version : 1.3
    --------------------------------------------------------------------------*/
 
@@ -15,7 +15,7 @@
         $("#div_saisie_activite").toggle();
         $("#affichage_activite").val("");
     } else {
-        $.post("ajax/afficherFormRessources.php", 
+        $.post("/teamplanning/ajax/afficherFormRessources.php", 
              function(data){
                 if(data.length >0) {
                     $('#div_saisie_activite').html(data);
@@ -24,12 +24,16 @@
         });
         $("#affichage_activite").val("form_ressources");
     }
+    //form_departements_load($("#res_site").val());
+
+    
 }
 
 function form_departements_load(site_sel){
+    //$("#res_departement").remove();
     $.ajax({
         type: "post",
-        url: "ajax/listeDepartementsLoad.php",
+        url: "/teamplanning/ajax/listeDepartementsLoad.php",
         data: "site=" + site_sel,
         data: {"site_sel": site_sel, "contexte_insertion": true},
         datatype: "json",
@@ -55,7 +59,7 @@ function form_departements_load(site_sel){
 function form_services_load(site_sel, departement_sel){
     $.ajax({
         type: "POST",
-        url: "ajax/listeServicesLoad.php",
+        url: "/teamplanning/ajax/listeServicesLoad.php",
         data: {"site_sel": site_sel, "departement_sel":departement_sel, "contexte_insertion": true},
         datatype: "json",
         success: function(data)
@@ -81,7 +85,7 @@ function validerSaisieRessource(){
     var json_string = validerSaisieForm("panel_ressource");
     if(json_string !== false && json_string !==undefined){
         $("#img_loading").show();
-        $.post("ajax/insererRessource.php", {
+        $.post("/teamplanning/ajax/insererRessource.php", {
             json_datas: json_string}, 
             function(data){
                 $("#img_loading").hide();

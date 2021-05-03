@@ -1,15 +1,15 @@
 <?php
 
-include_once '../config.php';
-require_once ABS_CLASSES_PATH.$dbFile;
-require_once ABS_CLASSES_PATH.'DbAccess.php';
-require_once ABS_CLASSES_PATH.'CvfDate.php';
-require_once ABS_CLASSES_PATH.'Planning.php';
+include_once '../../../config.php';
+require_once ABS_CLASSES_PATH . $dbFile;
+require_once ABS_CLASSES_PATH . 'DbAccess.php';
+require_once ABS_CLASSES_PATH . 'CvfDate.php';
+require_once ABS_PLANNING_PATH . CLASSES_PATH . 'Planning.php';
 
 
 /* 
- * Affichage des domaines en fonction des services
- * sélectionnées.
+ * Création ou modification d'un événement selon la variable javascript 
+ * infoRessource.action ={insertion, modification}
  */
 
 $retour = '';   
@@ -39,6 +39,18 @@ if(isset($_POST['date_fin']) && !is_null($_POST['date_fin']) &&  $_POST['date_fi
     $isOk = true;
 }
 
+$actionUser = '';
+if(isset($_POST['action_user']) && !is_null($_POST['action_user']) &&  $_POST['action_user'] == true){
+    $actionUser = $_POST['action_user'];
+    $isOk = true;
+}
+
+$periode = 1;
+if(isset($_POST['periode_sel']) && !is_null($_POST['periode_sel']) &&  $_POST['periode_sel'] == true){
+    $periode = $_POST['periode_sel'];
+    $isOk = true;
+}
+
 if($isOk===FALSE){
     $retour = 'Paramètres incorrects';
 }
@@ -53,19 +65,24 @@ if($handler===FALSE){
 
 if($isOk){
     $insertion = true;
-    $planning = new Planning($dbaccess, $ressourceId, $activiteSel, $dateDebut, $dateFin);
+    $planning = new Planning($dbaccess, $ressourceId, $activiteSel, $dateDebut, $dateFin, $periode, true);
     // Est ce qu'on a un evenement pour la même ressource et pour le(s) même(s) jour(s) ?
     $tabActivites = $planning->read();
     // Si tel est le cas, on le(s) supprime
     if(count($tabActivites) > 0){
-        $suppression = $planning->delete();
+        $insertion = $planning->delete();
+    }
+    // insertion de l'événement
+    if($insertion){
+        $insertion = $planning->create();
     }
     
     
-    if(!$suppression){
-        $retour .= 'Problème lors de la suppression';
+    if(!$insertion){
+        $type = ($actionUser == "insertion") ? 'l\'insertion !' : 'la modification';
+        $retour .= 'Problème lors de ' . $type;
     }else{
-        $retour .= "suppression effectuée avec succès.";
+        $retour .= ($actionUser == "insertion") ? 'nouvelle entrée crèée avec succès.' : 'modification effectuée.';
     }
     //$retour .= $planning->getSql();
 }

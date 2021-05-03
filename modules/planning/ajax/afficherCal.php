@@ -1,12 +1,12 @@
 <?php
 
-include_once '../config.php';
-require_once ABS_CLASSES_PATH.$dbFile;
-require_once ABS_CLASSES_PATH.'DbAccess.php';
-require_once ABS_CLASSES_PATH.'CvfDate.php';
-require_once ABS_CLASSES_PATH.'Ressource.php';
-require_once ABS_CLASSES_PATH.'Event.php';
-require_once ABS_CLASSES_PATH.'Planning.php';
+include_once '../../../config.php';
+require_once ABS_CLASSES_PATH . $dbFile;
+require_once ABS_CLASSES_PATH . 'DbAccess.php';
+require_once ABS_CLASSES_PATH . 'CvfDate.php';
+require_once ABS_CLASSES_PATH . 'Ressource.php';
+require_once ABS_PLANNING_PATH . CLASSES_PATH .'Event.php';
+require_once ABS_PLANNING_PATH . CLASSES_PATH .'Planning.php';
 require_once ABS_GENERAL_PATH.'formFunctions.php';
 
 
@@ -96,12 +96,12 @@ if($handler===FALSE){
     $semainePrecedente->decJours(intval(7*$nbSemaines)-1);
     $semaineSuivante = new CvfDate($jourCal->tspToDate());
     $semaineSuivante->incJours(intval(7*intval($nbSemaines+1))-1);
-    $lienPrecedent ='<img src="'.IMAGES_PATH.
+    $lienPrecedent ='<img src="'. MAIN_IMAGES_PATH .
             'precedent.jpg" onclick=\'refreshCalendar("'.$semainePrecedente->tspToDate().
             '")\' title="semaines précédentes" />';
-    $lienToday = '<img src="'.IMAGES_PATH.
+    $lienToday = '<img src="' . MAIN_IMAGES_PATH .
             'today.png" onclick=\'refreshCalendar("'.$today->tspToDate().'")\' title="aujourd\'hui"/>';
-    $lienSuivant ='<img src="'.IMAGES_PATH.'suivant.jpg" onclick=\'refreshCalendar("'.
+    $lienSuivant ='<img src="' . MAIN_IMAGES_PATH . 'suivant.jpg" onclick=\'refreshCalendar("'.
             $semaineSuivante->tspToDate().'")\' title="semaines suivantes" />';
     
     

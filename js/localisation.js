@@ -14,7 +14,7 @@
 
 // A faire: Ajouter l'id de la catégorie sup(département et service)
 function afficherTypesLocalisation(site='', departement=''){
-    $.post("ajax/listeTypesLocalisationLoad.php", {
+    $.post("/teamplanning/ajax/listeTypesLocalisationLoad.php", {
         site_id: ""+site+"",
         departement_lib: ""+departement+"",}, 
             function(data){
@@ -32,7 +32,7 @@ function insererTypeLocalisation(type){
     var description_localisation  = $('#description_localisation').val();
     var key_localisation  = $('#key_localisation').val();
     $("#img_loading").show();
-    $.post("ajax/insererLocalisation.php", {
+    $.post("/teamplanning/ajax/insererLocalisation.php", {
         type_localisation: ""+type_localisation+"", 
         libelle_localisation: ""+libelle_localisation+"", 
         description_localisation: ""+description_localisation+"", 
@@ -51,7 +51,7 @@ function insererTypeLocalisation(type){
 function liste_departements_load(site){
     $.ajax({
         type: "post",
-        url: "ajax/listeDepartementsLoad.php",
+        url: "/teamplanning/ajax/listeDepartementsLoad.php",
         data: "site_id=" + site,
         datatype: "json",
         success: function(data)
@@ -75,7 +75,7 @@ function liste_departements_load(site){
 function liste_services_load(site_sel, departement_sel){
     $.ajax({
         type: "POST",
-        url: "ajax/listeServicesLoad.php",
+        url: "/teamplanning/ajax/listeServicesLoad.php",
         data: {"site_id": site_sel, "departement_sel":departement_sel },
         datatype: "json",
         success: function(data)
@@ -94,7 +94,7 @@ function liste_services_load(site_sel, departement_sel){
 
 
 function afficherTexteStarter(){
-    $.post("ajax/afficherTexteStarter.html", 
+    $.post("/teamplanning/ajax/afficherTexteStarter.html", 
             function(data){
             if(data.length >0) {
                 $("#planning").append(" <div id=\"guide\" />");

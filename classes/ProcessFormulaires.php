@@ -69,9 +69,10 @@ Class ProcessFormulaires {
                     $retour .= '<label for="' .$nomChampFinal . '">' . $libelleChamp . '</label>:&nbsp;';
                     $required = ($isNullable == 'NO' ? 'required="required"' : '');
                     
+                    
 
                     // parsing champs
-                if (strstr($nomChamp, 'mail') == true) {
+                    if (strstr($nomChamp, 'mail') == true) {
                         $retour .= '<input type="email" id="' . $nomChampFinal .' " name="' . $nomChampFinal .'"
                                 ' . $required . ' placeholder="' . $nomChamp . '" alt = "' . $libelleChamp . '" onchange="verifEmail($(this).attr(\'name\'));/>';
                     }else {
@@ -79,6 +80,10 @@ Class ProcessFormulaires {
                             case 'varchar':
                                 $retour .= '<input type="text" id="' . $nomChampFinal .' " name="' . $nomChampFinal .'"
                                         ' . $required . ' placeholder="' . $nomChamp . '" alt = "' . $libelleChamp . '" maxlength="30" />';
+                            break;
+                            case 'integer':
+                              $retour .= '<input type="number" id="' . $nomChampFinal .' " name="' . $nomChampFinal .'"
+                                      ' . $required . ' placeholder="' . $nomChamp . '" alt = "' . $libelleChamp . '" maxlength="30" />';
                             break;
                             case 'date':
                                 $retour .= '<input type="date" id="' . $nomChampFinal .'" name="' . $nomChampFinal .'" 
@@ -192,8 +197,8 @@ Class ProcessFormulaires {
     
             }
         } catch (Exception $e) {
-          echo "Erreur: Une erreur s'est produite lors de l'enregistrement du champ " . $labelChamp;
-          exit();
+          $this->msgErr .=  "Erreur: Une erreur s'est produite lors de l'enregistrement du champ " . $labelChamp;
+          $isOk = false;
         }
 
         return $isOk;

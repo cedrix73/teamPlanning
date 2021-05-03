@@ -201,7 +201,7 @@ function validerSaisie(){
     message = '';
     var date_debut = $("#txt_str_date_debut").val();
     var date_fin = $("#txt_str_date_fin").val();
-    if((valid_DatePourComparaison(date_debut) > valid_DatePourComparaison(date_fin))){
+    if((validDatePourComparaison(date_debut) > validDatePourComparaison(date_fin))){
         message = "La date de début doit être égale ou antérieure à la date de fin.";
         afficherMessage(message);
     }else{
@@ -231,7 +231,7 @@ function validerSaisie(){
 function liste_activites_load(){
     $.ajax({
         type: "POST",
-        url: "ajax/liste_activites_load.php",
+        url: "ajax/listeEventLoad.php",
         datatype: "json",
         success: function(data)
         {
