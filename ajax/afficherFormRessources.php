@@ -10,6 +10,7 @@ require_once ABS_GENERAL_PATH.'formFunctions.php';
 /* 
  * Affichage de tous les types d'activité
  * sélectionnées.
+ * Ce script surcharge la fonction ProcessFormulaires:getFormFromTable
  */
 
 $retour = '';   
@@ -56,6 +57,7 @@ if ($handler === false) {
                         .' alt = "selectionnez un site" onchange="form_departements_load(this.options[this.selectedIndex].value)">' . $optionsSite . "</select>";
 
             } elseif ($nomChamp == 'departement_id') {
+                
                 //$optionsDepartement = selectLoad('libelle', 'departement', $dbaccess);
                 $optionsDepartement = '';
                 $retour .= '<select id="res_departement" name ="res_departement" '.$required
@@ -78,6 +80,10 @@ if ($handler === false) {
                         $retour .= '<input type="text" id="res_' . $nomChamp .' " name="res_' . $nomChamp .'"
                                 ' . $required . ' placeholder="' . $nomChamp . '" alt = "' . $libelleChamp . '" maxlength="30" />';
                     break;
+                    case 'integer':
+                        $retour .= '<input type="number" id="' . $nomChampFinal .' " name="' . $nomChampFinal .'"
+                                ' . $required . ' placeholder="' . $nomChamp . '" alt = "' . $libelleChamp . '" maxlength="30" />';
+                    break;
                     case 'date':
                         $retour .= '<input type="date" id="res_' . $nomChamp .'" name="res_' . $nomChamp .'" 
                         ' . $required . ' alt = "' . $libelleChamp . '" size="10" maxlength="10" class="champ_date" />';
@@ -94,7 +100,7 @@ if ($handler === false) {
                 $numGroupe++;
             }
             if ($i >= count($tabChamps)-1) {
-                $retour .= '<tr><td><input type="button" id="validation_ressource" value="Enregistrer" onclick="validerSaisieRessource();"/></td></tr>'; 
+                $retour .= '<tr><td><button type="button" id="validation_ressource" onclick="validerSaisieRessource();">Enregistrer</button></td></tr>'; 
                 $retour .= '</table"></div>';
             }
             $i++;
