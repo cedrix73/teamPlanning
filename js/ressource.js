@@ -24,7 +24,6 @@
         });
         $("#affichage_activite").val("form_ressources");
     }
-    //form_departements_load($("#res_site").val());
 
     
 }
@@ -35,7 +34,7 @@ function form_departements_load(site_sel){
         type: "post",
         url: "/teamplanning/ajax/listeDepartementsLoad.php",
         data: "site=" + site_sel,
-        data: {"site_sel": site_sel, "contexte_insertion": true},
+        data: {"site_id": site_sel, "contexte_insertion": true},
         datatype: "json",
         success: function(data)
         {

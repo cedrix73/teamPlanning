@@ -57,7 +57,6 @@ if ($handler === false) {
                         .' alt = "selectionnez un site" onchange="form_departements_load(this.options[this.selectedIndex].value)">' . $optionsSite . "</select>";
 
             } elseif ($nomChamp == 'departement_id') {
-                
                 //$optionsDepartement = selectLoad('libelle', 'departement', $dbaccess);
                 $optionsDepartement = '';
                 $retour .= '<select id="res_departement" name ="res_departement" '.$required
@@ -100,7 +99,7 @@ if ($handler === false) {
                 $numGroupe++;
             }
             if ($i >= count($tabChamps)-1) {
-                $retour .= '<tr><td><button type="button" id="validation_ressource" onclick="validerSaisieRessource();">Enregistrer</button></td></tr>'; 
+                $retour .= '<tr><td><button type="button" id="validation_ressource" onclick="validerSaisieRessource();"/>Enregistrer</button></td></tr>'; 
                 $retour .= '</table"></div>';
             }
             $i++;

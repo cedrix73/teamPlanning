@@ -235,14 +235,14 @@ function liste_activites_load(){
         datatype: "json",
         success: function(data)
         {
-                if(ctle_erreur(data)){
-                   var tab_elems = [];
-                   var str_feedback = jQuery.parseJSON(data);
-                    $.each(str_feedback, function(cle, valeur) {
-                            tab_elems.push('<option value="' + valeur + '">' + valeur + '</option>');
-                    });
-                    $("#cbo_activites").html(tab_elems.join(''));
-                }
+            if(ctle_erreur(data)){
+                var tab_elems = [];
+                var str_feedback = jQuery.parseJSON(data);
+                $.each(str_feedback, function(cle, valeur) {
+                        tab_elems.push('<option value="' + valeur + '">' + valeur + '</option>');
+                });
+                $("#cbo_activites").html(tab_elems.join(''));
+            }
         }
     });
 }
