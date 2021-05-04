@@ -2,9 +2,9 @@
 require_once ABS_GENERAL_PATH.'formFunctions.php';
 
 /**
- * @name ProcessFormulaires
- * @author cvonfelten
- * Classe créant et validant lesformulaires
+ * @name            ProcessFormulaires
+ * @author          cvonfelten
+ * @ description    Classe créant et validant les formulaires
  */
 
 Class ProcessFormulaires {

@@ -5,7 +5,6 @@ require_once ABS_CLASSES_PATH.$dbFile;
 require_once ABS_CLASSES_PATH.'DbAccess.php';
 require_once ABS_CLASSES_PATH.'Localisation.php';
 require_once ABS_GENERAL_PATH.'formFunctions.php';
-//require_once ABS_GENERAL_PATH.'formFunctions.php';
 
 
 /* 

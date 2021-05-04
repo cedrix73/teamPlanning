@@ -6,6 +6,13 @@ require_once ABS_CLASSES_PATH.'DbAccess.php';
 require_once ABS_GENERAL_PATH.'formFunctions.php';
 require_once ABS_CLASSES_PATH. 'ProcessFormulaires.php';
 
+/**
+ * @name        ProcessFormulaires
+ * @author      cvonfelten
+ * @description Classe créant et validant les formulaires
+ * 
+ */
+
 Class RessourceProcessFormulaires extends ProcessFormulaires {
 
     public function __construct($dbaccess, $tableName = null) 
@@ -45,16 +52,10 @@ Class RessourceProcessFormulaires extends ProcessFormulaires {
 }
 
 
-/* 
- * Affichage de tous les types d'activité
- * sélectionnées.
+
+/**
  * Ce script surcharge la fonction ProcessFormulaires:getFormFromTable
  */
-
-
-
-
-
 
 $retour = '';   
 // Connexion
