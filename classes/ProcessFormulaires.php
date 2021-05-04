@@ -9,31 +9,42 @@ require_once ABS_GENERAL_PATH.'formFunctions.php';
 
 Class ProcessFormulaires {
 
-    private $_dbaccess;
+    protected $_dbaccess;
 
-    private $_tabInsert;
+    protected $_tabInsert;
 
-    private $_msgErr;
+    protected $_msgErr;
+
+    protected $tableName;
 
 
 
-    public function __construct($dbaccess) 
+    public function __construct($dbaccess, $tableName = null) 
     {
         $this->_dbaccess = $dbaccess;
         $this->_tabInsert = array();
         $this->msgErr = array();
+        $this->tableName = $tableName;
         
     } 
 
     /**
-     * @name          getFormFromTable
-     * @description   Obtient un formulaire à partir de la table $tableName
+     * @name          getFormFromTable 
+     * @author cvonfelten
+     * @description   Obtient un formulaire à partir de la table $tableName 
      * 
-     * @param         string   $tableName: Nom de la table
+     * Pour la validation du formulaire, la méthode construit un bouton validation_[nomtable] 
+     * et une méthode js à définir validerSaisie[Nomtable]
+     * Pour spécifier des comportements à des champs spécifiques (comboboxs, champs énumérés), 
+     * il faut que le script appelant implémente une classe fille héritant de ProcessFormulaires 
+     * et surcharge la méthode getSpecificFields avec des conditions pour chaque champ à définir.
+     * 
+     * @param         string   $titre: Titre à définir (par défaut: Enregistrement $tableName) 
      * @param         int      $nbChampsParLigne: Nombre de champs par ligne (par défaut 3)
      * @return        string   $retour:   Formulaire au format html
+     * 
      */
-    public function getFormFromTable($tableName, $nbChampsParLigne = 3) {
+    public function getFormFromTable($titre = '', $nbChampsParLigne = 3) {
         $retour = '';   
         // Connexion
         $handler = $this->_dbaccess->connect();
@@ -41,26 +52,29 @@ Class ProcessFormulaires {
             $retour = 'Problème de connexion à la base ';
         } else {
             $tabChamps = array();
-            $tabChamps = $this->_dbaccess->getTableDatas($tableName);
+            $tabChamps = $this->_dbaccess->getTableDatas($this->tableName);
             $retour = '';
             if (is_array($tabChamps) && count($tabChamps) > 0) {
                 $i = 0;
                 $numGroupe = 0;
                 $nbChampsParLigne = 3;
-                $champPrefixe = substr($tableName, 0, 3);
-                $retour .= '<div class="legende_titre"><h1>Enregistrement ' . $tableName .'</h1></div>';
-                $retour .= '<form action="">'; 
-                $retour .= '<div id="panel_' . $tableName . '" name = "panel_' .$tableName .'"><table id="' . $tableName . '" class= "tab_params">';
+
+                $champPrefixe = substr($this->tableName, 0, 3);
+                $titre == '' ? 'Enregistrement ' . $this->tableName : $titre;
+                $retour .= '<div class="legende_titre"><h1>' . $titre .'</h1></div>';
+                $retour .= '<div id="panel_' . $this->tableName . '" name = "panel_' . $this->tableName .'"><table id="tab_' . $this->tableName . '" class= "tab_params">';
+                
                 // Liste de tous les types d'événement
                 foreach ($tabChamps as $value) {
                     $typeChamp = $value['typechamp'];
                     $nomChamp = $value['nomchamp'];
                     $isNullable = $value['is_nullable'];
-                    $modulo = intval($i % $nbChampsParLigne );
+                    $modulo = intval($i % $nbChampsParLigne ) +1;
                     if ($modulo == 1) {
                         $retour .=   '<tr id='.$numGroupe.'>';
                         //  class="'.$classeParite.'"
                     }
+                    // Champs requis
                     $classeIcone = ($isNullable == 'YES' ? '' : 'class="form_icon ui-icon ui-icon-alert" title ="champ obligatoire"');
                     $retour .= '<td>';
                     $libelleChamp = underscoreToLibelle($nomChamp);
@@ -69,12 +83,19 @@ Class ProcessFormulaires {
                     $retour .= '<label for="' .$nomChampFinal . '">' . $libelleChamp . '</label>:&nbsp;';
                     $required = ($isNullable == 'NO' ? 'required="required"' : '');
                     
-                    
+                    // Champs spécifiques des classes filles
+                    $specificField = $this->getSpecificFields($nomChamp, $required);
+                    if($specificField !==null) {
+                        $retour .= $specificField;
+                    }
 
                     // parsing champs
-                    if (strstr($nomChamp, 'mail') == true) {
+                    if (strpos($nomChamp, 'mail') == true) {
                         $retour .= '<input type="email" id="' . $nomChampFinal .' " name="' . $nomChampFinal .'"
-                                ' . $required . ' placeholder="' . $nomChamp . '" alt = "' . $libelleChamp . '" onchange="verifEmail($(this).attr(\'name\'));/>';
+                        ' . $required . ' placeholder="' . $nomChamp . '" alt = "' . $libelleChamp . '" onchange="verifEmail($(this).attr(\'name\'));"/>';
+                    } elseif (strpos ($nomChamp, 'phone') == true || strpos ($nomChamp, 'mobile') == true ) {
+                      $retour .= '<input type="tel" id="res_' . $nomChamp .' " name="res_' . $nomChamp .'"
+                                ' . $required . ' placeholder="' . $nomChamp . '" alt = "' . $libelleChamp . '" maxlength="16" onchange="verifPhone($(this).attr(\'name\'));"/>';
                     }else {
                         switch($typeChamp) {
                             case 'varchar':
@@ -99,7 +120,7 @@ Class ProcessFormulaires {
                         $numGroupe++;
                     }
                     if ($i >= count($tabChamps)-1) {
-                        $retour .= '<tr><td><input type="submit" id="validation_' . $tableName . '" value="Enregistrer" onclick="validerSaisie' . ucfirst($tableName) .'();"/></td></tr>'; 
+                        $retour .= '<tr><td><input type="button" id="validation_' . $this->tableName . '" value="Enregistrer" onclick="validerSaisie' . ucfirst($this->tableName) .'();"/></td></tr>'; 
                         $retour .= '</table"></div>';
                     }
                     $i++;
@@ -107,10 +128,13 @@ Class ProcessFormulaires {
                 
                 
             }
-            $retour .= '</form>';
         }
         $this->_dbaccess->close($handler);
         return $retour;
+    }
+
+    public function getSpecificFields($nomChamp, $required) {
+        return null;
     }
 
 
@@ -204,12 +228,24 @@ Class ProcessFormulaires {
         return $isOk;
     }
 
+    public function getDbAccess() {
+        return $this->_dbaccess;
+    }
+
     public function getTabInsert() {
         return $this->_tabInsert;
     }
 
     public function getMsgErreurs() {
         return $this->msgErr;
+    }
+
+    public function setTableName($tableName) {
+      $this->tableName = $tableName;
+    }
+
+    public function getTableName() {
+      return $this->tableName;
     }
 
 
