@@ -168,10 +168,30 @@ class DbPdo implements DbInterface
 		return $link->quote($arg);
 	}
 
+	/**
+     * @name GetTableDatas
+     * @description Retourne un tableau des champs d'une table:
+     * nom du champ, type du champ, is_nullable 
+	 * @param String $link : pointeur de ressource de la base de données
+     * @param String $query :Requête SQL émanant de DBAccess:GetTableDatas
+     */
 	public function getTableDatas($link, $query)
 	{
 		return $this->execQuery($link, $query);
 	}
+
+	/**
+      * GetTableFields
+      * @description Retourne un tableau des noms de champs d'une table 
+      * @param String $link : pointeur de ressource de la base de données
+      * @param String $query :Requête SQL émanant de DBAccess:GetTableFields
+      */
+	public function getTableFields($link, $query)
+	{
+		return $this->execQuery($link, $query);
+	}
 }
+
+	
 
 ?>

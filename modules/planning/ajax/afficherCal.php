@@ -170,7 +170,13 @@ if($handler===FALSE){
             $isMe = FALSE;
             $classeLegende = 'legende_ressources';
         }
-        $retour.='<div id = ressource_' . $numRes . ' class="'.$classeLegende.'">'.
+        $fonctionClick = '';
+        if($isAdmin || $isMe){ 
+            $fonctionClick .= ' onclick=infoRessource("'
+            . str_replace(' ', '---', $tabRessources[$numRes]['nom']) 
+            .'","'.str_replace(' ', '---', $tabRessources[$numRes]['prenom']).'");';
+        }
+        $retour.='<div id = ressource_' . $numRes . ' class="'.$classeLegende.'"' . $fonctionClick .'>'.
         ' ' . ucfirst($tabRessources[$numRes]['nom']) . ' ' .
         ucfirst($tabRessources[$numRes]['prenom']) . '</div>';
         

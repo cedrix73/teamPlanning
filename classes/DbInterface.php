@@ -25,4 +25,6 @@ interface DbInterface
 
     public function getTableDatas($link, $query);
 
+    public function getTableFields($link, $query);
+
 }

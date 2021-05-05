@@ -40,7 +40,7 @@ class DbAccess
     }
     
     /**
-     * connect
+     * @name connect
      * @description  Procède à la connexion et crée le pointeur $_link
      */
     public function connect($no_msg = false)
@@ -55,7 +55,7 @@ class DbAccess
     
 
     /**
-     * close
+     * @name close
      * @description Supprime le pointeur de connexion
      */
     public function close($link) 
@@ -69,8 +69,8 @@ class DbAccess
     }
 
     /**
-     * select_db
-     * Sélectionne la base de données $db
+     * @name select_db
+     * @description Sélectionne la base de données $db
 	 * Retourne TRUE en cas de succès, FALSE sinon
      */
     public function selectDb($db) 
@@ -82,24 +82,43 @@ class DbAccess
 		return $retour;
     }
 
-    /* Envoie la requête SQL $req pour son execution
-	   Retourne un resultSet */
+    /**
+	 * @name: execPreparedQuery
+	 * @description: il s'agit d'un prpared Statement: Prépare et execute 
+	 * la requete SQL $query et renvoie  le resultSet pour être interprétée 
+	 * ultérieurement par fetchRow ou fetchArray. Si on passe des arguments 
+	 * dans la requête, ils doivent être passés dans le tableau clé-valeur 
+	 * $args avec comme format ":nomDeLaVariable" => valeurDeLaVariable.
+	 * Important ! La requête doit être de la forme :
+	 * '.. WHERE author.last_name = :prenom AND author.name = :nom'
+	 * 
+	 * @param ressource $link: instance renvoiée lors de la connexion PDO.
+	 * @param string $query: chaine SQL
+	 * @param boolean $again: Si true, le même statement est réexecuté avec de
+	 *                de nouveaux arguments; $query peut être vide.
+	 * @return mixed $stmt : retourne le statement de la requête.
+	 */
     public function execPreparedQuery($query, $args=null, $again = false) 
     {
 		return $this->_dbInterface->execPreparedQuery($this->_link, $query, $args, $again);
     }
 
-    /* Envoie la requête SQL $req pour son execution
-	   Retourne un resultSet */
+    /**
+     * @name execQuery
+     * @description Envoie la requête SQL $req pour son execution et 
+     * retourne un resultSet 
+     * @param String $query : Chaîne de la requête SQL
+     */
        public function execQuery($query) 
        {
            return $this->_dbInterface->execQuery($this->_link, $query);
        }
 
     /**
-     * fetchRow
-     * Retourne un tableau énulméré qui correspond à la ligne demandée, ou FALSE si il ne reste plus de ligne
+     * @name    fetchRow
+     * @description Retourne un tableau énulméré qui correspond à la ligne demandée, ou FALSE si il ne reste plus de ligne
 	 * Chaque appel suivant retourne la ligne suivante dans le résultat, ou FALSE si il n'y a plus de ligne disponible 
+     * @param Resultset $resultSet : lot de résultats de la requête qui devra être parsé
      */
     
 	public function fetchRow($resultSet=null) {
@@ -108,17 +127,19 @@ class DbAccess
 	}
     
     /**
-     * numRows
-     * Indique le nombre de lignes retour,ées par le requête à partir d'un resultSet
-     * prélablement executé par execQuery
+     * @name numRows
+     * @description Indique le nombre de lignes retourées par le requête à partir d'un resultSet
+     * prélablement executé par execQuery 
+     * @param Resultset $resultSet : lot de résultats de la requête qui devra être parsé
      */
 	public function numRows($resultSet) {
 		return $this->_dbInterface->numRows($resultSet);
 	}
     /** 
-     * fetchArray
-     * Retourne un tableau associatif par clé qui correspond à la ligne demandée, ou FALSE si il ne reste plus de ligne
+     * @name fetchArray
+     * @description Retourne un tableau associatif par clé qui correspond à la ligne demandée, ou FALSE si il ne reste plus de ligne
 	 * Chaque appel suivant retourne la ligne suivante dans le résultat, ou FALSE si il n'y a plus de ligne disponible 
+     * @param Resultset $resultSet : lot de résultats de la requête qui devra être parsé
      */
     public function fetchArray($resultSet) 
     {
@@ -127,22 +148,22 @@ class DbAccess
 	}
     
     /**
-     * escapeString
-     * Met en quote les paramètres d'entrée de la requête
+     * @name escapeString
+     * @description Met en quote les paramètres d'entrée de la requête 
+     * @param String $arg : chaîne à échapper
      */
     public function escapeString($arg) 
     {
         return $this->_dbInterface->escapeString($this->link, $arg);
     }
 
-    /**
-     * GetTableDatas
-     */
 
-     /**
-      * GetTableDatas
-      * @description Retourne un tableau  
-      */
+    /**
+     * @name GetTableDatas
+    * @description Retourne un tableau des champs d'une table:
+    * nom du champ, type du champ, is_nullable 
+    * @param String $tableName : nom de la table concernée
+    */
     public function getTableDatas($tableName) {
          $query = ' SELECT COLUMN_NAME AS nomchamp, DATA_TYPE AS typechamp, is_nullable'
                 .' FROM INFORMATION_SCHEMA.COLUMNS' 
@@ -153,6 +174,24 @@ class DbAccess
         $results = $this->fetchArray($resultSet);
         return $results;
     }
+
+
+    /**
+      * GetTableFields
+      * @description Retourne un tableau des noms de champs d'une table 
+      * @param String $tableName : nom de la table concernée
+      */
+      public function getTableFields($tableName) {
+        $query = ' SELECT COLUMN_NAME AS nomchamp '
+               .' FROM INFORMATION_SCHEMA.COLUMNS' 
+               .' WHERE TABLE_SCHEMA = \'' . $this->_conInfos['dbase'] . '\''
+               .' AND TABLE_NAME = \'' . $tableName. '\'' 
+               .' AND NOT COLUMN_NAME = \'id\'';
+       $resultSet =  $this->_dbInterface->getTableFields($this->_link, $query);
+       $results = $this->fetchArray($resultSet);
+       return $results;
+   }
+
 
     public function queryPlaceholders() {
         $author1 = "";

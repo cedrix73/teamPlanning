@@ -98,7 +98,13 @@
    }
    
    
-   
+   /**
+    * @description Les retours jSon tolèrent difficilement les 
+    * caractères d'espacement. On les remplace alors avec "---".
+    * Au retour, cette fonction les reconvertit en caractères d'espacement. 
+    * @param {*} chaine 
+    * @returns {*} chaine 
+    */
    function replaceBlancs(chaine){
        var reg=new RegExp("(---)", "g");
        if(reg.test(chaine)){

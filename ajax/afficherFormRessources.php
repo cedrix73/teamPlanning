@@ -25,7 +25,9 @@ Class RessourceProcessFormulaires extends ProcessFormulaires {
      * @name           getSpecificFields
      * @description    surcharge la méthode mère avec les listes déroulantes 
      *                 spécifiques à la localisation des ressources. 
-     * @return        string   $retour:   Section du formulaire au format html
+     * @param          String $nomChamp :nom du champ à identifier 
+     * @param          String $required :Si champ requis: 'required="required' sinon vide. 
+     * @return         String   $retour :Section du formulaire au format html
      */
     public function getSpecificFields($nomChamp, $required) {
         $retour = null;
@@ -35,13 +37,11 @@ Class RessourceProcessFormulaires extends ProcessFormulaires {
                     .' alt = "selectionnez un site" onchange="form_departements_load(this.options[this.selectedIndex].value)">' . $optionsSite . "</select>";
 
         } elseif ($nomChamp == 'departement_id') {
-            //$optionsDepartement = selectLoad('libelle', 'departement', $dbaccess);
             $optionsDepartement = '';
             $retour .= '<select id="res_departement" name ="res_departement" '.$required
                     .' alt = "selectionnez un département" onchange="form_services_load(res_site.options[res_site.selectedIndex].value, options[this.selectedIndex].value);">' . $optionsDepartement . "</select>";
 
         } elseif ($nomChamp == 'service_id') {
-            //$optionsService = selectLoad('libelle', 'service', $dbaccess);
             $optionsService = '';
             $retour .= '<select id="res_service" name="res_service" '.$required.' alt = "selectionnez un service">' . $optionsService . "</select>";
         }

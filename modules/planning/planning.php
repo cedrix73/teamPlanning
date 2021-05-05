@@ -16,6 +16,7 @@ if ($handler === false) {
     die();
 }
 
+
 $blnSites = false;
 $blnDepartements = false;
 $blnServices = false;
