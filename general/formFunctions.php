@@ -128,7 +128,7 @@ function selectLoad($nomChampSql, $nomTableBd, $db, $filtre = null)
         foreach ($results as $value) {
             $options .= '<option id = ' . $value['id'] 
                       . ' value="'. $value['id'] .'"';
-            if ($filtre != null || !$trouve) {
+            if ($filtre !== null || !$trouve) {
                 $pref = ($value['id'] == $filtre) ? ' selected = selected ' : '';
                 $options .= ' ' . $pref;
             }

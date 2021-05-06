@@ -199,10 +199,10 @@
                ressourceLabel = $(this).prev("label").html();
                ressourceObject.label = ressourceLabel;
                ressourceObject.type = $(this).prop('type');
-   
+               
                // verification des types generaux 
                // mail
-               if($(this).val() !== '' && ressourceObject.nom !== ''){
+               if(typeof(ressourceObject.valeur) !== 'undefined' && ressourceObject.valeur !== '' && ressourceObject.nom !== ''){
                    // Verification de qq champs spéciaux par libelle
                    if(ressourceObject.nom.includes("_nom") || ressourceObject.nom.includes("_prenom")) {
                        if(verifStringAlpha($(this).attr('name')) == false) {

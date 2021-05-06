@@ -10,30 +10,40 @@
    --------------------------------------------------------------------------*/
 
 
-   function afficherFormRessources(){
+   function afficherFormRessources(id=null){
     if( $("#affichage_activite").val() == 'form_ressources'){
         $("#div_saisie_activite").toggle();
         $("#affichage_activite").val("");
     } else {
-        $.post("/teamplanning/ajax/afficherFormRessources.php", 
-             function(data){
+        $.ajax({
+            type: "post",
+            url: "/teamplanning/ajax/afficherFormRessources.php", 
+            data: {"res_id": id},
+            dataype: "json",
+            success: function(data)
+            {
                 if(data.length >0) {
                     $('#div_saisie_activite').html(data);
                     $("#div_saisie_activite").slideDown();
+                    $("#affichage_activite").val("form_ressources");
                 }
+                
+            },
+            error: function(message)
+            {
+                afficherMessage(message);
+            }
         });
-        $("#affichage_activite").val("form_ressources");
+        
     }
 
     
 }
 
 function form_departements_load(site_sel){
-    //$("#res_departement").remove();
     $.ajax({
         type: "post",
         url: "/teamplanning/ajax/listeDepartementsLoad.php",
-        data: "site=" + site_sel,
         data: {"site_id": site_sel, "contexte_insertion": true},
         datatype: "json",
         success: function(data)
@@ -80,7 +90,7 @@ function infoRessource(nom, prenom){
     $("#lgd_saisie_activite").text("Saisie d'absence de <i>" + infoRessource.prenom + " " + infoRessource.nom + "</i>");
 }
 
-function validerSaisieRessource(){
+function validerSaisieRessource(num_res){
     var json_string = validerSaisieForm("panel_ressource");
     if(json_string !== false && json_string !==undefined){
         $("#img_loading").show();
@@ -99,6 +109,31 @@ function validerSaisieRessource(){
         );
     }
 }
+
+
+function validerModificationRessource(num_res){
+    var json_string = validerSaisieForm("panel_ressource");
+    if(json_string !== false && json_string !==undefined){
+        $("#img_loading").show();
+        $.post("/teamplanning/ajax/modifierRessource.php", 
+        {
+            json_datas: json_string,
+            num_res: num_res
+        }, 
+            function(data){
+                $("#img_loading").hide();
+                if(data.length >0) {
+                    if(data.substr(0, 7) !== 'Erreur:') {
+                        $("#div_saisie_activite").slideUp(2000).delay( 2000 ).fadeOut( 1000 );
+                        initialiserFormulaire();
+                    }
+                    afficherMessage(data);
+                }
+            }       
+        );
+    }
+}
+
 
 
 

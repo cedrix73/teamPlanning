@@ -17,9 +17,11 @@ Class ProcessFormulaires {
 
     protected $tableName;
 
+    protected $idToModif;
 
 
-    public function __construct($dbaccess, $tableName = null) 
+
+    public function __construct($dbaccess, $tableName = null, $idToModif = null) 
     {
         $this->_dbaccess = $dbaccess;
         $this->_tabInsert = array();
@@ -39,6 +41,10 @@ Class ProcessFormulaires {
      * il faut que le script appelant implémente une classe fille héritant de ProcessFormulaires 
      * et surcharge la méthode getSpecificFields avec des conditions pour chaque champ à définir.
      * 
+     * Création (insertion): $this->idToModif doit être = à null.
+     * Modification: Si $this->idToModif est renseigné et différent de null, il s'agit d'une 
+     * modification de l'élément portant cet identifiant et provenant de la table $this->tablename.
+     * 
      * @param         string   $titre: Titre à définir (par défaut: Enregistrement $tableName) 
      * @param         int      $nbChampsParLigne: Nombre de champs par ligne (par défaut 3)
      * @return        string   $retour:   Formulaire au format html
@@ -53,6 +59,11 @@ Class ProcessFormulaires {
         } else {
             $tabChamps = array();
             $tabChamps = $this->_dbaccess->getTableDatas($this->tableName);
+            if (isset ($this->idToModif) && $this->idToModif!== null) {
+                $tabValeurs = $this->getElementbyIdForUpdate();
+            }
+            
+
             $retour = '';
             if (is_array($tabChamps) && count($tabChamps) > 0) {
                 $i = 0;
@@ -65,10 +76,11 @@ Class ProcessFormulaires {
                 $retour .= '<div id="panel_' . $this->tableName . '" name = "panel_' . $this->tableName .'"><table id="tab_' . $this->tableName . '" class= "tab_params">';
                 
                 // Liste de tous les types d'événement
-                foreach ($tabChamps as $value) {
+                foreach ($tabChamps as $key => $value) {
                     $typeChamp = $value['typechamp'];
                     $nomChamp = $value['nomchamp'];
                     $isNullable = $value['is_nullable'];
+                    $valeur = (isset($tabValeurs[$key]) && $tabValeurs[$key] !== null) ? $tabValeurs[$key] : '';
                     $modulo = intval($i % $nbChampsParLigne ) +1;
                     if ($modulo == 1) {
                         $retour .=   '<tr id='.$numGroupe.'>';
@@ -83,8 +95,8 @@ Class ProcessFormulaires {
                     $retour .= '<label for="' .$nomChampFinal . '">' . $libelleChamp . '</label>:&nbsp;';
                     $required = ($isNullable == 'NO' ? 'required="required"' : '');
                     
-                    // Champs spécifiques des classes filles
-                    $specificField = $this->getSpecificFields($nomChamp, $required);
+                    // Champs spécifiques de la classe fille
+                    $specificField = $this->getSpecificFields($nomChamp, $required, $valeur);
                     if($specificField !==null) {
                         $retour .= $specificField;
                     }
@@ -92,23 +104,27 @@ Class ProcessFormulaires {
                     // parsing champs
                     if (strpos($nomChamp, 'mail') == true) {
                         $retour .= '<input type="email" id="' . $nomChampFinal .' " name="' . $nomChampFinal .'"
-                        ' . $required . ' placeholder="' . $nomChamp . '" alt = "' . $libelleChamp . '" onchange="verifEmail($(this).attr(\'name\'));"/>';
+                        ' . $required . ' placeholder="' . $nomChamp . '" alt = "' . $libelleChamp . '" onchange="verifEmail($(this).attr(\'name\'));"'
+                        . ' value="' . $valeur . '">'; 
                     } elseif (strpos ($nomChamp, 'phone') == true || strpos ($nomChamp, 'mobile') == true ) {
-                      $retour .= '<input type="tel" id="res_' . $nomChamp .' " name="res_' . $nomChamp .'"
-                                ' . $required . ' placeholder="' . $nomChamp . '" alt = "' . $libelleChamp . '" maxlength="16" onchange="verifPhone($(this).attr(\'name\'));"/>';
+                      $retour .= '<input type="tel" id="' . $nomChampFinal .' " name="' . $nomChampFinal .'"
+                                ' . $required . ' placeholder="' . $nomChamp . '" alt = "' . $libelleChamp . '" maxlength="16" onchange="verifPhone($(this).attr(\'name\'));"'
+                                . ' value="' . $valeur . '">'; 
                     }else {
                         switch($typeChamp) {
                             case 'varchar':
                                 $retour .= '<input type="text" id="' . $nomChampFinal .' " name="' . $nomChampFinal .'"
-                                        ' . $required . ' placeholder="' . $nomChamp . '" alt = "' . $libelleChamp . '" maxlength="30" />';
+                                        ' . $required . ' placeholder="' . $nomChamp . '" alt = "' . $libelleChamp . '" maxlength="30"'
+                                        . ' value="' . $valeur . '">'; 
                             break;
                             case 'integer':
                               $retour .= '<input type="number" id="' . $nomChampFinal .' " name="' . $nomChampFinal .'"
-                                      ' . $required . ' placeholder="' . $nomChamp . '" alt = "' . $libelleChamp . '" maxlength="30" />';
+                                      ' . $required . ' placeholder="' . $nomChamp . '" alt = "' . $libelleChamp . '" maxlength="30"'
+                                      . ' value="' . $valeur . '">'; 
                             break;
                             case 'date':
                                 $retour .= '<input type="date" id="' . $nomChampFinal .'" name="' . $nomChampFinal .'" 
-                                ' . $required . ' alt = "' . $libelleChamp . '" size="10" maxlength="10" class="champ_date" />';
+                                ' . $required . ' alt = "' . $libelleChamp . '" size="10" maxlength="10" class="champ_date" value="' . $valeur . '">'; 
                             break;
                         }
                     }
@@ -120,23 +136,34 @@ Class ProcessFormulaires {
                         $numGroupe++;
                     }
                     if ($i >= count($tabChamps)-1) {
-                        $retour .= '<tr><td><input type="button" id="validation_' . $this->tableName . '" value="Enregistrer" onclick="validerSaisie' . ucfirst($this->tableName) .'();"/></td></tr>'; 
+                        $jsCallbackFunction = null;
+                        if(isset($this->idToModif) && $this->idToModif !==null) {
+                            $jsCallbackFunction = 'validerModification' . ucfirst($this->tableName) .'('. $this->idToModif .')';
+                        }else {
+                            $jsCallbackFunction = 'validerSaisie' . ucfirst($this->tableName) .'()';
+                        }
+                        $retour .= '<tr><td><button id="validation_' . $this->tableName . '" onclick="'. $jsCallbackFunction .';">Enregistrer</button></td></tr>'; 
                         $retour .= '</table"></div>';
                     }
                     $i++;
                 }
                 
                 
+            } else {
+              $retour = '<div><table"><tr><td>La table est vide !</td></tr></table"></div>';
             }
         }
         $this->_dbaccess->close($handler);
         return $retour;
     }
 
-    public function getSpecificFields($nomChamp, $required) {
+    public function getSpecificFields($nomChamp, $required, $valeur) {
         return null;
     }
 
+    public function getElementbyIdForUpdate() {
+
+    }
 
     public function checkForm($tabChamps) 
     {
@@ -241,11 +268,15 @@ Class ProcessFormulaires {
     }
 
     public function setTableName($tableName) {
-      $this->tableName = $tableName;
+        $this->tableName = $tableName;
     }
 
     public function getTableName() {
-      return $this->tableName;
+        return $this->tableName;
+    }
+
+    public function setIdToModif($idToModif) {
+        $this->idToModif = $idToModif;
     }
 
 

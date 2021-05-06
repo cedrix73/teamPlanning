@@ -172,7 +172,11 @@ class DbAccess
                 .' AND NOT COLUMN_NAME = \'id\'';
         $resultSet =  $this->_dbInterface->getTableDatas($this->_link, $query);
         $results = $this->fetchArray($resultSet);
-        return $results;
+        $tabFinal = array();
+        foreach($results as $value) {
+            $tabFinal[$value['nomchamp']] = $value;
+        }
+        return $tabFinal;
     }
 
 
@@ -257,6 +261,41 @@ class DbAccess
             $retour = false;
         }
         return $retour;
+        
+            
+    }
+
+
+    /**
+     * @name          update
+     * @description   Modifie un enregistrment un tableau nom champ - valeur en base
+     * UPDATE table_name
+     * @param String  $tableName     : nom de la table concernée par l'insertion.
+     * @param array   $tabUpdate     : tableau associatif avec nom du champ = clé et valeur associée.
+     * @param integer $idRessource   : id de l'enregistrement à mettre à jour.
+     */
+    public function update($tableName, $tabUpdate, $idRessource)
+    {
+        $sqlUpdate = 'UPDATE ' . $tableName . ' SET ';
+        $i = 0;
+        $max = count($tabUpdate)-1;
+        foreach ($tabUpdate as $key=>$value) {
+            $sqlUpdate .= $key . ' = ';
+            $sqlUpdate .= '\'' . utf8_decode($value) . '\'';
+            if ($i<$max) {
+                $sqlUpdate .= ', ';
+            }
+            $i++;
+        }
+        $sqlWhere = ' WHERE id = ' . $idRessource;
+        $sql = $sqlUpdate . $sqlWhere;
+        try{
+            $retour = $this->execPreparedQuery($sql);
+        }catch(Exception $e){
+            $this->_log = $e->getMessage();
+            $retour = false;
+        }
+        return $sql;
         
             
     }

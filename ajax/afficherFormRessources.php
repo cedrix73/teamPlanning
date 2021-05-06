@@ -15,9 +15,10 @@ require_once ABS_CLASSES_PATH. 'ProcessFormulaires.php';
 
 Class RessourceProcessFormulaires extends ProcessFormulaires {
 
-    public function __construct($dbaccess, $tableName = null) 
+    public function __construct($dbaccess, $tableName = null, $id=null) 
     {
-        parent::__construct($dbaccess, $tableName);
+        $this->idToModif = $id;
+        parent::__construct($dbaccess, $tableName, $id=null);
         
     } 
 
@@ -29,24 +30,40 @@ Class RessourceProcessFormulaires extends ProcessFormulaires {
      * @param          String $required :Si champ requis: 'required="required' sinon vide. 
      * @return         String   $retour :Section du formulaire au format html
      */
-    public function getSpecificFields($nomChamp, $required) {
+    public function getSpecificFields($nomChamp, $required, $valeur="") {
         $retour = null;
         if ($nomChamp == 'site_id') {
-            $optionsSite = selectLoad('libelle', 'site', $this->getDbAccess());
+            $optionsSite = selectLoad('libelle', 'site', $this->getDbAccess(), $valeur);
             $retour .=  '<select id="res_site" name ="res_site" '.$required
                     .' alt = "selectionnez un site" onchange="form_departements_load(this.options[this.selectedIndex].value)">' . $optionsSite . "</select>";
 
         } elseif ($nomChamp == 'departement_id') {
-            $optionsDepartement = '';
+            $optionsDepartement = isset($valeur) && $valeur !== "" ? selectLoad('libelle', 'departement', $this->getDbAccess(), $valeur) : '';
             $retour .= '<select id="res_departement" name ="res_departement" '.$required
                     .' alt = "selectionnez un département" onchange="form_services_load(res_site.options[res_site.selectedIndex].value, options[this.selectedIndex].value);">' . $optionsDepartement . "</select>";
 
         } elseif ($nomChamp == 'service_id') {
-            $optionsService = '';
+            $optionsService = isset($valeur) && $valeur !== "" ? selectLoad('libelle', 'service', $this->getDbAccess(), $valeur) : '';
             $retour .= '<select id="res_service" name="res_service" '.$required.' alt = "selectionnez un service">' . $optionsService . "</select>";
         }
 
         return $retour;
+    }
+
+    /**
+     * @name getElementbyIdForUpdate
+     * @description Selection une ressource par son $id et retourne 
+     * un tableau [nomDuChamp] = $valeur
+     * @param integer $id
+     * @return array $listeDonneesRes
+     */
+    public function getElementbyIdForUpdate() {
+        $listeDonneesRes = array();
+        $select = "SELECT * from ressource WHERE id = " . $this->idToModif;
+        $rs = $this->getDbAccess()->execQuery($select);
+        $listeDonneesRes = $this->getDbAccess()->fetchArray($rs);
+        unset($listeDonneesRes[0]['id']);
+        return $listeDonneesRes[0];
     }
 
 }
@@ -62,15 +79,33 @@ $retour = '';
 $dbaccess = new DbAccess($dbObj);
 $handler = $dbaccess->connect();
 $retour = null;
+$isOk = true;
+$msgErr = '';
+$id = null;
 if ($handler === false) {
-    $retour = 'Problème de connexion à la base ';
+    $isOk = false;
+    $msgErr = 'Problème de connexion à la base ';
 } else {
+    if(isset($_POST['res_id']) && $_POST['res_id']!=='') {
+        if(!filter_var($_POST['res_id'], FILTER_VALIDATE_INT)) {
+            $isOk = false;
+            $msgErr .= "<br>Erreur:  Un paramètre est erroné.";
+        } else {
+            $id = $_POST['res_id'];
+        }
+    }
+    
+}
 
-    $ressourceProcessFormulaire = new RessourceProcessFormulaires($dbaccess, 'ressource');
+if(!$isOk) {
+    echo $msgErr;
+} else {
+    $ressourceProcessFormulaire = new RessourceProcessFormulaires($dbaccess, 'ressource', $id);
     $retour = $ressourceProcessFormulaire->getFormFromTable('Enregistrement d\'une ressource');
+    echo $retour;
 }
 $dbaccess->close($handler);
-echo $retour;
+
 
 
 

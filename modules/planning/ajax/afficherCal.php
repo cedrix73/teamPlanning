@@ -172,9 +172,7 @@ if($handler===FALSE){
         }
         $fonctionClick = '';
         if($isAdmin || $isMe){ 
-            $fonctionClick .= ' onclick=infoRessource("'
-            . str_replace(' ', '---', $tabRessources[$numRes]['nom']) 
-            .'","'.str_replace(' ', '---', $tabRessources[$numRes]['prenom']).'");';
+            $fonctionClick .= ' onclick=afficherFormRessources(' . $numRes . ');';
         }
         $retour.='<div id = ressource_' . $numRes . ' class="'.$classeLegende.'"' . $fonctionClick .'>'.
         ' ' . ucfirst($tabRessources[$numRes]['nom']) . ' ' .

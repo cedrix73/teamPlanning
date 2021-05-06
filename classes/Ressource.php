@@ -49,7 +49,7 @@ class Ressource {
     }
     
     /**
-     * GetRessourcesBySelection
+     * @name GetRessourcesBySelection
      * @description  Sort les ressources en Ajax en fonction 
      * des valeur (chaine) sélectionnées à partir du
      * combobox site, département et service du formulaire
@@ -92,14 +92,17 @@ class Ressource {
         }
         return $this->tabRessources;
     }
+
+
+    
     
     
     
     
     
     /**
-     * GetRessourceById
-     * Retourne l'id, le nom, prénom d'une ressource
+     * @name GetRessourceById
+     * @description Retourne l'id, le nom, prénom d'une ressource
      * ainsi que son affectation (site, département et service)
      * 
      * @param int $idRessource 
@@ -136,17 +139,44 @@ class Ressource {
         $this->requeteSelect = $select;
     }
     /**
-     * Create
-     * Enregistre une ressource en base de donnée
+     * @name Create
+     * @description Enregistre une ressource en base de donnée
+     * @param array $tabInsert tableau des enregistrements: 
+     * key: nom du champ
+     * value: valeur du champ 
+     * 
+     * @return String $retour :Message de feedback (erreur ou OK)
      */
     public function create($tabInsert)
     {
 
         $retour = $this->dbaccess->create($this->_tableName, $tabInsert);
         if($retour !== false){
-            $retour = "La ressource a été correctement enregistrée !";
+            $retour = "Les données du collaborateur ont été correctement enregistrées !";
         }else{
             $retour = "Erreur: Un problème est survenu lors de la création d\'un collaborateur.";
+        }
+        return $retour;   
+    }
+
+
+    /**
+     * @name Update
+     * @description Modifie une ressource en base de donnée
+     * @param array $tabUpdate tableau des enregistrements: 
+     * key: nom du champ
+     * value: valeur du champ 
+     * 
+     * @return String $retour :Message de feedback (erreur ou OK)
+     */
+    public function update($tabUpdate, $idRessource)
+    {
+
+        $retour = $this->dbaccess->update($this->_tableName, $tabUpdate, $idRessource);
+        if($retour !== false){
+            $retour = "La modification du collaborateur ont été correctement enregistrées !";
+        }else{
+            $retour = "Erreur: Un problème est survenu lors de la modification d\'un collaborateur.";
         }
         return $retour;   
     }
