@@ -128,7 +128,7 @@ class Ressource {
     {
         $listeChampsRes = $this->dbaccess->getTableFields('ressource');
         $select = 'SELECT ';
-        $i =0;
+        $i=0;
         $last = count($listeChampsRes) -1;
         foreach($listeChampsRes as $value) {
             $select .=  $value['nomchamp'];

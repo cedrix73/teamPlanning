@@ -33,6 +33,7 @@ if ($handler === false){
         $isOk = false;
     }
     $departementLibelle = '';
+    
     if (isset($_POST['departement_lib']) 
         && !is_null($_POST['departement_lib']) 
         )
@@ -63,7 +64,15 @@ if ($handler === false){
             }
         }
 
+
+        
+
+
         $localisation = new Localisation($dbaccess, $typeLocalisation);
+
+        $libelleSite = $localisation->getSiteLibelle($siteId);
+
+
         $tabLocalisation = array();
         $tabLocalisation = $localisation->getAll();
         $retour = '';
@@ -125,7 +134,7 @@ if ($handler === false){
             $options = getOptionsFromTab($tabOptions);
             $retour .= '<td><select id = "key_localisation">' . $options . '</select></td>';
         }
-        $retour .= '<td><input id="new_validation" type="button" value="ajouter" onclick="insererTypeLocalisation(\'' . $typeLocalisation . '\');"/></td>';
+        $retour .= '<td><input id="new_validation" type="button" value="ajouter" onclick="insererTypeLocalisation(\'' . $typeLocalisation . '\', \'' . $libelleSite . '\');"/></td>';
         $retour .="</tr>";
         $retour .= '</table>';
         //$retour = utf8_encode($retour);

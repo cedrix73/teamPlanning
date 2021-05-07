@@ -26,7 +26,7 @@ function afficherTypesLocalisation(site='', departement=''){
    
 }
 
-function insererTypeLocalisation(type){
+function insererTypeLocalisation(type, libelle_site){
     var type_localisation  = type;
     var libelle_localisation  = $('#libelle_localisation').val();
     var description_localisation  = $('#description_localisation').val();
@@ -36,7 +36,8 @@ function insererTypeLocalisation(type){
         type_localisation: ""+type_localisation+"", 
         libelle_localisation: ""+libelle_localisation+"", 
         description_localisation: ""+description_localisation+"", 
-        key_localisation: ""+key_localisation+""}, 
+        key_localisation: ""+key_localisation+"",
+        libelle_site: ""+libelle_site+""}, 
         function(data){ 
             $("#img_loading").hide();
             if(data.length >0) {

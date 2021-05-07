@@ -27,6 +27,7 @@ if (isset($_POST['libelle_localisation']) && !is_null($_POST['libelle_localisati
     $isOk = true;
 }
 
+
 $descriptionLocalisation= '';
 if (isset($_POST['description_localisation']) && !is_null($_POST['description_localisation']) &&  $_POST['description_localisation'] == true 
     && ctype_alnum($_POST['description_localisation'])) {
@@ -40,6 +41,13 @@ if ($typeLocalisation != 'site') {
         $isOk = true;
     }
 }
+
+$libelleSite = '';
+if (isset($_POST['libelle_site']) && !is_null($_POST['libelle_site']) &&  $_POST['libelle_site'] == true) {
+    $libelleSite = $_POST['libelle_site'];
+    $isOk = true;
+}
+
 
 
 if ($isOk === false) {
@@ -69,7 +77,26 @@ if ($isOk) {
                 $tabInsert['departement_id'] = $keyLocalisation;
             break;
         }
+
+        // Version Pro: test si libellé existe déjà: chercher le libelle dans la table en question et si 
+        // c'est le cas, ajoute une abreviation de $libelleSite en suffixe. mais il faut l'id societe si 
+        // BD en commun 
+        $requete = "SELECT libelle FROM ". $typeLocalisation . " WHERE libelle = '" . $libelleLocalisation ."'";
+            $rs = $dbaccess->execQuery($requete);
+        $nbLignes =  $dbaccess->numRows($rs);
+        if($nbLignes > 0) {
+            $libelleLocalisation .= " (" . substr($libelleSite, 0, 3) . ")";
+            $tabInsert['libelle'] = $libelleLocalisation;
+        }
+
+
+        
     }
+
+    
+        
+
+
     
     $insertion = $localisation->create($tabInsert);
     if (!$insertion) {

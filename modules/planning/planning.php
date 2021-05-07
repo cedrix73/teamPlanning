@@ -137,7 +137,8 @@ $refreshCalendarOption = '';
                         <fieldset id="fielset_sites">
                             <legend>Sites</legend>
                             <?php if ($blnSites) { ?>
-                                <select id="cbo_sites" name="cbo_sites" onchange="<?php echo $refreshCalendarOption;?>liste_departements_load(this.options[this.selectedIndex].value)">
+                                <select id="cbo_sites" name="cbo_sites" onchange="<?php echo $refreshCalendarOption;?>
+                                liste_departements_load(this.options[this.selectedIndex].value);liste_services_load(cbo_sites.options[cbo_sites.selectedIndex].value, options[this.selectedIndex].value);">
                                 <?php
                                 foreach ($listeSites as $key => $value) {
                                     $pref = ($value == $siteDefaut) ? 'selected = selected' : "";

@@ -175,6 +175,21 @@ class Localisation {
         }
         return $tabServices;
     }
+
+    /**
+     * @name            getSiteLibelle
+     * @description     retourne le libellé du site en paramètre
+     */
+    public function getSiteLibelle($siteId) {
+        $retour = false;
+        $requete = "SELECT DISTINCT libelle FROM site WHERE id =" . $siteId  . " ;";
+        $rs = $this->_dbaccess->execQuery($requete);
+        if($rs !== false) {
+            $results = $this->_dbaccess->fetchArray($rs);
+            $retour = $results[0]['libelle'];
+        }
+        return $retour;
+    }
     
     
 }

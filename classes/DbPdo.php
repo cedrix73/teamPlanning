@@ -60,8 +60,15 @@ class DbPdo implements DbInterface
 	 * @return array $resultSet : resultat de l'execution
 	 */
 	public function execQuery($link, $query) {
-		$resultSet = $link->query($query);
+		$resultSet = false;
+		try {
+			$resultSet = $link->query($query);
+		
+		} catch (PDOException $e) {
+			$resultSet = false;
+		}
 		return $resultSet;
+		
 	}
 
 	/**
@@ -155,6 +162,7 @@ class DbPdo implements DbInterface
 			if($this->_noMsg !== false) {
 				echo 'Problème lors du traitement du résultat de la requête ' 
 			   . ' en tableau associatif: ' . $e->getMessage();
+			   $result = false;
 			}
 			
 		}
