@@ -23,6 +23,10 @@ class Planning {
     private $dateFinTxt;
     private $isSingle;
     private $periode;
+    private $oldDateDebut;
+    private $oldDateFin;
+    private $oldDateDebutSql;
+    private $oldDateFinSql;
         
     
     public function __construct($dbaccess, $ressourceId, $eventType, $dateDebut, $dateFin, $periode=1) {
@@ -40,6 +44,10 @@ class Planning {
         $this->isSingle = true;
         $this->checkSingle();
         $this->sql = '';
+        $this->oldDateDebut = null;
+        $this->oldDateFin = null;
+        $this->oldDateDebutSql = null;
+        $this->oldDateFinSql = null;
     }
     
     public function checkSingle(){
@@ -100,11 +108,21 @@ class Planning {
         return $this->isSingle;
     }
 
+    public function setOldDateDebut($oldDateDebut) {
+        $this->oldDateDebut = new CvfDate($oldDateDebut);
+        $this->oldDateDebutSql = $this->oldDateDebut->tspToSql();
+    }
+
+    public function setOldDateFin($oldDateFin) {
+        $this->oldDateFin = new CvfDate($oldDateFin);
+        $this->oldDateFinSql = $this->oldDateFin->tspToSql();
+    }
+
         
     public function create(){
         $retour = FALSE;
         if($this->dateDebut > $this->dateFin){
-            // erreur
+            $retour = FALSE;
         }else{
             $sqlData = 'VALUES ';
             // fonction "raccourci" qui efectue une simple reconversion d'une chaine
@@ -142,7 +160,7 @@ class Planning {
             $this->sql .= $sql.'<br>';
             try{
                 $retour = $this->dbaccess->execQuery($sql);
-                //$retour = TRUE;
+                $retour = TRUE;
             }catch(Exception $e){
                 $retour = FALSE;
             }
@@ -192,17 +210,29 @@ class Planning {
         return $retour;
     }
     
-   public function update(){
+    public function update(){
+       $retour = FALSE;
        $sql = 'UPDATE planning ' .
-              ' SET event = ' .$this->eventType . 
-              ' WHERE ressource = ' .$this->ressourceId;
+              ' SET event = ' .$this->eventType . ','
+              . ' jour = \'' . $this->dateDebutSql . '\','
+              . ' periode = ' .$this->periode 
+              . ' WHERE ressource = ' .$this->ressourceId;
         if(!$this->isSingle){
-            $sql.= ' AND jour BETWEEN \'' . $this->dateDebutSql . '\'' .
-                   ' AND \'' . $this->dateFinSql . '\'';
+            $sql .= ' AND jour BETWEEN \'' . $this->oldDateDebutSql . '\''
+                  . ' AND \'' . $this->oldDateFinSql . '\'';
         }else{
-            $sql.= ' AND jour = \'' . $this->dateDebutSql . '\'';
+            $sql .= ' AND jour = \'' . $this->oldDateDebutSql . '\'';
         }
-        $this->sql = $sql.'<br>';
+        try{
+            $rs = $this->dbaccess->execQuery($sql);
+            if($rs !== false) {
+                $retour = TRUE;
+            }
+        }catch(Exception $e){
+            $retour = FALSE;
+        }
+        $this->sql .= $sql.'<br>';
+        return $retour;
     }
     
     

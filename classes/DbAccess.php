@@ -268,13 +268,13 @@ class DbAccess
 
     /**
      * @name          update
-     * @description   Modifie un enregistrment un tableau nom champ - valeur en base
+     * @description   Modifie un enregistrement un tableau nom champ - valeur en base
      * UPDATE table_name
      * @param String  $tableName     : nom de la table concernée par l'insertion.
      * @param array   $tabUpdate     : tableau associatif avec nom du champ = clé et valeur associée.
-     * @param integer $idRessource   : id de l'enregistrement à mettre à jour.
+     * @param integer $idEntite      : id de l'enregistrement à mettre à jour.
      */
-    public function update($tableName, $tabUpdate, $idRessource)
+    public function update($tableName, $tabUpdate, $idEntite)
     {
         $sqlUpdate = 'UPDATE ' . $tableName . ' SET ';
         $i = 0;
@@ -287,7 +287,7 @@ class DbAccess
             }
             $i++;
         }
-        $sqlWhere = ' WHERE id = ' . $idRessource;
+        $sqlWhere = ' WHERE id = ' . $idEntite;
         $sql = $sqlUpdate . $sqlWhere;
         try{
             $retour = $this->execPreparedQuery($sql);

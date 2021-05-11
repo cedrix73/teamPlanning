@@ -20,6 +20,7 @@
   * @returns {undefined}
   */
   (function( $, oldHtmlMethod ){
+
     // Override the core html method in the jQuery object.
         $.fn.text = function(){
         // Check to see if we have an argument (that the user
@@ -36,7 +37,20 @@
     // augmented arguments collection.
        return(oldHtmlMethod.apply( this, arguments ));
        };
-   })( jQuery, jQuery.fn.html ); 
+
+       $.fn.extend({
+        refresh: function() { 
+            var $parent = this.end();
+            var selector = this.selector.substring($parent.selector.length).trim();
+            return $parent.find(selector); 
+        }
+
+        
+    });
+   })( jQuery, jQuery.fn.html );           
+
+
+
    
    function utf8_decode(chaine){
        //return decodeURIComponent(escape(chaine));
@@ -63,9 +77,9 @@
        var matchArray = strDate.match(datePat); // is the format ok?
     
        // parse date into variables
-       day = matchArray[1];
-       month = matchArray[3]; 
-       year = matchArray[5];
+       var day = matchArray[1];
+       var month = matchArray[3]; 
+       var year = matchArray[5];
        // On ajoute des zéro (éventuellement) devant le jour et le mois
        if (day.length == 1) {
           day = "0" + day;
@@ -76,13 +90,25 @@
        return(year + "-" + month + "-" + day);
        
     }
+
+    /**
+     * @description Convertit une date native javascript en chaîne yyyy-mm-dd
+     * @param {Date} date_param 
+     * @returns {String} 
+     */
+    function dateNativePourComparaison (date_param) {
+        var yyyy = date_param.getFullYear().toString();
+        var mm = (date_param.getMonth()+1).toString(); // getMonth() is zero-based
+        var dd  = date_param.getDate().toString();
+        return yyyy + "-" + (mm[1]?mm:"0"+mm[0]) + "-" + (dd[1]?dd:"0"+dd[0]); // padding
+      };
    
     function convertSqltoDate(date_sql) {
        var datePat = /^(\d{4})(-)(\d{1,2})(-)(\d{1,2})$/;
        var matchArray = date_sql.match(datePat);
-       jour = matchArray[5];
-       mois = (matchArray[3]);
-       annee = (matchArray[1]);
+       var jour = matchArray[5];
+       var mois = (matchArray[3]);
+       var annee = (matchArray[1]);
        return jour + "/" + mois + "/" + annee;
     }
    

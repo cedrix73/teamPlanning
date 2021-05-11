@@ -318,10 +318,11 @@ setlocale(LC_TIME, 'fr','fr_FR','fr_FR@euro','fr_FR.utf8','fr-FR','fra');
 
             /**
              * 
-             * @param int $mois
+             * @param int $mois 
+             * @param int $annee
              * @return int nb de jours ds le mois
              */
-            public function nbJoursdsMois($mois){
+            public function nbJoursdsMois($mois, $annee){
                 $nb_jour = 0;
                 if (($mois == 1)||($mois == 3)||($mois == 5)||($mois == 7)||($mois == 8)||($mois == 10)||($mois == 12))
                 {
@@ -451,9 +452,9 @@ setlocale(LC_TIME, 'fr','fr_FR','fr_FR@euro','fr_FR.utf8','fr-FR','fra');
             }
             
             /**
-             * tspToSql
+             * @name tspToSql
+             * @description Transforme un timestamp en date notation sql
              * @param String $sep= '-'
-             * Transforme un timestamp en date notation sql
              * @return String (format yyyy-mm-dd)
              */
             public function tspToSql($sep = '-'){
@@ -462,8 +463,8 @@ setlocale(LC_TIME, 'fr','fr_FR','fr_FR@euro','fr_FR.utf8','fr-FR','fra');
             
             /**
              * 
-             * @param type $date
-             * Convertit une date au format jj/mm/aaaa
+             * @param String $date
+             * Convertit une date du format jj/mm/aaaa
              * au format SQL AAAA-MM-JJ 
              */
             

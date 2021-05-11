@@ -9,6 +9,7 @@
  * @version : 1.0
    --------------------------------------------------------------------------*/
 
+   
 
 function cacherComposantsInfo() {
     $('#div_saisie_activite').hide();
@@ -144,20 +145,24 @@ function setDateWidget(dateRetournee){
  * @param {type} numPeriode (=0 pour tout jour travaillé)
  * @returns {undefined}
  */
-function afficherSaisie(date, ressource_id, numActivite, numPeriode){
+function afficherSaisie(date, ressource_id, numActivite = null, numPeriode) {
+    var today = new Date();
     $("#div_saisie_activite").html(initialiserFormulaire.saisieActivite);
     // patch 1.1.1 met à jour la liste des activités
     $.post("ajax/getActivites.php", 
         {
-            id_activite:  numActivite
-        },  
-        function(data){
+            id_activite:  numActivite,
+            datatype: 'html'
+        })  
+        .done(function(data){
                 if(data.length >0) {
-                    $('#lst_activites').html(data);
+                $( "#lst_activites" ).empty().append(data);
+                //$('#lst_activites').html(data);
+                $('#lst_activites_modif').empty().append(data);
                 }
-            }
-        );
-    
+            });
+
+        
     $( "#supprimer" ).hide();
     $("#message").hide();
     $("#div_saisie_activite").slideDown();
@@ -165,12 +170,39 @@ function afficherSaisie(date, ressource_id, numActivite, numPeriode){
     $("#txt_str_date_fin").val(date);
     $("#lst_periodes").val(numPeriode);
     infoRessource.id = ressource_id;
-    infoRessource.action = "insertion";
-    $("#btn_valider_saisie").val("Valider");
+    
+    
     if(numActivite > 0){
+        // Modification ou supression
+        $('#lst_activites').refresh();
+        
+        //alert(lst_activites.options[lst_activites.selectedIndex].text);
+        
         infoRessource.action = "modification";
         $("#btn_valider_saisie").val("Modifier");
+        $('#btn_valider_saisie').attr('onclick', 'modifierSaisie()');
+        $("#fld_saisie_activite").prop("disabled", true);
         $( "#supprimer" ).show();
+        $("#fld_modification_activite").show();
+        
+        $('#lst_periodes option').clone().appendTo('#lst_periodes_modif');
+        $("#txt_str_date_debut_modif").val($("#txt_str_date_debut").val());
+        $("#txt_str_date_fin_modif").val($("#txt_str_date_fin").val());
+        $("#lst_periodes_modif").val(numPeriode);
+        
+
+    } else {
+        // Insertion
+        infoRessource.action = "insertion";
+        $("#fld_modification_activite").hide();
+        $("#btn_valider_saisie").val("Valider");
+    }
+    
+    if(dateNativePourComparaison(today) > validDatePourComparaison(date)) {
+        $("#fld_saisie_activite").prop("disabled", true);
+        $("#fld_modification_activite").prop("disabled", true);
+        $( "#supprimer" ).hide();
+
     }
    
    // jour choisi = jour min dans datePicker
@@ -179,6 +211,7 @@ function afficherSaisie(date, ressource_id, numActivite, numPeriode){
    jour = matchArray[1];
    mois = parseInt(matchArray[3]-1);
    annee = parseInt(matchArray[5]);
+   
    $(".champ_date").datepicker({
        minDate: new Date(annee, mois, jour),
        dateFormat: 'dd/mm/yy',
@@ -187,13 +220,15 @@ function afficherSaisie(date, ressource_id, numActivite, numPeriode){
        dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],});
 }
 
-function supprimerSaisie(){
+
+function supprimerSaisie() {
     infoRessource.action = "suppression";
     validerSaisie();
     //refreshCalendar($("#txt_str_date_debut").val());
 }
 
-function validerSaisie(){
+
+function validerSaisie() {
     var fichierAjax = "insererEvent.php";
     if(infoRessource.action == "suppression"){
         fichierAjax = "supprimerEvent.php";
@@ -228,6 +263,47 @@ function validerSaisie(){
     }
 }
 
+
+
+function modifierSaisie() {
+    var fichierAjax = "modifierEvent.php";
+    if(infoRessource.action == "suppression"){
+        fichierAjax = "supprimerEvent.php";
+    }
+    message = '';
+    var date_debut = $("#txt_str_date_debut_modif").val();
+    var date_fin = $("#txt_str_date_fin_modif").val();
+    if((validDatePourComparaison(date_debut) > validDatePourComparaison(date_fin))){
+        message = "La date de début doit être égale ou antérieure à la date de fin.";
+        afficherMessage(message);
+    }else{
+        $("#img_loading").show();
+        $.post("ajax/" + fichierAjax, {
+            action_user: infoRessource.action, 
+            old_date_debut: ""+$("#txt_str_date_debut").val()+"", 
+            old_date_fin: ""+$("#txt_str_date_fin").val()+"", 
+            date_debut: ""+date_debut+"", 
+            date_fin: ""+date_fin+"", 
+            ressource_id: ""+infoRessource.id+"", 
+            activite_sel: ""+$("#lst_activites_modif").val()+"", 
+            periode_sel: ""+$("#lst_periodes_modif").val()+""}, 
+            function(data){
+                $("#img_loading").hide();
+                $( "#supprimer" ).html("&nbsp;");
+                if(data.length >0) {
+                    $("#div_saisie_activite").slideUp(2000).delay( 2000 ).fadeOut( 1000 );
+                    refreshCalendar(initialiserFormulaire.datecal);
+                    afficherMessage(data);
+                    //message = data;
+                    
+                }
+            }       
+        );
+    }
+}
+
+
+
 function liste_activites_load(){
     $.ajax({
         type: "POST",
@@ -245,6 +321,10 @@ function liste_activites_load(){
             }
         }
     });
+}
+
+function attribuerDateFin(valeur_date) {
+    $("#txt_str_date_fin_modif").val(valeur_date);
 }
 
 

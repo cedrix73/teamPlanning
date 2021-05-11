@@ -195,42 +195,65 @@ $refreshCalendarOption = '';
             
             <div id ="div_info">
                 <div id="div_cadre_saisie_activite">
-                <div id ="div_saisie_activite" style="float:left;" >
-                    <fieldset id="div_saisie_activite" class="tab_params">
-                        <legend id = "lgd_saisie_activite" onclick="cacherComposantsInfo();">Saisie d'une absence</legend>
+                    <div id ="div_saisie_activite" style="float:left;" class="tab_params">
+                        <fieldset id="fld_saisie_activite" name ="fld_saisie_activite">
+                            <legend id = "lgd_saisie_activite" onclick="cacherComposantsInfo();">Saisie d'une absence</legend>
+                            <span>Du&nbsp;</span>  
+                            <input type="text"
+                            name="txt_str_date_debut"
+                            value=""
+                            id="txt_str_date_debut" 
+                            size="10" maxlength="10"
+                            class="champ_date" readonly>                     
+                            <span>&nbsp;au&nbsp;</span>   
+                            <input type="text"
+                            name="txt_str_date_fin"
+                            id="txt_str_date_fin"
+                            value=""
+                            size="10" maxlength="10"
+                            class="champ_date" readonly>
+                            <span>&nbsp;Type d'absence:&nbsp;</span> 
+                            <select id="lst_activites" name="lst_activites"></select>
+                            <span>&nbsp;Période:&nbsp;</span> 
+                            <select id="lst_periodes">
+                                <option id="periode_journee" value="1" selected = "selected">journée</option>
+                                <option id="periode_matin" value="2">matin</option>
+                                <option id="periode_am" value="3">après-midi</option>
+                            </select>
+                            <img id="supprimer" src="<?php echo MAIN_IMAGES_PATH . 'supprimer.jpg';?>" 
+                                onclick='supprimerSaisie()' title = 'supprimer' />
+                        </fieldset>
+                                
+
+                        <fieldset id="fld_modification_activite" name="fld_modification_activite">
+                        Modification:</br>
                         <span>Du&nbsp;</span>  
-                        <input type="text"
-                           name="txt_str_date_debut"
-                           value=""
-                           id="txt_str_date_debut"
-                           size="10" maxlength="10"
-                           class="champ_date" readonly>                     
-                        <span>&nbsp;au&nbsp;</span>   
-                         <input type="text"
-                           name="txt_str_date_fin"
-                           id="txt_str_date_fin"
-                           value=""
-                           size="10" maxlength="10"
-                           class="champ_date" readonly>
-                         <span>&nbsp;Type d'absence:&nbsp;</span> 
-                         <select id="lst_activites"></select>
-                         <span>&nbsp;
-                         <?php 
-                         echo "Période";
-                         ?>
-                         :&nbsp;</span> 
-                         <select id="lst_periodes">
-                             <option id="periode_journee" value="1" selected = "selected">journée</option>
-                             <option id="periode_matin" value="2">matin</option>
-                             <option id="periode_am" value="3">après-midi</option>
-                         </select>
-                         <input id = "btn_valider_saisie" name = "btn_valider_saisie" 
-                                input type="button" value = "Valider" onclick="validerSaisie();" />
-                         <img id="supprimer" src="<?php echo MAIN_IMAGES_PATH . 'supprimer.jpg';?>" 
-                              onclick='supprimerSaisie()' title = 'supprimer' />
-                    </fieldset>
+                            <input type="text"
+                            name="txt_str_date_debut_modif"
+                            value=""
+                            id="txt_str_date_debut_modif" 
+                            onchange="attribuerDateFin(this.value);" 
+                            size="10" maxlength="10"
+                            class="champ_date" readonly>                     
+                            <span>&nbsp;au&nbsp;</span>   
+                            <input type="text"
+                            name="txt_str_date_fin_modif"
+                            id="txt_str_date_fin_modif"
+                            value=""
+                            size="10" maxlength="10"
+                            class="champ_date" readonly>
+                            <span>&nbsp;Type d'absence:&nbsp;</span> 
+                            <select id="lst_activites_modif" name="lst_activites_modif"></select>
+                            <span>&nbsp;Période:&nbsp;</span> 
+                            <select id="lst_periodes_modif">
+                            </select>
+                        </fieldset>
+                        <input id = "btn_valider_saisie" name = "btn_valider_saisie" 
+                                    input type="button" value = "Valider" onclick="validerSaisie();" />
+                            
+                    </div>
                 </div>
-                <div id="message"><div id="message_box">&nbsp;</div></div>
+                <div id="message"><div id="message_box">&nbsp;</div>
                 <img id="img_loading" src="<?php echo MAIN_IMAGES_PATH . 'loader.gif';?>" alt="Loading" />
             </div>
         </div>

@@ -19,21 +19,23 @@
             type: "post",
             url: "/teamplanning/ajax/afficherFormRessources.php", 
             data: {"res_id": id},
-            dataype: "json",
-            success: function(data)
-            {
-                if(data.length >0) {
-                    $('#div_saisie_activite').html(data);
-                    $("#div_saisie_activite").slideDown();
-                    $("#affichage_activite").val("form_ressources");
-                }
-                
-            },
-            error: function(message)
-            {
-                afficherMessage(message);
+            dataype: "json"
+        })
+
+        .done(function(data)
+        {
+            if(data.length >0) {
+                $('#div_saisie_activite').html(data);
+                $("#div_saisie_activite").slideDown();
+                $("#affichage_activite").val("form_ressources");
             }
+            
+        })
+        .fail(function(message)
+        {
+            afficherMessage(message);
         });
+        
         
     }
 
@@ -45,8 +47,9 @@ function form_departements_load(site_sel){
         type: "post",
         url: "/teamplanning/ajax/listeDepartementsLoad.php",
         data: {"site_id": site_sel, "contexte_insertion": true},
-        datatype: "json",
-        success: function(data)
+        datatype: "json"
+    })
+        .done(function(data)
         {
             var tab_elems = [];
             var str_feedback = jQuery.parseJSON(data);
@@ -57,12 +60,11 @@ function form_departements_load(site_sel){
             form_services_load(site_sel, $("#res_departement").val());
 
 
-        },
-        error: function(message)
+        })
+        .fail(function(message)
         {
             afficherMessage(message);
-        }
-    });
+        })
 }
 
 function form_services_load(site_sel, departement_sel){
@@ -70,18 +72,23 @@ function form_services_load(site_sel, departement_sel){
         type: "POST",
         url: "/teamplanning/ajax/listeServicesLoad.php",
         data: {"site_sel": site_sel, "departement_sel":departement_sel, "contexte_insertion": true},
-        datatype: "json",
-        success: function(data)
-        {
-            var tab_elems = [];
-            var str_feedback = jQuery.parseJSON(data);
-            $.each(str_feedback, function(cle, valeur) {
-                tab_elems.push('<option value="' + cle + '">' + valeur + '</option>');
-            });
-             $("#res_service").html(tab_elems.join(''));
+        datatype: "json"
+    })
+    .done(function(data)
+    {
+        var tab_elems = [];
+        var str_feedback = jQuery.parseJSON(data);
+        $.each(str_feedback, function(cle, valeur) {
+            tab_elems.push('<option value="' + cle + '">' + valeur + '</option>');
+        });
+            $("#res_service").html(tab_elems.join(''));
 
-        }
-    });
+    })
+    .fail(function(message)
+    {
+        afficherMessage(message);
+    })
+   
 }
 
 function infoRessource(nom, prenom){
