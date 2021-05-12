@@ -12,6 +12,17 @@ require_once ABS_PLANNING_PATH . CLASSES_PATH . 'Planning.php';
  * infoRessource.action ={insertion, modification}
  */
 
+function verifDate($valDate) {
+    $retour = '';
+    $isOk = true;
+    if (!preg_match("/^(\d{1,2})(\/)(\d{1,2})(\/)(\d{4})$/", $valDate)) {
+        $retour .= "<br>Erreur: Seul le format date jj-mm-aaaa est authorisé pour le champ " . $valDate;
+        $isOk = false;
+    }
+    return $isOk;
+}
+
+
 $retour = '';   
 $isOk = false;
 
@@ -28,13 +39,13 @@ if(isset($_POST['activite_sel']) && !is_null($_POST['activite_sel']) &&  $_POST[
 }
 
 $dateDebut = '';
-if(isset($_POST['date_debut']) && !is_null($_POST['date_debut']) &&  $_POST['date_debut'] == true){
+if(isset($_POST['date_debut']) && !is_null($_POST['date_debut']) &&  $_POST['date_debut'] == true &&  verifDate($_POST['date_debut'])){
     $dateDebut = $_POST['date_debut'];
     $isOk = true;
 }
 
 $dateFin = '';
-if(isset($_POST['date_fin']) && !is_null($_POST['date_fin']) &&  $_POST['date_fin'] == true){
+if(isset($_POST['date_fin']) && !is_null($_POST['date_fin']) &&  $_POST['date_fin'] == true && verifDate($_POST['date_fin'])){
     $dateFin = $_POST['date_fin'];
     $isOk = true;
 }
@@ -51,12 +62,12 @@ if(isset($_POST['periode_sel']) && !is_null($_POST['periode_sel']) &&  $_POST['p
     $isOk = true;
 }
 
-if(isset($_POST['old_date_debut']) && !is_null($_POST['old_date_debut']) &&  $_POST['old_date_debut'] == true){
+if(isset($_POST['old_date_debut']) && !is_null($_POST['old_date_debut']) &&  $_POST['old_date_debut'] == true && verifDate($_POST['old_date_debut'])){
     $oldDateDebut = $_POST['old_date_debut'];
     $isOk = true;
 }
 
-if(isset($_POST['old_date_fin']) && !is_null($_POST['old_date_fin']) &&  $_POST['old_date_fin'] == true){
+if(isset($_POST['old_date_fin']) && !is_null($_POST['old_date_fin']) &&  $_POST['old_date_fin'] == true && verifDate($_POST['old_date_fin'])){
     $oldDateFin = $_POST['old_date_fin'];
     $isOk = true;
 }
@@ -78,47 +89,28 @@ if($isOk){
     $planning = new Planning($dbaccess, $ressourceId, $activiteSel, $dateDebut, $dateFin, $periode, true);
     $planning->setOldDateDebut($oldDateDebut);
     $planning->setOldDateFin($oldDateFin);
-    // Est ce qu'on a un evenement pour la même ressource et pour le(s) même(s) jour(s) ?
-    $tabActivites = $planning->read();
-    // Si tel est le cas, on le(s) modifie
-    if(count($tabActivites) > 0){
+    // si modification autre que les dates
+    if($oldDateDebut <> $dateDebut && $dateDebut < $dateFin) {
+        // Est ce qu'on a un evenement pour la même ressource et pour le(s) même(s) jour(s) ?
+        $tabActivites = $planning->read();
+        if(count($tabActivites) > 0){
+            try {
+                $modification = $planning->delete();
+            } catch(Exception $e) {
+                $modification = false; 
+                $retour .= "Il y a eu un problème SQL au moment de la suppression d'événements déjà existants !";
+            }
+            
+        }
+    }
+    try {
+        $rs = $planning->update();
+        if($rs !== false) {
+            $modification = true;
+        }
+    } catch(Exception $e) {
         $modification = false;
-        ?>
-        <script>
-        $( function() {
-        $( "#dialog-confirm" ).dialog({
-        resizable: false,
-        height: "auto",
-        width: 400,
-        modal: true,
-        buttons: {
-            "Oui ": function() {
-            $( this ).dialog( "close" );
-            },
-            Annuler: function() {
-            $( this ).dialog( "close" );
-            }
-        }
-        });
-    } );
-    </script>
-        <?php
-        //$retour .= "Ce jour est déjà pris !";
-        $retour .= '<div id="dialog-confirm" title="Empty the recycle bin?">
-        <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>Vous allez écraser s\'autres événements vous concernant. Êtes vous sûr ?</p>
-      </div>';
-    } else {
-        try {
-            $rs = $planning->update();
-            if($rs !== false) {
-                $modification = true;
-            }else{
-                $retour .= "Il y a eu un problème SQL au moment de la modification !";
-            }
-        }catch(Exception $e){
-            $modification = false;
-            $retour .= "Il y a eu un problème SQL au moment de la modification !";
-        }
+        $retour .= "Il y a eu un problème SQL au moment de la modification !";
     }
     
     

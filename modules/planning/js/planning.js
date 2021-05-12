@@ -9,13 +9,14 @@
  * @version : 1.0
    --------------------------------------------------------------------------*/
 
-   
+
 
 function cacherComposantsInfo() {
     $('#div_saisie_activite').hide();
     $("#message").hide();
     $("#img_loading").hide();
 }
+
 
 /**
  * initialiserFormulaire
@@ -148,6 +149,7 @@ function setDateWidget(dateRetournee){
 function afficherSaisie(date, ressource_id, numActivite = null, numPeriode) {
     var today = new Date();
     $("#div_saisie_activite").html(initialiserFormulaire.saisieActivite);
+    $('#btn_valider_saisie').attr('onclick', 'verifierEvent()');
     // patch 1.1.1 met à jour la liste des activités
     $.post("ajax/getActivites.php", 
         {
@@ -180,7 +182,7 @@ function afficherSaisie(date, ressource_id, numActivite = null, numPeriode) {
         
         infoRessource.action = "modification";
         $("#btn_valider_saisie").val("Modifier");
-        $('#btn_valider_saisie').attr('onclick', 'modifierSaisie()');
+        //$('#btn_valider_saisie').attr('onclick', 'verifierEvent()');
         $("#fld_saisie_activite").prop("disabled", true);
         $( "#supprimer" ).show();
         $("#fld_modification_activite").show();
@@ -223,16 +225,67 @@ function afficherSaisie(date, ressource_id, numActivite = null, numPeriode) {
 
 function supprimerSaisie() {
     infoRessource.action = "suppression";
-    validerSaisie();
-    //refreshCalendar($("#txt_str_date_debut").val());
+    modifierSaisie();
+}
+
+
+function verifierEvent() {
+    var message = null;
+    var fonction_js = null;
+    var date_debut = null;
+    var date_fin = null;
+    var no_need = false;
+    if(infoRessource.action == 'insertion') {
+        fonction_js = 'validerSaisie()';
+        date_debut = $("#txt_str_date_debut").val();
+        date_fin = $("#txt_str_date_fin").val();
+        if(date_debut === date_fin) {
+            no_need = true;
+        }
+    } else {
+        fonction_js = 'modifierSaisie()';
+        date_debut = $("#txt_str_date_debut_modif").val();
+        date_fin = $("#txt_str_date_fin_modif").val();
+        // si on ne modifie un autre attribt que la date
+        if(date_debut === $("#txt_str_date_debut").val() && date_debut === date_fin) {
+            no_need = true;
+        }
+        
+    }
+    //alert(fonction_js + 'no nedd: ' + no_need + 'action:' + infoRessource.action);
+    
+    if((validDatePourComparaison(date_debut) > validDatePourComparaison(date_fin))){
+        message = "La date de début doit être égale ou antérieure à la date de fin.";
+        afficherMessage(message);
+    }else{
+        if(no_need) {
+            eval(fonction_js);
+        } else {
+            $("#img_loading").show();
+            $.post("ajax/verifierEvent.php",{
+                action_user: infoRessource.action,
+                date_debut: ""+date_debut+"", 
+                date_fin: ""+$("#txt_str_date_fin").val()+"", 
+                ressource_id: ""+infoRessource.id+"", 
+                activite_sel: ""+$("#lst_activites").val()+"", 
+                periode_sel: ""+$("#lst_periodes").val()+""}, 
+                function(data){
+                    //alert(data);
+                    $("#img_loading").hide();
+                    $( "#supprimer" ).html("&nbsp;");   
+                    if(data !== null && data.length >0) {
+                        $("#message").append(data);
+                    } else {
+                        eval(fonction_js);
+                    }
+                }       
+            );
+        }
+    }
 }
 
 
 function validerSaisie() {
-    var fichierAjax = "insererEvent.php";
-    if(infoRessource.action == "suppression"){
-        fichierAjax = "supprimerEvent.php";
-    }
     message = '';
     var date_debut = $("#txt_str_date_debut").val();
     var date_fin = $("#txt_str_date_fin").val();
@@ -241,7 +294,7 @@ function validerSaisie() {
         afficherMessage(message);
     }else{
         $("#img_loading").show();
-        $.post("ajax/" + fichierAjax, {
+        $.post("ajax/insererEvent.php", {
             action_user: infoRessource.action,
             date_debut: ""+date_debut+"", 
             date_fin: ""+$("#txt_str_date_fin").val()+"", 
@@ -255,7 +308,6 @@ function validerSaisie() {
                     $("#div_saisie_activite").slideUp(2000).delay( 2000 ).fadeOut( 1000 );
                     refreshCalendar(initialiserFormulaire.datecal);
                     afficherMessage(data);
-                    //message = data;
                     
                 }
             }       
@@ -294,7 +346,6 @@ function modifierSaisie() {
                     $("#div_saisie_activite").slideUp(2000).delay( 2000 ).fadeOut( 1000 );
                     refreshCalendar(initialiserFormulaire.datecal);
                     afficherMessage(data);
-                    //message = data;
                     
                 }
             }       

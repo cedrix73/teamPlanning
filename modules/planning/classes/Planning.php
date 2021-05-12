@@ -171,6 +171,8 @@ class Planning {
     
     public function read(){
         $tabPlanning = array();
+        $retour = false;
+        $results = false;
         $sql = 'SELECT event, jour ' .
                 ' FROM planning ' .
                 ' WHERE ressource = ' .$this->ressourceId;
@@ -180,18 +182,25 @@ class Planning {
         }else{
             $sql.= ' AND jour = \'' . $this->dateDebutSql . '\'';
         }
-        $rs = $this->dbaccess->execQuery($sql);
-        
-        $results=$this->dbaccess->fetchArray($rs);
-        
-        foreach ($results as $ligne) {
-            $tabPlanning[]=$ligne;
+        try{
+            $rs = $this->dbaccess->execQuery($sql);
+            $results=$this->dbaccess->fetchArray($rs);
+            $retour = true;
+        }catch(Exception $e){
+            $retour = false;
+        }
+        if($retour !== false) {
+            foreach ($results as $ligne) {
+                $tabPlanning[]=$ligne;
+            }
+        } else {
+            $tabPlanning = false;
         }
         return $tabPlanning;
     }
     
     public function delete(){
-        $retour = FALSE;
+        $retour = false;
        $sql = 'DELETE FROM planning ' .
                 ' WHERE ressource = ' .$this->ressourceId;
         if(!$this->isSingle){

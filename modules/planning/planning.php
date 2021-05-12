@@ -197,7 +197,7 @@ $refreshCalendarOption = '';
                 <div id="div_cadre_saisie_activite">
                     <div id ="div_saisie_activite" style="float:left;" class="tab_params">
                         <fieldset id="fld_saisie_activite" name ="fld_saisie_activite">
-                            <legend id = "lgd_saisie_activite" onclick="cacherComposantsInfo();">Saisie d'une absence</legend>
+                            <legend id = "lgd_saisie_activite" class ="legende_activite" onclick="cacherComposantsInfo();">Saisie d'une absence</legend>
                             <span>Du&nbsp;</span>  
                             <input type="text"
                             name="txt_str_date_debut"
@@ -220,8 +220,6 @@ $refreshCalendarOption = '';
                                 <option id="periode_matin" value="2">matin</option>
                                 <option id="periode_am" value="3">après-midi</option>
                             </select>
-                            <img id="supprimer" src="<?php echo MAIN_IMAGES_PATH . 'supprimer.jpg';?>" 
-                                onclick='supprimerSaisie()' title = 'supprimer' />
                         </fieldset>
                                 
 
@@ -247,10 +245,11 @@ $refreshCalendarOption = '';
                             <span>&nbsp;Période:&nbsp;</span> 
                             <select id="lst_periodes_modif">
                             </select>
+                            <img id="supprimer" src="<?php echo MAIN_IMAGES_PATH . 'supprimer.jpg';?>" 
+                                onclick='supprimerSaisie()' title = 'supprimer' />
                         </fieldset>
                         <input id = "btn_valider_saisie" name = "btn_valider_saisie" 
-                                    input type="button" value = "Valider" onclick="validerSaisie();" />
-                            
+                                    input type="button" value = "Valider" onclick="verifierEvent();" />                        
                     </div>
                 </div>
                 <div id="message"><div id="message_box">&nbsp;</div>

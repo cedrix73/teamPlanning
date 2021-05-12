@@ -9,17 +9,8 @@ require_once ABS_PLANNING_PATH . CLASSES_PATH . 'Planning.php';
 
 /* 
  * Création ou modification d'un événement selon la variable javascript 
- * infoRessource.action ={odification}
+ * infoRessource.action ={insertion, modification}
  */
-function verifDate($valDate) {
-    $retour = '';
-    $isOk = true;
-    if (!preg_match("/^(\d{1,2})(\/)(\d{1,2})(\/)(\d{4})$/", $valDate)) {
-        $retour .= "<br>Erreur: Seul le format date jj-mm-aaaa est authorisé pour le champ " . $valDate;
-        $isOk = false;
-    }
-    return $isOk;
-}
 
 $retour = '';   
 $isOk = false;
@@ -37,13 +28,13 @@ if(isset($_POST['activite_sel']) && !is_null($_POST['activite_sel']) &&  $_POST[
 }
 
 $dateDebut = '';
-if(isset($_POST['date_debut']) && !is_null($_POST['date_debut']) &&  $_POST['date_debut'] == true && verifDate($_POST['date_debut'])){
+if(isset($_POST['date_debut']) && !is_null($_POST['date_debut']) &&  $_POST['date_debut'] == true){
     $dateDebut = $_POST['date_debut'];
     $isOk = true;
 }
 
 $dateFin = '';
-if(isset($_POST['date_fin']) && !is_null($_POST['date_fin']) &&  $_POST['date_fin'] == true && verifDate($_POST['date_fin'])){
+if(isset($_POST['date_fin']) && !is_null($_POST['date_fin']) &&  $_POST['date_fin'] == true){
     $dateFin = $_POST['date_fin'];
     $isOk = true;
 }
@@ -60,6 +51,12 @@ if(isset($_POST['periode_sel']) && !is_null($_POST['periode_sel']) &&  $_POST['p
     $isOk = true;
 }
 
+if(isset($_POST['old_date_debut']) && !is_null($_POST['old_date_debut']) &&  $_POST['old_date_debut'] == true){
+    $oldDateDebut = $_POST['old_date_debut'];
+    $isOk = true;
+}
+
+
 if($isOk===FALSE){
     $retour = 'Paramètres incorrects';
 }
@@ -73,26 +70,49 @@ if($handler===FALSE){
 }
 
 if($isOk){
-    $insertion = true;
+    $retour = false;
+    $modification = false;
     $planning = new Planning($dbaccess, $ressourceId, $activiteSel, $dateDebut, $dateFin, $periode, true);
+
     // Est ce qu'on a un evenement pour la même ressource et pour le(s) même(s) jour(s) ?
     $tabActivites = $planning->read();
-    // Si tel est le cas, on le(s) supprime
-    if(count($tabActivites) > 0){
-        $insertion = $planning->delete();
+
+
+    
+    if($tabActivites !== false && count($tabActivites) > 0) {
+
+        $fonctionJs = $actionUser == 'modification' ? 'modifierSaisie();' : 'validerSaisie();';
+        ?><script>
+        $( function() {
+            $( "#dialog-confirm" ).dialog({
+                resizable: false,
+                height: "auto",
+                width: 400,
+                modal: true,
+                buttons: {
+                    "Oui ": function() {
+                        <?php echo $fonctionJs;?>
+                        $( this ).dialog( "close" );
+                    },
+                    Annuler: function() {
+                        $( this ).dialog( "close" );
+                    }
+                }
+            });
+        });   
+        </script><?php
+        // https://api.jqueryui.com/dialog/
+        $retour .= '<div id="dialog-confirm" title="Ecraser les autres événements ?">
+        <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>Vous allez écraser s\'autres événements vous concernant. Êtes vous sûr ?</p>
+      </div>';
+    } else {
+        $retour = null;
     }
-    // insertion de l'événement
-    if($insertion){
-        $insertion = $planning->create();
-    }
+
+
     
     
-    if(!$insertion){
-        $type = ($actionUser == "insertion") ? 'l\'insertion !' : 'la modification';
-        $retour .= 'Problème lors de ' . $type;
-    }else{
-        $retour .= ($actionUser == "insertion") ? 'nouvelle entrée crèée avec succès.' : 'modification effectuée.';
-    }
+    
     //$retour .= $planning->getSql();
 }
 $dbaccess->close($handler);

@@ -303,21 +303,21 @@ fieldset {
     border-bottom: 1px solid #b3c1db;
 }
 
-.legende_activite{
-    text-align: left;
-    padding-left:12px;
+.legende_activite {
+    float: none;
+    text-align: center;
 }
 
-#div_saisie_activite{
-    float:left;
-    margin: 4px 3px;
-    display: inline;
+#div_saisie_activite {
+    padding-left: 5px;
+    margin: 10px 3px;
     border-radius: 10px;
 }
 
-#div_saisie_activite img{
+#div_saisie_activite img {
     width:5%;
 }
+
 /*
 :required {
     border: 2px dotted #3399ff;
