@@ -2,20 +2,12 @@
 -- version 4.0.4
 -- http://www.phpmyadmin.net
 --
--- Client: localhost
--- Généré le: Dim 02 Novembre 2014 à 23:47
--- Version du serveur: 5.6.12-log
--- Version de PHP: 5.4.12
+
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET GLOBAL sql_mode='';
 SET time_zone = "+00:00";
 
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
 
 --
 -- Base de données: `team_planning`
@@ -105,17 +97,7 @@ CREATE TABLE IF NOT EXISTS ressource (
   PRIMARY KEY (id)
 );
 
---
--- Contenu de la table `ressource`
---
-/*
-INSERT INTO ressource (id, NNI, nom, prenom, telephone, adresseMail, dateNaissance, service, domaine, fonction, bureau,  statut, numBadgeGris, numBadgeBlanc, dateRestitutionBadge, dateCharteAdminSOC, dateCharteSecurID, dateSensibilitationSOC, resiliationRestitutionMateriel, dateEntree, dateSortie, commentaire, numSecurid) VALUES
-('NA09EF3N', 'Admin', '05 34 46 71 33', NULL, '34', '1980-09-24',  'INFRA/MORS', 'SN2', '',  'Permanent', '', '', NULL, '2013-04-30', '2013-07-09', NULL, '', '2013-04-29', NULL, 'Administrator', '218233777'),
-('HA05189S', '11026', 'OldUser', '', NULL, '1973-07-210', NULL,  'APPLI', 'SN2', '', 'Toulouse', 'Permanent', '', '', NULL, '2011-06-01', '2012-12-20', NULL, '', '2010-12-01', '2012-12-28', 'old user', null),
-*/
--- --------------------------------------------------------
 
---
 -- Structure de la table `event`
 --
 
@@ -189,14 +171,4 @@ INSERT INTO feries (libelle, actif) VALUES
 ('Saint-Sylvestre', 1),
 ('Premier de l''An', 1);
 
--- --------------------------------------------------------
 
-
-
-
-
-
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
