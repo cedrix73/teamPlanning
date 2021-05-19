@@ -1,9 +1,11 @@
 <?php
 # --- Team_Planning Config file ---
 
+$docker = true;
 
 
-$host = $_SERVER['SERVER_ADDR'];
+
+$host = ($docker == true) ? "database" : $_SERVER['SERVER_ADDR'];
 define('TEAM_DATABASE_SERVER', $host);
 define('TEAM_DATABASE_USER' , 'root');
 define('TEAM_DATABASE_PASSWORD', 'cedrix');
