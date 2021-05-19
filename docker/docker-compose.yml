@@ -1,0 +1,48 @@
+
+database:
+    image: mysql:5.6
+    container_name: database
+    environment:
+      MYSQL_ROOT_PASSWORD: cedrix
+      MYSQL_USER: teamplanning 
+      MYSQL_PASSWORD: teamplanning
+    ports: 
+      - "3306:3306"
+    volumes:
+      - ./teamplanning/sql:/docker-entrypoint-initdb.d
+
+phpServer: 
+    image: bitnami/php-fpm:7.4.16 
+    container_name: phpServer 
+    volumes:
+        - /home/teamplanning_test/:/srv/http/:ro
+    links:
+        - database:database
+    ports:
+        - 9000:9000
+
+webServer:
+    image: nginx
+    container_name: webServer
+    volumes:
+        - /home/teamplanning_test:/usr/share/nginx/html/:ro
+        - /home/teamplanning_test/conf/nginx.conf:/etc/nginx/nginx.conf/:ro
+    links:
+        - phpServer:phpServer
+    ports:
+        - 80:80
+    command: nginx -c /etc/nginx/nginx.conf
+
+phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: database
+      PMA_PORT: 3306 
+      PMA_ARBITRARY: 1
+      restart: always
+    links:
+      - database
+    ports:
+      - 8080:80
+
