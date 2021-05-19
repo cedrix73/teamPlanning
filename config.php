@@ -2,13 +2,16 @@
 # --- Team_Planning Config file ---
 
 
-define('TEAM_DATABASE_SERVER', 'localhost');
+
+$host = $_SERVER['SERVER_ADDR'];
+define('TEAM_DATABASE_SERVER', $host);
 define('TEAM_DATABASE_USER' , 'root');
 define('TEAM_DATABASE_PASSWORD', 'cedrix');
 define('TEAM_DATABASE_NAME', 'team_planning');
 $bdObj = null;
 $usedDb = 'mysql';
 $isAdmin = true;
+
 
 
 
