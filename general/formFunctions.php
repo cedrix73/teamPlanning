@@ -102,7 +102,7 @@ function getOptionsFromTab($tab, $selected = null)
                 $pref = ($key == $selected) ? ' selected = selected ' : '';
                 $options .= ' ' . $pref;
             }
-            $options .= '>' . $value . '</option>';
+            $options .= '>' . rightEncode($value) . '</option>';
         }
     }
     return $options;
@@ -139,7 +139,7 @@ function selectLoad($nomChampSql, $nomTableBd, $db, $filtre = null)
                 $pref = ($value['id'] == $filtre) ? ' selected = selected ' : '';
                 $options .= ' ' . $pref;
             }
-            $options .= '>' . $value['libelle'];
+            $options .= '>' . rightEncode($value[$nomChampSql]);
             $options .= '</option>';
         }
     }
