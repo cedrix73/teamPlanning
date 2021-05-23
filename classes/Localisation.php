@@ -171,7 +171,7 @@ class Localisation {
         $results=$this->_dbaccess->fetchRow($rs);
         $i = ($contexteInsertion === false) ? 0 : 1;
         foreach ($results as $ligne) {
-            $tabServices[$ligne[0]]=$ligne[$i];
+            $tabServices[utf8_encode($ligne[0])]=utf8_encode($ligne[$i]);
         }
         return $tabServices;
     }
