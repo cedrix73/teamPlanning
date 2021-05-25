@@ -85,15 +85,15 @@ CREATE TABLE IF NOT EXISTS ressource (
   CONSTRAINT ressource_site_fk FOREIGN KEY (site_id)
         REFERENCES site(id)
         ON UPDATE CASCADE 
-        ON DELETE RESTRICT,
+        ON DELETE CASCADE,
   CONSTRAINT ressource_departement_fk FOREIGN KEY (departement_id)
         REFERENCES departement(id)
         ON UPDATE CASCADE 
-        ON DELETE RESTRICT,
+        ON DELETE CASCADE,
   CONSTRAINT ressource_service_fk FOREIGN KEY (service_id)
         REFERENCES service(id)
         ON UPDATE CASCADE 
-        ON DELETE RESTRICT,
+        ON DELETE CASCADE,
   PRIMARY KEY (id)
 );
 

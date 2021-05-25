@@ -91,7 +91,7 @@ $refreshCalendarOption = '';
                             $refreshCalendarOption = 'refreshCalendar(null);';
                             echo 'initialiserFormulaire();';
                         } else {
-                            echo 'afficherTexteStarter();';
+                            ?>afficherTexteStarter();<?php
                             if (!$blnSites) {
                                 $prefixe = ' tout d\'abord ';
                                 $obj = 'site';
