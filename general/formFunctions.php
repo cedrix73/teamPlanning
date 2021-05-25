@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 include_once realpath(dirname(__FILE__)).'/../config.php';
 
@@ -50,6 +50,12 @@ function dateTimeToDb_format($date){
 	return $date;
 }
 
+function rightEncode($string) {
+    mb_detect_encoding($string) != 'UTF-8' ?: $string = utf8_encode($string);
+    return $string;
+
+}
+
 
 
 /**
@@ -73,7 +79,6 @@ function tabLoad($nomChampSql, $nomTableBd, $db, $filtre = null){
     $results=$db->fetchRow($reponse);
     foreach ($results as $value) {
         $id = $value[0];
-        $tab[$id] = utf8_encode($value[1]);
         $libelle = rightEncode($value[1]);
         $tab[$id] = $libelle;
     }
