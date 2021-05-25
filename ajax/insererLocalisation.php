@@ -78,9 +78,11 @@ if ($isOk) {
             break;
         }
 
-        // Version Pro: test si libellé existe déjà: chercher le libelle dans la table en question et si 
+        // Fix: test si libellé existe déjà: chercher le libelle dans la table en question et si 
         // c'est le cas, ajoute une abreviation de $libelleSite en suffixe. mais il faut l'id societe si 
         // BD en commun 
+
+        /*
         $requete = "SELECT libelle FROM ". $typeLocalisation . " WHERE libelle = '" . $libelleLocalisation ."'";
             $rs = $dbaccess->execQuery($requete);
         $nbLignes =  $dbaccess->numRows($rs);
@@ -88,15 +90,11 @@ if ($isOk) {
             $libelleLocalisation .= " (" . substr($libelleSite, 0, 3) . ")";
             $tabInsert['libelle'] = $libelleLocalisation;
         }
+        */
 
 
         
     }
-
-    
-        
-
-
     
     $insertion = $localisation->create($tabInsert);
     if (!$insertion) {

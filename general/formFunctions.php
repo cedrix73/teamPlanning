@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 include_once realpath(dirname(__FILE__)).'/../config.php';
 
@@ -73,8 +73,9 @@ function tabLoad($nomChampSql, $nomTableBd, $db, $filtre = null){
     $results=$db->fetchRow($reponse);
     foreach ($results as $value) {
         $id = $value[0];
-        $tab[$id] = $value[1];
+        $tab[$id] = utf8_encode($value[1]);
     }
+    var_dump($results);
     return $tab;
 }
 

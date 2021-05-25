@@ -1,7 +1,7 @@
 <?php
 # --- Team_Planning Config file ---
 
-$docker = true;
+$docker = false;
 
 
 
