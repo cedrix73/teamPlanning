@@ -95,13 +95,24 @@ function liste_services_load(site_sel, departement_sel){
 
 
 function afficherTexteStarter(){
-    $.post("/teamplanning/ajax/afficherTexteStarter.html", 
-            function(data){
-            if(data.length >0) {
-                $("#planning").append(" <div id=\"guide\" />");
-                $('#guide').html(data);
-            }
-    });
+    $.ajax({
+        type: "POST",
+        url: "/teamplanning/ajax/afficherTexteStarter.html",
+        xhrFields: {
+            withCredentials: true
+         },
+        datatype: "html"
+    })
+        .done(function(data){
+                if(data.length >0) {
+                    $("#planning").append(" <div id=\"guide\" />");
+                    $('#guide').html(data);
+                }
+        })
+        .fail(function()
+        {
+            afficherMessage("Le guide utilisateur n'a pu être affiché.");
+        })
 }
 
 
