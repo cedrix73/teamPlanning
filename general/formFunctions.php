@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 include_once realpath(dirname(__FILE__)).'/../config.php';
 
@@ -74,6 +74,8 @@ function tabLoad($nomChampSql, $nomTableBd, $db, $filtre = null){
     foreach ($results as $value) {
         $id = $value[0];
         $tab[$id] = utf8_encode($value[1]);
+        $libelle = rightEncode($value[1]);
+        $tab[$id] = $libelle;
     }
     var_dump($results);
     return $tab;
@@ -96,7 +98,7 @@ function getOptionsFromTab($tab, $selected = null)
                 $pref = ($key == $selected) ? ' selected = selected ' : '';
                 $options .= ' ' . $pref;
             }
-            $options .= '>' . $value . '</option>';
+            $options .= '>' . rightEncode($value) . '</option>';
         }
     }
     return $options;
@@ -133,7 +135,7 @@ function selectLoad($nomChampSql, $nomTableBd, $db, $filtre = null)
                 $pref = ($value['id'] == $filtre) ? ' selected = selected ' : '';
                 $options .= ' ' . $pref;
             }
-            $options .= '>' . $value['libelle'];
+            $options .= '>' . rightEncode($value[$nomChampSql]);
             $options .= '</option>';
         }
     }
