@@ -54,8 +54,9 @@ function liste_departements_load(site){
         type: "post",
         url: "/teamplanning/ajax/listeDepartementsLoad.php",
         data: "site_id=" + site,
-        datatype: "json",
-        success: function(data)
+        datatype: "json"
+    })
+        .done(function(data)
         {
             var tab_elems = [];
             tab_elems.push('<option value="Tous *">Tous *</option>');
@@ -65,12 +66,12 @@ function liste_departements_load(site){
             });
             $("#cbo_departements").html(tab_elems.join(''));
             liste_services_load(site, $("#cbo_departements").val());
-        },
-        error: function(message)
+        })
+        .fail(function(message)
         {
             afficherMessage(message);
-        }
-    });
+        });
+   
 }
 
 function liste_services_load(site_sel, departement_sel){
@@ -78,8 +79,9 @@ function liste_services_load(site_sel, departement_sel){
         type: "POST",
         url: "/teamplanning/ajax/listeServicesLoad.php",
         data: {"site_id": site_sel, "departement_sel":departement_sel },
-        datatype: "json",
-        success: function(data)
+        datatype: "json"
+    })
+        .done(function(data)
         {
             var tab_elems = [];
             tab_elems.push('<option value="Tous *">Tous *</option>');
@@ -89,8 +91,12 @@ function liste_services_load(site_sel, departement_sel){
             });
              $("#cbo_services").html(tab_elems.join(''));
 
-        }
-    });
+        })
+        .fail(function(message)
+        {
+            afficherMessage(message);
+        });
+   
 }
 
 

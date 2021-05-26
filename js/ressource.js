@@ -33,7 +33,7 @@
             type: "post",
             url: "/teamplanning/ajax/afficherFormRessources.php", 
             data: {"res_id": id, "site":site, "departement":departement, "service":service},
-            dataype: "json"
+            datatype: "json"
         })
 
         .done(function(data)
