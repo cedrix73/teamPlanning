@@ -15,10 +15,24 @@
         $("#div_saisie_activite").toggle();
         $("#affichage_activite").val("");
     } else {
+        var site = null;
+        if($('#cbo_sites').val() !== null) {
+            site = cbo_sites.options[cbo_sites.selectedIndex].value;
+        } 
+        var departement = null;
+        if($('#cbo_departements').val() !== null) {
+            departement = cbo_departements.options[cbo_departements.selectedIndex].value;
+        } 
+
+        var service = null;
+        if($('#cbo_services').val() !== null) {
+            service = cbo_services.options[cbo_services.selectedIndex].value;
+        } 
+        
         $.ajax({
             type: "post",
             url: "/teamplanning/ajax/afficherFormRessources.php", 
-            data: {"res_id": id},
+            data: {"res_id": id, "site":site, "departement":departement, "service":service},
             dataype: "json"
         })
 

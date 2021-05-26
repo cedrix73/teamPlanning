@@ -15,8 +15,11 @@ require_once ABS_CLASSES_PATH. 'ProcessFormulaires.php';
 
 Class RessourceProcessFormulaires extends ProcessFormulaires {
 
-    public function __construct($dbaccess, $tableName = null, $id=null) 
+    
+
+    public function __construct($dbaccess, $tableName = null, $id = null) 
     {
+        
         $this->idToModif = $id;
         parent::__construct($dbaccess, $tableName, $id=null);
         
@@ -28,6 +31,7 @@ Class RessourceProcessFormulaires extends ProcessFormulaires {
      *                 spécifiques à la localisation des ressources. 
      * @param          String $nomChamp :nom du champ à identifier 
      * @param          String $required :Si champ requis: 'required="required' sinon vide. 
+     * @param          String $valeur : valeur par défaut pour le type de champ activé.
      * @return         String   $retour :Section du formulaire au format html
      */
     public function getSpecificFields($nomChamp, $required, $valeur="") {
@@ -50,6 +54,9 @@ Class RessourceProcessFormulaires extends ProcessFormulaires {
         return $retour;
     }
 
+    
+ 
+
     /**
      * @name getElementbyIdForUpdate
      * @description Selection une ressource par son $id et retourne 
@@ -59,12 +66,18 @@ Class RessourceProcessFormulaires extends ProcessFormulaires {
      */
     public function getElementbyIdForUpdate() {
         $listeDonneesRes = array();
-        $select = "SELECT * from ressource WHERE id = " . $this->idToModif;
-        $rs = $this->getDbAccess()->execQuery($select);
-        $listeDonneesRes = $this->getDbAccess()->fetchArray($rs);
-        unset($listeDonneesRes[0]['id']);
+        if (isset ($this->idToModif) && $this->idToModif!== null) {
+            $select = "SELECT * from ressource WHERE id = " . $this->idToModif;
+            $rs = $this->getDbAccess()->execQuery($select);
+            $listeDonneesRes = $this->getDbAccess()->fetchArray($rs);
+            unset($listeDonneesRes[0]['id']);
+        } else {
+            $listeDonneesRes[0] = $this->_tabDefaultValues;
+        }
         return $listeDonneesRes[0];
     }
+
+    
 
 }
 
@@ -94,6 +107,11 @@ if ($handler === false) {
             $id = $_POST['res_id'];
         }
     }
+
+    
+
+
+
     
 }
 
@@ -101,6 +119,35 @@ if(!$isOk) {
     echo $msgErr;
 } else {
     $ressourceProcessFormulaire = new RessourceProcessFormulaires($dbaccess, 'ressource', $id);
+    // Update 26/05/2021: Valeurs sélectionnées dans la liste de recherche
+    if(isset($_POST['site']) && $_POST['site']!=='' && $_POST['site']!=='Tous *') {
+        if(!filter_var($_POST['site'], FILTER_VALIDATE_INT)) {
+            $isOk = false;
+            $msgErr .= "<br>Erreur:  Un paramètre est erroné.";
+        } else {
+            $ressourceProcessFormulaire->addDefaultValue('site_id', $_POST['site']);
+        }
+    }
+
+    if(isset($_POST['departement']) && $_POST['departement']!=='' && $_POST['departement']!=='Tous *') {
+        if(!filter_var($_POST['site'], FILTER_VALIDATE_INT)) {
+            $isOk = false;
+            $msgErr .= "<br>Erreur:  Un paramètre est erroné.";
+        } else {
+            $ressourceProcessFormulaire->addDefaultValue('departement_id', $_POST['departement']);
+        }
+    }
+
+    if(isset($_POST['service']) && $_POST['service']!=='' && $_POST['service']!=='Tous *') {
+        if(!filter_var($_POST['site'], FILTER_VALIDATE_INT)) {
+            $isOk = false;
+            $msgErr .= "<br>Erreur:  Un paramètre est erroné.";
+        } else {
+            $ressourceProcessFormulaire->addDefaultValue('service_id', $_POST['service']);
+        }
+    }
+
+
     $retour = $ressourceProcessFormulaire->getFormFromTable('Enregistrement d\'une ressource');
     echo $retour;
 }

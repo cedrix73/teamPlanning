@@ -82,7 +82,6 @@ function tabLoad($nomChampSql, $nomTableBd, $db, $filtre = null){
         $libelle = rightEncode($value[1]);
         $tab[$id] = $libelle;
     }
-    var_dump($results);
     return $tab;
 }
 
@@ -232,14 +231,18 @@ function explodeMaj($texte) {
 
 
 /**
- * underscoreToLibelle
- * Transforme un libelle en uderscore (ex: BD) en suite de mots
- * séparés par un espace.
+ * @name underscoreToLibelle
+ * @description Transforme un libelle en uderscore (ex: BD) en suite de mots
+ * séparés par un espace. 
+ * Supprime également la portion "_id".
  * Français seulement: Si le mot commence par date, rajoute 
  * la préposition de iu d'u suivant si le mot suivant comme par une
  * voyelle ou une majuscule.
+ * @param  String $texte     texte du libellé à soumettre. 
+ * @return String $texte     texte modifié par la fonction.
  */
 function underscoreToLibelle($texte) {
+    $texte = str_replace('_id', '', $texte);
     $texte = ucfirst(str_replace('_', ' ', $texte));
     if(substr($texte, 0 ,4) == "Date") {
         $tabVoyelles = ['a', 'e', 'o', 'u', 'i'];

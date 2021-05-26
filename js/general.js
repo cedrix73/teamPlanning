@@ -278,11 +278,16 @@
                    }
                    
                }
+
    
                // verification si champs obligatoires remplis
                if($(this).attr('required') && ($(this).val()===null || $(this).val()==='')){
-                   bln_ok = false;
-                   unfilled_required_tab.push(ressourceLabel);
+                    bln_ok = false;
+                    $(this).css({"border": "1px solid red"});
+                    unfilled_required_tab.push(ressourceLabel);
+                   
+               }else {
+                    $(this).css({"border": "1px solid #999"});
                }
                
                if(bln_ok && $(this).val()!=='' && $(this).prop('type')!='button'){

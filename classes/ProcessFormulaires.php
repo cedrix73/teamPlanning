@@ -19,6 +19,8 @@ Class ProcessFormulaires {
 
     protected $idToModif;
 
+    protected $_tabDefaultValues;
+
 
 
     public function __construct($dbaccess, $tableName = null, $idToModif = null) 
@@ -27,8 +29,22 @@ Class ProcessFormulaires {
         $this->_tabInsert = array();
         $this->msgErr = array();
         $this->tableName = $tableName;
+        $this->_tabDefaultValues = array();
         
     } 
+
+
+    /**
+     * @name addDefaultValue 
+     * @description Ajoute des valeurs par défaut aux champs du formulaire spécifiés
+     * sous la forme d'un tableau [$key] = $value.
+     * @param String $key  Nom du champ 
+     * @param String $value Valeur du champ
+     * @return Array $tabDefaultValues Tableau de champs retourné au formulaire
+     */
+    public function addDefaultValue($key, $value) {
+        $this->_tabDefaultValues[$key] = $value;
+    }
 
     /**
      * @name          getFormFromTable 
@@ -59,9 +75,8 @@ Class ProcessFormulaires {
         } else {
             $tabChamps = array();
             $tabChamps = $this->_dbaccess->getTableDatas($this->tableName);
-            if (isset ($this->idToModif) && $this->idToModif!== null) {
-                $tabValeurs = $this->getElementbyIdForUpdate();
-            }
+            $tabValeurs = $this->getElementbyIdForUpdate();
+          
             
 
             $retour = '';
@@ -72,8 +87,9 @@ Class ProcessFormulaires {
 
                 $champPrefixe = substr($this->tableName, 0, 3);
                 $titre == '' ? 'Enregistrement ' . $this->tableName : $titre;
-                $retour .= '<div class="legende_titre"><h1>' . $titre .'</h1></div>';
-                $retour .= '<div id="panel_' . $this->tableName . '" name = "panel_' . $this->tableName .'"><table id="tab_' . $this->tableName . '" class= "tab_params">';
+                $retour .= '<div class="legende_titre" onclick="$(\'#div_saisie_activite\').toggle();"><h1>' . $titre .'</h1></div>';
+                $retour .= '<div id="panel_' . $this->tableName . '" name = "panel_' . $this->tableName 
+                .'"><table id="tab_' . $this->tableName . '" class= "tab_params">';
                 
                 // Liste de tous les types d'événement
                 foreach ($tabChamps as $key => $value) {
