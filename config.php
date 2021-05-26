@@ -3,9 +3,8 @@
 
 $docker = false;
 
-
-
-$host = ($docker == true) ? "database" : $_SERVER['SERVER_ADDR'];
+$serverAdress = $_SERVER['SERVER_ADDR']=='::1' ?  '127.0.0.1' : $_SERVER['SERVER_ADDR'];
+$host = ($docker == true) ? "database" : $serverAdress;
 define('TEAM_DATABASE_SERVER', $host);
 define('TEAM_DATABASE_USER' , 'root');
 define('TEAM_DATABASE_PASSWORD', 'cedrix');
