@@ -15,7 +15,8 @@ if ($handler === false) {
     echo 'Handler NOK...';
     die();
 }
-
+// Affichage message erreur BD techniques ?
+$dbaccess->setError(M_LOG);
 
 $blnSites = false;
 $blnDepartements = false;
@@ -24,6 +25,7 @@ $blnServices = false;
 $blnRessources = false;
 
 // Liste des sites
+
 $listeSites = tabLoad('libelle', 'site', $dbaccess);
 $listeSites[0] = "Tous *";
 ksort($listeSites);

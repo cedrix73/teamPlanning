@@ -89,7 +89,7 @@ if($isOk){
     
     if(!$insertion){
         $type = ($actionUser == "insertion") ? 'l\'insertion !' : 'la modification';
-        $retour .= 'Problème lors de ' . $type;
+        $retour .= 'Problème lors de ' . $type . $dbaccess->getError();
     }else{
         $retour .= ($actionUser == "insertion") ? 'nouvelle entrée crèée avec succès.' : 'modification effectuée.';
     }
