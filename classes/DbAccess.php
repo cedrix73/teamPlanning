@@ -48,7 +48,7 @@ class DbAccess
      */
     public function getError() {
         $errorString = "";
-        if($this->msg === true) {
+        if($this->_msg === true) {
             $errorString = ": " . $this->_dbInterface->getErrorMessage();
         }
         return $errorString;
@@ -61,7 +61,7 @@ class DbAccess
      */
     public function setError($msgMode) {
         if(is_bool($msgMode)) {
-            $this->msg = $msgMode;
+            $this->_msg = $msgMode;
         }
     }
     

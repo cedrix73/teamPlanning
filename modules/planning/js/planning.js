@@ -135,6 +135,12 @@ function setDateWidget(dateRetournee){
     $('#div_date').datepicker({dateFormat: "dd/mm/yy"}).
         datepicker("setDate", dateRetournee);
 }
+
+
+function noWeekendsOrHolidays(date) {
+	var noWeekend = jQuery.datepicker.noWeekends(date);
+	return noWeekend;
+}
   
 
 
@@ -178,8 +184,6 @@ function afficherSaisie(date, ressource_id, numActivite = null, numPeriode) {
         // Modification ou supression
         $('#lst_activites').refresh();
         
-        //alert(lst_activites.options[lst_activites.selectedIndex].text);
-        
         infoRessource.action = "modification";
         $("#btn_valider_saisie").val("Modifier");
         //$('#btn_valider_saisie').attr('onclick', 'verifierEvent()');
@@ -215,11 +219,13 @@ function afficherSaisie(date, ressource_id, numActivite = null, numPeriode) {
    annee = parseInt(matchArray[5]);
    
    $(".champ_date").datepicker({
-       minDate: new Date(annee, mois, jour),
+       minDate: new Date(),
        dateFormat: 'dd/mm/yy',
        firstDay: 1,
        monthNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
-       dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],});
+       dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+       constrainInput: true,
+	   beforeShowDay: noWeekendsOrHolidays});
 }
 
 
@@ -239,6 +245,7 @@ function verifierEvent() {
         fonction_js = 'validerSaisie()';
         date_debut = $("#txt_str_date_debut").val();
         date_fin = $("#txt_str_date_fin").val();
+        //  Pas besoin confirmation si date debut = fin
         if(date_debut === date_fin) {
             no_need = true;
         }

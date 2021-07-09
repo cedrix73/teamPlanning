@@ -60,7 +60,7 @@ if($isOk){
     
     
     $insertion = $activite->create($tabInsert);
-    if(!$insertion){
+    if($insertion === false){
         $retour = 'Un problème est survenu lors de la création du type d\'activité !' . $dbaccess->getError();
         //$retour.= $activite->getSql();
     }else{
