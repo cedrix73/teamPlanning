@@ -206,14 +206,14 @@ $refreshCalendarOption = '';
                             value=""
                             id="txt_str_date_debut" 
                             size="10" maxlength="10"
-                            class="champ_date" readonly>                     
+                             readonly>                     
                             <span>&nbsp;au&nbsp;</span>   
                             <input type="text"
                             name="txt_str_date_fin"
                             id="txt_str_date_fin"
                             value=""
                             size="10" maxlength="10"
-                            class="champ_date" readonly>
+                            class="champ_date_fin" readonly>
                             <span>&nbsp;Type d'absence:&nbsp;</span> 
                             <select id="lst_activites" name="lst_activites"></select>
                             <span>&nbsp;Période:&nbsp;</span> 
@@ -232,16 +232,16 @@ $refreshCalendarOption = '';
                             name="txt_str_date_debut_modif"
                             value=""
                             id="txt_str_date_debut_modif" 
-                            onchange="attribuerDateFin(this.value);" 
+                            onchange="attribuerDateFinModif(this.value);" 
                             size="10" maxlength="10"
-                            class="champ_date" readonly>                     
+                            readonly>                     
                             <span>&nbsp;au&nbsp;</span>   
                             <input type="text"
                             name="txt_str_date_fin_modif"
                             id="txt_str_date_fin_modif"
                             value=""
                             size="10" maxlength="10"
-                            class="champ_date" readonly>
+                            class="champ_date_fin" readonly>
                             <span>&nbsp;Type d'absence:&nbsp;</span> 
                             <select id="lst_activites_modif" name="lst_activites_modif"></select>
                             <span>&nbsp;Période:&nbsp;</span> 

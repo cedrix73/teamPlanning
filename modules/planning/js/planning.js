@@ -217,15 +217,25 @@ function afficherSaisie(date, ressource_id, numActivite = null, numPeriode) {
    jour = matchArray[1];
    mois = parseInt(matchArray[3]-1);
    annee = parseInt(matchArray[5]);
+
    
-   $(".champ_date").datepicker({
-       minDate: new Date(),
+   $(".champ_date_fin").datepicker({
+       minDate: date,
        dateFormat: 'dd/mm/yy',
        firstDay: 1,
        monthNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
        dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
        constrainInput: true,
 	   beforeShowDay: noWeekendsOrHolidays});
+
+    $("#txt_str_date_debut_modif").datepicker({
+        minDate: new Date(),
+        dateFormat: 'dd/mm/yy',
+        firstDay: 1,
+        monthNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+        dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+        constrainInput: true,
+        beforeShowDay: noWeekendsOrHolidays});
 }
 
 
@@ -381,8 +391,10 @@ function liste_activites_load(){
     });
 }
 
-function attribuerDateFin(valeur_date) {
+function attribuerDateFinModif(valeur_date) {
     $("#txt_str_date_fin_modif").val(valeur_date);
+    $("#txt_str_date_fin_modif" ).datepicker( "option", "minDate", valeur_date);
+
 }
 
 
