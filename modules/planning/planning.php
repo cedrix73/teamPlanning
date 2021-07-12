@@ -122,6 +122,9 @@ $refreshCalendarOption = '';
                         $("#div_saisie_activite").hide();
                         initialiserFormulaire.saisieActivite = $("#div_saisie_activite").html();
                     });
+                    $(window).resize(function(){
+                        refreshCalendar(null);
+                    });
 
             </script>
     </head>

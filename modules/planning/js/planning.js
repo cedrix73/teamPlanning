@@ -91,6 +91,7 @@ function refreshCalendar(dateText=null){
     // largeur cadre min
     var l_planning = 1100; 
     var nb_col_sup = 0;
+
     // redimensionnement horizontal: à implémenter
     l_fenetre = $(window).width(); 
     nb_col_sup = parseInt((l_fenetre -1100) / 293);
@@ -399,32 +400,40 @@ function attribuerDateFinModif(valeur_date) {
 
 
 function lireDimensions(){
-    var cadre_margin = convertPxToInt($("#cadre").css("margin-left"));
-    var cadre_pad = convertPxToInt($("#cadre").css("padding-left"));
+    l_fenetre = $(window).width(); 
+    var cadre_margin = convertPxToInt($("#cadre").css("margin"));
+    var cadre_pad = convertPxToInt($("#cadre").css("padding"));
     var espace_cadre = cadre_margin + cadre_pad;
 
     var largeur_menu= convertPxToInt($("#menu_gauche").css("width"));
     var largeur_menu_pad_gauche = convertPxToInt($("#menu_gauche").css("padding-left"));
-    var largeur_menu_pad_droite = convertPxToInt($("#menu_gauche").css("padding-left"));
+    var largeur_menu_pad_droite = convertPxToInt($("#menu_gauche").css("padding-right"));
     var largeur_menu_tot = largeur_menu + largeur_menu_pad_gauche + largeur_menu_pad_droite;
+
+    var margin_col_droite = convertPxToInt($(".col_droite").css("margin-left"));
 
     var largeur_legende = convertPxToInt($(".legende_ressources").css("width"));
     var largeur_legende_pad = convertPxToInt($(".legende_ressources").css("padding-left"));
     var largeur_legende_ress = largeur_legende + largeur_legende_pad;//232
     //alert(espace_cadre + largeur_menu_tot);//250
 
-    var largeur_col = convertPxToInt($(".entete_semaine").css("width"));//293
-    var l_defilement = parseInt(largeur_legende_ress + (parseInt(nb_col_sup + 2) * largeur_col)  + 32);//1100
-    var l_cadre = espace_cadre + largeur_menu_tot + l_defilement;
+    var largeur_col = convertPxToInt($(".entete_semaine").css("width")) + 32 ;//293
+    var l_defilement = parseInt(largeur_legende_ress  + 32);//1100
+    var l_cadre = espace_cadre + largeur_menu_tot + largeur_col_droite_margin + largeur_legende_ress + l_defilement;
     
     nb_col_sup = parseInt((l_fenetre -l_cadre) / largeur_col);
+
     //alert(l_fenetre);
+    
     if(l_cadre>=1100){
         $('#defilement').css("width" , l_defilement + "px");
         $('.col_droite').css("width" , parseInt(l_defilement) + "px");
         $('#cadre').css("width" , l_cadre + "px");
     }
-    $('#planning').css("height", "400px");
+    
+
+    return nb_col_sup;
+    
 }
 
 
