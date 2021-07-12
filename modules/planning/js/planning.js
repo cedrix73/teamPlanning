@@ -92,9 +92,16 @@ function refreshCalendar(dateText=null){
     var l_planning = 1100; 
     var nb_col_sup = 0;
 
-    // redimensionnement horizontal: à implémenter
+
     l_fenetre = $(window).width(); 
-    nb_col_sup = parseInt((l_fenetre -1100) / 293);
+    var largeur_col = 293;
+    var largeur_cadre= convertPxToInt($("#cadre").css("width"));
+
+    var largeur_colonne_droite= convertPxToInt($("#planning").css("width"));
+    
+    nb_col_sup = (l_fenetre - largeur_colonne_droite) < 50 ? 0 : parseInt((l_fenetre - 1100) / largeur_col);
+    // redimensionnement horizontal: à implémenter 
+   // nb_col_sup = parseInt((l_fenetre - 1100) / largeur_col);
     $("#img_loading").show();
     // requête ajax
     $.post("ajax/afficherCal.php", 
@@ -107,17 +114,16 @@ function refreshCalendar(dateText=null){
             $("#img_loading").hide();
             if(data.length >0) {
                 $('#planning').html(data);
-                redim();
+               
+
+
                 // redimensionnement horizontal 
                 // On utilise des valeurs précalculées à partoir de lireDimensions()
-                var largeur_col = 293;
+                
                 var l_defilement = parseInt(232 + (parseInt(nb_col_sup + 2) * largeur_col)  + 32);//1100
                 var l_cadre = 250 + l_defilement;
-                //alert(l_cadre);//1100
-                //l_fenetre = $(window).width() - 50; 
                 var delta = parseInt(l_fenetre -l_cadre);
                 nb_col_sup = parseInt(delta / largeur_col);
-                //alert(l_fenetre);
                 if(l_cadre>=1100){
                     $('#defilement').css("width" , l_defilement + "px");
                     $('.col_droite').css("width" , parseInt(l_defilement) + "px");
@@ -288,7 +294,6 @@ function verifierEvent() {
                 activite_sel: ""+$("#lst_activites").val()+"", 
                 periode_sel: ""+$("#lst_periodes").val()+""}, 
                 function(data){
-                    //alert(data);
                     $("#img_loading").hide();
                     $( "#supprimer" ).html("&nbsp;");   
                     if(data !== null && data.length >0) {
@@ -400,18 +405,21 @@ function attribuerDateFinModif(valeur_date) {
 
 
 function lireDimensions(){
-    l_fenetre = $(window).width(); 
-    var cadre_margin = convertPxToInt($("#cadre").css("margin"));
-    var cadre_pad = convertPxToInt($("#cadre").css("padding"));
-    var espace_cadre = cadre_margin + cadre_pad;
-
     var largeur_menu= convertPxToInt($("#menu_gauche").css("width"));
     var largeur_menu_pad_gauche = convertPxToInt($("#menu_gauche").css("padding-left"));
     var largeur_menu_pad_droite = convertPxToInt($("#menu_gauche").css("padding-right"));
     var largeur_menu_tot = largeur_menu + largeur_menu_pad_gauche + largeur_menu_pad_droite;
 
-    var margin_col_droite = convertPxToInt($(".col_droite").css("margin-left"));
+    var largeur_col_droite_min= convertPxToInt($(".col_droite").css("width"));
+    var largeur_col_droite_pad_g= convertPxToInt($(".col_droite").css("padding-left"));
+    var largeur_col_droite_pad_d= convertPxToInt($(".col_droite").css("padding-right"));
+    var largeur_col_droite_tot = largeur_col_droite_min + largeur_col_droite_pad_g + largeur_col_droite_pad_d;
 
+    var largeur_cadre_margin_g = convertPxToInt($("#cadre").css("margin-left"));
+    var largeur_cadre_margin_d = convertPxToInt($("#cadre").css("margin-right"));
+    var largeur_cadre_margin_tot = largeur_cadre_margin_g + largeur_cadre_margin_d;
+
+    var espace_libre = largeur_menu_tot + largeur_col_droite_tot + largeur_cadre_margin_tot;
     var largeur_legende = convertPxToInt($(".legende_ressources").css("width"));
     var largeur_legende_pad = convertPxToInt($(".legende_ressources").css("padding-left"));
     var largeur_legende_ress = largeur_legende + largeur_legende_pad;//232
@@ -423,7 +431,6 @@ function lireDimensions(){
     
     nb_col_sup = parseInt((l_fenetre -l_cadre) / largeur_col);
 
-    //alert(l_fenetre);
     
     if(l_cadre>=1100){
         $('#defilement').css("width" , l_defilement + "px");
