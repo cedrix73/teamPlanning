@@ -92,7 +92,6 @@ a:hover {
 
 #defilement {
     float:left;
-    height:345px;
     overflow-Y: scroll;
     scroll: auto;
 }
@@ -156,7 +155,6 @@ a:hover {
     padding-left: 4px;
     padding-right: 4px;
     padding-top: 0px;
-    padding: 4px;
     font: 11px Arial, Helvetica, sans-serif;
     color: black;
     float: right;

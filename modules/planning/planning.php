@@ -75,10 +75,10 @@ $refreshCalendarOption = '';
             <meta http-equiv="Content-Language" content="fr" />
             <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
             <META NAME="Author" CONTENT="Cédric Von Felten">
-            <link rel="stylesheet" type="text/css" media="screen"  href="../../styles/redmond/jquery-ui-1.9.2.custom.min.css" />
+            <link rel="stylesheet" type="text/css" media="screen"  href="../../styles/redmond/jquery-ui-1.11.4.custom.min.css" />
             <link type="text/css" rel="stylesheet" href="../../styles/principal.css">
             <script src="../../js/jquery-1.8.3.min.js"></script>
-            <script src="../../js/jquery-ui-1.9.2.custom.min.js"></script>
+            <script src="../../js/jquery-ui-1.11.4.custom.min.js"></script>
             <script src="../../js/general.js"></script>
             <script src="js/planning.js"></script>
             <script src="../../js/localisation.js"></script>
